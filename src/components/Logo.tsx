@@ -1,20 +1,37 @@
-import Svg, { Path } from 'react-native-svg';
-import { brand } from '../theme/colors';
+import Svg, { G, Path } from 'react-native-svg';
+import { usc } from '../theme/colors';
+import { FLECHA, FLECHA_GIRO, PALABRA_UPO, PALABRA_USC } from './logoPaths';
 
-// Dos flechas circulares que se intercambian: azul #073D6C y verde #21A14E (marca oficial).
-export function Logo({ size = 40 }: { size?: number }) {
+// Sobre fondo blanco el logo va en azul nativo + amarillo; sobre azul, la parte azul pasa
+// a blanco para no perderse (el amarillo se mantiene como acento).
+export type FondoLogo = 'blanco' | 'azul';
+
+function tintas(sobre: FondoLogo) {
+  return { principal: sobre === 'azul' ? usc.blanco : usc.azulNativo, acento: usc.amarillo };
+}
+
+/** Solo el símbolo (dos flechas que se intercambian). */
+export function Logo({ size = 40, sobre = 'blanco' }: { size?: number; sobre?: FondoLogo }) {
+  const { principal, acento } = tintas(sobre);
   return (
-    <Svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-      <Path
-        d="M20 6a14 14 0 0 1 13.86 12h-4.06A10 10 0 0 0 20 10V6Z"
-        fill={brand.logoBlue}
-      />
-      <Path d="M33.86 18 30 24l-3.5-6.6 7.36.6Z" fill={brand.logoBlue} />
-      <Path
-        d="M20 34A14 14 0 0 1 6.14 22h4.06A10 10 0 0 0 20 30v4Z"
-        fill={brand.logoGreen}
-      />
-      <Path d="M6.14 22 10 15.4l3.5 6.6-7.36-.6Z" fill={brand.logoGreen} />
+    <Svg width={size} height={size} viewBox="4.5 -46.6 450 450" accessibilityLabel="USCupo">
+      <Path d={FLECHA} fill={principal} />
+      <Path d={FLECHA} fill={acento} transform={FLECHA_GIRO} />
+    </Svg>
+  );
+}
+
+/** Símbolo + wordmark "USCupo" en composición vertical. */
+export function LogoCompleto({ width = 160, sobre = 'blanco' }: { width?: number; sobre?: FondoLogo }) {
+  const { principal, acento } = tintas(sobre);
+  return (
+    <Svg width={width} height={(width * 484) / 459} viewBox="0 0 459 484" accessibilityLabel="USCupo">
+      <G>
+        <Path d={FLECHA} fill={principal} />
+        <Path d={FLECHA} fill={acento} transform={FLECHA_GIRO} />
+      </G>
+      <Path d={PALABRA_USC} fill={principal} />
+      <Path d={PALABRA_UPO} fill={acento} />
     </Svg>
   );
 }

@@ -6,8 +6,14 @@ import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '../src/lib/AuthContext';
+import { ThemeProvider, useThemeState } from '../src/theme/ThemeProvider';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+
+function ThemedStatusBar() {
+  const { esquema } = useThemeState();
+  return <StatusBar style={esquema === 'dark' ? 'light' : 'dark'} />;
+}
 
 export default function RootLayout() {
   const [poppinsLoaded] = usePoppins({ Poppins_600SemiBold });
@@ -22,10 +28,12 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <AuthProvider>
-        <StatusBar style="auto" />
-        <Slot />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <ThemedStatusBar />
+          <Slot />
+        </AuthProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }
