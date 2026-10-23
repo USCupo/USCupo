@@ -19,7 +19,7 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
 
   const backgroundColor =
     variant === 'primary' ? colors.primary : variant === 'secondary' ? colors.primaryTint : 'transparent';
-  const textColor = variant === 'primary' ? '#FFFFFF' : colors.primary;
+  const textColor = variant === 'primary' ? colors.onPrimary : colors.link;
 
   return (
     <Pressable

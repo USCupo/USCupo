@@ -9,7 +9,7 @@ universidad.
 
 - **Frontend:** React Native + Expo (Expo Router, SDK 57)
 - **Backend/BD:** Supabase (Postgres, Auth, Row Level Security, Edge Functions)
-- **Auth:** correo institucional `@usc.edu.co` + contraseña, o Google OAuth restringido al
+- **Auth:** correo institucional `@usc.edu.co` + contraseña, o Microsoft 365 (Entra ID) restringido al
   mismo dominio
 
 ## Estructura
@@ -62,10 +62,18 @@ sin materias hasta que se carguen sus pénsums (ver nota en
 - **Email:** Authentication → Providers → Email. Se recomienda dejar la confirmación de
   correo activada (el trigger de base de datos ya rechaza cualquier dominio distinto a
   `@usc.edu.co`, así que solo estudiantes reales llegan a confirmar).
-- **Google:** Authentication → Providers → Google. Si la USC tiene Google Workspace en
-  `@usc.edu.co`, restringe el consentimiento a ese dominio (el `hd` param del lado del
-  cliente ya lo sugiere, pero la validación real está en el trigger `handle_new_user`).
-- **Redirect URL** para OAuth: agrega el scheme `uscupo://auth/callback`.
+- **Microsoft 365 (cuentas USC):** la USC usa Microsoft Entra ID
+  (tenant `47e962fd-bc3b-4eed-b1b8-d70eee9acd65`).
+  1. En portal.azure.com → Microsoft Entra ID → App registrations → New registration.
+     Redirect URI tipo *Web*: `https://<project-ref>.supabase.co/auth/v1/callback`.
+  2. Crea un client secret (copia el *Value*) y anota su vencimiento.
+  3. En Supabase → Authentication → Providers → Azure: Client ID, Secret y
+     *Azure Tenant URL* = `https://login.microsoftonline.com/47e962fd-bc3b-4eed-b1b8-d70eee9acd65`.
+  4. Recomendado: en el Manifest de la app agrega los optional claims `email` y `xms_edov`.
+  La app pide `domain_hint=usc.edu.co`, así que entra directo a la cuenta institucional;
+  el trigger `handle_new_user` sigue rechazando cualquier otro dominio.
+- **Redirect URLs** (Authentication → URL Configuration): `uscupo://auth/callback`,
+  `http://localhost:8081/auth/callback` (web en desarrollo) y `exp://**` (Expo Go).
 
 ### 4. Programar la expiración automática
 
@@ -84,10 +92,33 @@ npm start
 ```
 
 Escanea el QR con Expo Go, o `npm run ios` / `npm run android` con un simulador.
+Para la versión web: `npm run web`.
+
+### 6. Deploy web en Vercel
+
+El repo ya trae `vercel.json` (build `npx expo export -p web`, salida `dist/`, y rewrite
+de todas las rutas a `index.html` porque es una SPA).
+
+1. En Vercel: **Add New → Project** → importar este repositorio de GitHub. Framework
+   preset: **Other** (lo demás lo toma de `vercel.json`).
+2. **Environment Variables** (Production y Preview), con los mismos valores del `.env`:
+   - `EXPO_PUBLIC_SUPABASE_URL`
+   - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+
+   Se incrustan en el bundle al compilar: si se cambian, hay que volver a desplegar.
+   Son públicas por diseño (la seguridad la da RLS); **nunca** pongas aquí la
+   `service_role` key.
+3. **Deploy.**
+4. En Supabase → Authentication → URL Configuration:
+   - **Site URL**: el dominio de producción, p. ej. `https://uscupo.vercel.app`
+     (los enlaces de confirmación de correo apuntan aquí).
+   - **Redirect URLs**: agrega `https://uscupo.vercel.app/**` y, para los previews,
+     `https://*-<equipo>.vercel.app/**`.
 
 ## Estado actual
 
-Funcional: registro/login (email+contraseña y Google), validación de dominio
-institucional, selección de carrera con búsqueda. Las pantallas de Inicio, Buscar,
-Publicar, Mis cambios están en construcción — se implementan pantalla por pantalla sobre
-este mismo esquema y estos mismos componentes.
+Funcional en web, iOS y Android: registro/login con correo institucional, completar
+perfil, Inicio (coincidencias, avisos), Buscar (filtros, "me interesa"), Publicar,
+Mis cambios (contacto, confirmar/liberar/retirar) y Perfil (contacto visible, historial,
+tema claro/oscuro). Pénsums cargados para las 89 carreras del catálogo.
+Pendiente: inicio de sesión con Microsoft 365 (código listo, falta configurar Azure).
