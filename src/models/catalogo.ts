@@ -59,6 +59,34 @@ export function rangoHoras(b: Pick<BloqueHorario, 'hora_inicio' | 'hora_fin'>): 
   return `${hora12(b.hora_inicio)} – ${hora12(b.hora_fin)}`;
 }
 
-export function etiquetaCorta(b: BloqueHorario): string {
-  return `${diasCortos(b.dias)} · ${rangoHoras(b)}`;
+
+// ── Franjas con hora libre ───────────────────────────────────────────────────────
+
+/** Franja que escribe el estudiante. Horas en 24 h, "HH:MM". */
+export interface Franja {
+  dias: string[];
+  inicio: string;
+  fin: string;
+}
+
+export const claveFranja = (f: Franja) => `${diasClave(f.dias)}|${f.inicio}|${f.fin}`;
+
+export function franjaDeBloque(b: BloqueHorario): Franja {
+  return { dias: [...b.dias], inicio: b.hora_inicio.slice(0, 5), fin: b.hora_fin.slice(0, 5) };
+}
+
+export function etiquetaFranja(f: Franja): string {
+  return `${diasCortos(f.dias)} ${rangoHoras({ hora_inicio: f.inicio, hora_fin: f.fin })}`;
+}
+
+/** Id del bloque para la franja: reutiliza uno existente o lo crea en el servidor. */
+export async function resolverBloque(f: Franja, bloques: BloqueHorario[]): Promise<number> {
+  const existente = bloques.find((b) => claveFranja(franjaDeBloque(b)) === claveFranja(f));
+  if (existente) return existente.id;
+  const { data, error } = await supabase.rpc('bloque_para_franja', { p_dias: f.dias, p_inicio: f.inicio, p_fin: f.fin });
+  if (error) {
+    if (error.code === 'PGRST202') throw new Error('El servidor aún no acepta horarios personalizados. Aplica la migración 20261023000003 en Supabase.');
+    throw error;
+  }
+  return data as number;
 }

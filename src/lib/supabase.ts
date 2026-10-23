@@ -1,7 +1,5 @@
-import 'react-native-url-polyfill/auto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
-import { Platform } from 'react-native';
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
@@ -17,11 +15,10 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     storage: AsyncStorage,
     autoRefreshToken: true,
     persistSession: true,
-    // PKCE: el proveedor devuelve un ?code= de un solo uso en vez de tokens en la URL.
+    // PKCE: el proveedor devuelve un ?code= de un solo uso en vez de tokens en la URL;
+    // Supabase lo canjea al cargar /auth/callback.
     flowType: 'pkce',
-    // En web, Supabase canjea el ?code= al volver de Microsoft. En iOS/Android lo canjea
-    // el controlador de auth tras cerrar el navegador del sistema.
-    detectSessionInUrl: Platform.OS === 'web',
+    detectSessionInUrl: true,
   },
 });
 

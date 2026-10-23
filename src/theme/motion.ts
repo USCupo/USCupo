@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { AccessibilityInfo, Animated, Platform } from 'react-native';
+import { AccessibilityInfo, Animated } from 'react-native';
 
-// Animated corre en el hilo nativo en iOS/Android; en web no existe ese driver.
-export const useNativeDriver = Platform.OS !== 'web';
+// En web no existe el driver nativo de Animated.
+export const useNativeDriver = false;
 
 // Resortes críticamente amortiguados (sin rebote) para UI; un toque de rebote solo en el
 // interruptor de tema, que es una acción física de "lanzar" la perilla.

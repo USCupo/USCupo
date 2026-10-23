@@ -94,9 +94,10 @@ export default function PublicarScreen() {
             <Seccion n={2} titulo="Lo que tienes" />
             <SelectorFranjas
               label="Horario de tu grupo"
-              bloques={c.bloques}
-              seleccionados={c.campos.actualId ? [c.campos.actualId] : []}
-              onAlternar={c.elegirActual}
+              ayuda="Elige los días y escribe la hora exacta de la clase."
+              seleccionadas={c.campos.actual ? [c.campos.actual] : []}
+              onAgregar={c.elegirActual}
+              onQuitar={c.quitarActual}
               error={c.errores.actual}
             />
 
@@ -104,10 +105,10 @@ export default function PublicarScreen() {
             <SelectorFranjas
               label="Horarios que te sirven"
               ayuda="Elige todos los que puedas tomar: más opciones, más coincidencias."
-              bloques={c.bloques}
-              seleccionados={c.campos.buscoIds}
-              onAlternar={c.alternarBusco}
-              excluidos={c.campos.actualId ? [c.campos.actualId] : []}
+              seleccionadas={c.campos.busco}
+              onAgregar={c.agregarBusco}
+              onQuitar={c.quitarBusco}
+              excluidas={c.campos.actual ? [c.campos.actual] : []}
               multiple
               error={c.errores.busco}
             />

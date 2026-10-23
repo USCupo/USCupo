@@ -1,28 +1,21 @@
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Platform, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { GradientBackground } from '../../src/components/GradientBackground';
-import { completarSesionDesdeUrl, hayCanjeEnCurso, mensajeDeError } from '../../src/controllers/auth';
+import { mensajeDeError } from '../../src/controllers/auth';
 import { useAuth } from '../../src/lib/AuthContext';
 import { useTheme } from '../../src/theme/useTheme';
 
-// Retorno de Microsoft. En web, Supabase ya canjeó el ?code= al cargar la página; en
-// iOS/Android solo se canjea aquí si la app se abrió en frío desde el enlace.
+// Retorno de Microsoft. Supabase canjea el ?code= al cargar la página (detectSessionInUrl);
+// aquí solo se espera la sesión o se muestra el error que devolvió el proveedor.
 export default function AuthCallback() {
   const { colors, spacing, type } = useTheme();
   const router = useRouter();
   const { session } = useAuth();
-  const params = useLocalSearchParams<{ code?: string; error?: string; error_description?: string }>();
+  const params = useLocalSearchParams<{ error?: string; error_description?: string }>();
   const errorUrl = params.error_description ?? params.error;
   const [error, setError] = useState<string | undefined>(errorUrl ? mensajeDeError(new Error(errorUrl)) : undefined);
-
-  useEffect(() => {
-    if (Platform.OS === 'web' || session || error || !params.code || hayCanjeEnCurso()) return;
-    completarSesionDesdeUrl(`uscupo://auth/callback?code=${encodeURIComponent(params.code)}`).catch((e) =>
-      setError(mensajeDeError(e)),
-    );
-  }, [params.code, session, error]);
 
   // Si en 15 s no hay sesión ni error, el canje falló en silencio: ofrecer volver.
   useEffect(() => {
