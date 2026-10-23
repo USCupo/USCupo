@@ -13,6 +13,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { glass } from '../theme/glass';
 import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
 import { useBreakpoint } from '../theme/useBreakpoint';
 import { useTheme } from '../theme/useTheme';
@@ -45,8 +46,9 @@ export function Pantalla({ titulo, subtitulo, acciones, children, anchoMax = 108
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
-          paddingTop: insets.top + (amplio ? spacing.xl : spacing.lg),
-          paddingBottom: insets.bottom + spacing.xxl,
+          // La navbar flota encima (arriba en computador, abajo en teléfono): se reserva su alto.
+          paddingTop: insets.top + (amplio ? glass.margen + glass.altoBarraSuperior + spacing.xl : spacing.lg),
+          paddingBottom: insets.bottom + (amplio ? spacing.xxl : glass.margen + glass.altoBarraInferior + spacing.lg),
           paddingHorizontal: gutter,
           alignItems: 'center',
         }}

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Platform } from 'react-native';
 import { listarCarreras, type OrigenCatalogo } from '../models/carreras';
 import type { Carrera } from '../models/types';
 import {
@@ -125,9 +124,8 @@ export function useLoginController() {
     setAvisoConfirmacion(false);
     setMicrosoftCargando(true);
     try {
+      // La página navega a Microsoft: el indicador sigue hasta salir.
       await iniciarSesionConMicrosoft(correo);
-      // En web la página ya está navegando a Microsoft: el indicador sigue hasta salir.
-      if (Platform.OS !== 'web') setMicrosoftCargando(false);
     } catch (e) {
       setErrorFormulario(mensajeDeError(e));
       setMicrosoftCargando(false);

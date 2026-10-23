@@ -1,12 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
+import { EspacioAnuncio } from '../../src/components/EspacioAnuncio';
 import { OfertaCard } from '../../src/components/OfertaCard';
-import { Cargando, ErrorCarga, EstadoVacio, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
+import { Cargando, Chip, ErrorCarga, EstadoVacio, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
 import { useInicioController } from '../../src/controllers/useInicioController';
 import { textoNotificacion } from '../../src/models/notificaciones';
-import { diasRestantes, hace } from '../../src/models/ofertas';
+import { diasRestantes, hace, type OfertaDetalle } from '../../src/models/ofertas';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
 
@@ -112,20 +114,9 @@ export default function InicioScreen() {
               )}
             </View>
 
-            {d.recientes.length > 0 ? (
-              <View>
-                <TituloSeccion sobreFondo accion={<Enlace texto="Buscar" onPress={() => irABuscar()} />}>
-                  Recién publicadas en tu carrera
-                </TituloSeccion>
-                <View style={[styles.rejilla, { gap: spacing.md }]}>
-                  {d.recientes.map((o) => (
-                    <View key={o.id} style={breakpoint === 'compacto' ? styles.celdaCompleta : styles.celdaMitad}>
-                      <OfertaCard oferta={o} pie={<Button label="Ver en Buscar" variant="secondary" onPress={() => irABuscar(o.materia_id)} />} />
-                    </View>
-                  ))}
-                </View>
-              </View>
-            ) : null}
+            <OfertasCarrera ofertas={d.ofertasCarrera} hayMaterias={d.hayMaterias} irABuscar={irABuscar} />
+
+            {!dosColumnas ? <EspacioAnuncio slot={process.env.EXPO_PUBLIC_ADSENSE_SLOT_INICIO} /> : null}
           </View>
 
           {/* Lateral */}
@@ -176,10 +167,92 @@ export default function InicioScreen() {
                 </View>
               ))}
             </Tarjeta>
+
+            {dosColumnas ? <EspacioAnuncio slot={process.env.EXPO_PUBLIC_ADSENSE_SLOT_INICIO} alto={250} /> : null}
           </View>
         </View>
       ) : null}
     </Pantalla>
+  );
+}
+
+const POR_PAGINA = 8;
+
+// Todas las ofertas disponibles en las materias de la carrera del estudiante (nunca de otra
+// carrera), con un filtro rápido por materia.
+function OfertasCarrera({
+  ofertas,
+  hayMaterias,
+  irABuscar,
+}: {
+  ofertas: OfertaDetalle[];
+  hayMaterias: boolean;
+  irABuscar: (materiaId?: number) => void;
+}) {
+  const { spacing } = useTheme();
+  const { breakpoint } = useBreakpoint();
+  const [materiaId, setMateriaId] = useState<number | null>(null);
+  const [visibles, setVisibles] = useState(POR_PAGINA);
+
+  const materias = useMemo(() => {
+    const m = new Map<number, { nombre: string; n: number }>();
+    for (const o of ofertas) m.set(o.materia_id, { nombre: o.materia.nombre, n: (m.get(o.materia_id)?.n ?? 0) + 1 });
+    return [...m.entries()].sort((a, b) => b[1].n - a[1].n);
+  }, [ofertas]);
+
+  const filtradas = materiaId === null ? ofertas : ofertas.filter((o) => o.materia_id === materiaId);
+  const elegir = (id: number | null) => {
+    setMateriaId(id);
+    setVisibles(POR_PAGINA);
+  };
+
+  if (!hayMaterias) return null;
+
+  return (
+    <View>
+      <TituloSeccion sobreFondo accion={<Enlace texto="Buscar" onPress={() => irABuscar()} />}>
+        {ofertas.length ? `Ofertas en tu carrera (${ofertas.length})` : 'Ofertas en tu carrera'}
+      </TituloSeccion>
+
+      {ofertas.length === 0 ? (
+        <Tarjeta>
+          <EstadoVacio
+            icono="albums-outline"
+            titulo="Nadie de tu carrera ha publicado todavía"
+            texto="Cuando un compañero publique un cupo de tus materias aparecerá aquí."
+          />
+        </Tarjeta>
+      ) : (
+        <>
+          {materias.length > 1 ? (
+            <View style={[styles.filtros, { marginBottom: spacing.md }]}>
+              <Chip texto="Todas" activo={materiaId === null} onPress={() => elegir(null)} />
+              {materias.map(([id, m]) => (
+                <Chip key={id} texto={`${m.nombre} · ${m.n}`} activo={materiaId === id} onPress={() => elegir(id)} />
+              ))}
+            </View>
+          ) : null}
+
+          <View style={[styles.rejilla, { gap: spacing.md }]}>
+            {filtradas.slice(0, visibles).map((o) => (
+              <View key={o.id} style={breakpoint === 'compacto' ? styles.celdaCompleta : styles.celdaMitad}>
+                <OfertaCard oferta={o} pie={<Button label="Ver en Buscar" variant="secondary" onPress={() => irABuscar(o.materia_id)} />} />
+              </View>
+            ))}
+          </View>
+
+          {filtradas.length > visibles ? (
+            <View style={{ marginTop: spacing.md, alignSelf: 'center', minWidth: 220 }}>
+              <Button
+                label={`Mostrar ${Math.min(POR_PAGINA, filtradas.length - visibles)} más`}
+                variant="secondary"
+                onPress={() => setVisibles((v) => v + POR_PAGINA)}
+              />
+            </View>
+          ) : null}
+        </>
+      )}
+    </View>
   );
 }
 
@@ -195,6 +268,7 @@ function Enlace({ texto, onPress }: { texto: string; onPress: () => void }) {
 const styles = StyleSheet.create({
   columnas: { flexDirection: 'row', alignItems: 'flex-start' },
   rejilla: { flexDirection: 'row', flexWrap: 'wrap' },
+  filtros: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   celdaCompleta: { width: '100%' },
   celdaMitad: { flexBasis: '47%', flexGrow: 1, minWidth: 280 },
   filaAccion: { flexDirection: 'row', alignItems: 'center', gap: 10, borderTopWidth: StyleSheet.hairlineWidth },

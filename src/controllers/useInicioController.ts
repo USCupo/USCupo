@@ -12,7 +12,8 @@ export interface ResumenInicio {
   porConfirmar: OfertaDetalle[];
   /** Ofertas de otros que hacen match recíproco con alguna mía disponible. */
   coincidencias: { oferta: OfertaDetalle; mia: OfertaDetalle }[];
-  recientes: OfertaDetalle[];
+  /** Todas las ofertas disponibles de otros estudiantes en las materias de mi carrera. */
+  ofertasCarrera: OfertaDetalle[];
   avisos: Notificacion[];
   misActivas: number;
 }
@@ -44,7 +45,7 @@ export function useInicioController() {
       hayMaterias: materias.length > 0,
       porConfirmar: mias.filter((o) => o.estado === 'en_proceso'),
       coincidencias,
-      recientes: ajenas.filter((o) => !idsMatch.has(o.id)).slice(0, 6),
+      ofertasCarrera: ajenas.filter((o) => !idsMatch.has(o.id)),
       avisos,
       misActivas: mias.filter((o) => o.estado === 'disponible' || o.estado === 'en_proceso').length,
     };

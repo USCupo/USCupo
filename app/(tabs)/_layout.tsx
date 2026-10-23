@@ -5,7 +5,6 @@ import { BarraNavegacion } from '../../src/components/BarraNavegacion';
 import { useAuth } from '../../src/lib/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import { perfilCompleto } from '../../src/models/perfiles';
-import { useBreakpoint } from '../../src/theme/useBreakpoint';
 
 type BarraProps = ComponentProps<typeof BarraNavegacion>;
 
@@ -29,15 +28,16 @@ function usePendientes(userId: string | undefined, rutaActiva: number) {
 
 export default function TabsLayout() {
   const { session, perfil, loading } = useAuth();
-  const { breakpoint } = useBreakpoint();
   const [rutaActiva, setRutaActiva] = useState(0);
   const pendientes = usePendientes(session?.user.id, rutaActiva);
 
-  if (!loading && (!session || !perfilCompleto(perfil))) return <Redirect href="/" />;
+  // "/" resuelve a (tabs)/index: redirigir ahí volvería a este layout en bucle.
+  if (!loading && !session) return <Redirect href="/(auth)/login" />;
+  if (!loading && !perfilCompleto(perfil)) return <Redirect href="/completar-perfil" />;
 
   return (
     <Tabs
-      screenOptions={{ headerShown: false, tabBarPosition: breakpoint === 'amplio' ? 'left' : 'bottom' }}
+      screenOptions={{ headerShown: false }}
       screenListeners={{ state: (e) => setRutaActiva((e.data as { state: { index: number } }).state.index) }}
       tabBar={(props) => <BarraNavegacion {...(props as unknown as BarraProps)} pendientes={pendientes} />}
     >

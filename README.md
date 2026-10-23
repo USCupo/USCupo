@@ -1,13 +1,15 @@
 # USCupo
 
-App móvil (iOS + Android, un solo código base con Expo/React Native) para que estudiantes
+Aplicación web (Expo Router + React Native Web, desplegada en Vercel) para que estudiantes
 de la Universidad Santiago de Cali intercambien horarios/cupos de materias entre sí.
+Las apps nativas se construirán aparte (Kotlin y Swift) sobre el mismo backend: ver
+`docs/prompts/`.
 USCupo solo conecta estudiantes: el trámite del cambio se hace directamente en la
 universidad.
 
 ## Stack
 
-- **Frontend:** React Native + Expo (Expo Router, SDK 57)
+- **Frontend:** Expo Router (SDK 57) + React Native Web, exportado como SPA estática
 - **Backend/BD:** Supabase (Postgres, Auth, Row Level Security, Edge Functions)
 - **Auth:** correo institucional `@usc.edu.co` + contraseña, o Microsoft 365 (Entra ID) restringido al
   mismo dominio
@@ -23,8 +25,11 @@ src/
   controllers/           Lógica de negocio (auth.ts; matching/notificaciones/expiración llegan
                           con sus pantallas)
   components/            Componentes del design system (Button, TextField, CarreraPicker…)
-  theme/                 Tokens de color/tipografía/espaciado tomados del mockup oficial
+  theme/                 Tokens de color/tipografía/espaciado y material "cristal" (glass.ts)
   lib/                   Cliente de Supabase + contexto de sesión
+docs/
+  google-ads.md          Paso a paso de AdSense (web) y AdMob (apps)
+  prompts/               Prompts para construir las apps Android (Android Studio) e iOS (Swift)
 supabase/
   migrations/            Esquema, RLS, funciones de dominio y datos semilla
   functions/expirar-ofertas/  Edge Function que vence ofertas sin confirmar a los 7 días
@@ -72,8 +77,9 @@ sin materias hasta que se carguen sus pénsums (ver nota en
   4. Recomendado: en el Manifest de la app agrega los optional claims `email` y `xms_edov`.
   La app pide `domain_hint=usc.edu.co`, así que entra directo a la cuenta institucional;
   el trigger `handle_new_user` sigue rechazando cualquier otro dominio.
-- **Redirect URLs** (Authentication → URL Configuration): `uscupo://auth/callback`,
-  `http://localhost:8081/auth/callback` (web en desarrollo) y `exp://**` (Expo Go).
+- **Redirect URLs** (Authentication → URL Configuration):
+  `http://localhost:8081/auth/callback` (desarrollo) y el dominio de producción (paso 6).
+  Las apps nativas añadirán `uscupo://auth/callback`.
 
 ### 4. Programar la expiración automática
 
@@ -84,15 +90,17 @@ supabase functions deploy expirar-ofertas
 Luego crea un cron job (Database → Cron Jobs en el dashboard, o `pg_cron` + `pg_net`) que
 llame a la función una vez al día.
 
-### 5. Correr la app
+### 5. Correr en local
 
 ```bash
 npm install
-npm start
+npm start          # http://localhost:8081
+npm run typecheck
+npm run build      # export estático a dist/, igual que en Vercel
 ```
 
-Escanea el QR con Expo Go, o `npm run ios` / `npm run android` con un simulador.
-Para la versión web: `npm run web`.
+Si el proyecto está dentro de OneDrive y Metro no detecta cambios, reinicia con
+`npx expo start --web --clear`.
 
 ### 6. Deploy web en Vercel
 
@@ -117,8 +125,10 @@ de todas las rutas a `index.html` porque es una SPA).
 
 ## Estado actual
 
-Funcional en web, iOS y Android: registro/login con correo institucional, completar
-perfil, Inicio (coincidencias, avisos), Buscar (filtros, "me interesa"), Publicar,
-Mis cambios (contacto, confirmar/liberar/retirar) y Perfil (contacto visible, historial,
-tema claro/oscuro). Pénsums cargados para las 89 carreras del catálogo.
-Pendiente: inicio de sesión con Microsoft 365 (código listo, falta configurar Azure).
+Web funcional: registro/login con correo institucional, completar perfil, Inicio
+(coincidencias, todas las ofertas de la carrera, avisos, espacio de anuncio), Buscar
+(filtros, "me interesa"), Publicar (horario con hora libre en ruedas), Mis cambios
+(contacto, confirmar/liberar/retirar) y Perfil (contacto visible, historial, tema
+claro/oscuro). Pénsums cargados para las 89 carreras del catálogo.
+Pendiente: Microsoft 365 (código listo, falta configurar Azure) y activar AdSense
+(`docs/google-ads.md`).

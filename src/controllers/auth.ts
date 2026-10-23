@@ -1,6 +1,3 @@
-import { makeRedirectUri } from 'expo-auth-session';
-import * as WebBrowser from 'expo-web-browser';
-import { Platform } from 'react-native';
 import { proveedorHabilitado, supabase, USC_EMAIL_DOMAIN } from '../lib/supabase';
 
 // Acceso exclusivo con cuentas institucionales @usc.edu.co: cuenta Microsoft 365 de la USC
@@ -109,69 +106,21 @@ export async function iniciarSesion(correo: string, contrasena: string) {
 
 const RUTA_CALLBACK = 'auth/callback';
 
-function urlDeRetorno(): string {
-  if (Platform.OS === 'web' && typeof window !== 'undefined') return `${window.location.origin}/${RUTA_CALLBACK}`;
-  return makeRedirectUri({ scheme: 'uscupo', path: RUTA_CALLBACK });
-}
-
-let canjeEnCurso = false;
-export const hayCanjeEnCurso = () => canjeEnCurso;
-
-/** Devuelve false si el usuario cerró el navegador sin terminar. En web la página navega a Microsoft. */
-export async function iniciarSesionConMicrosoft(correoSugerido?: string): Promise<boolean> {
+/** La página navega a Microsoft; al volver, Supabase canjea el ?code= en /auth/callback. */
+export async function iniciarSesionConMicrosoft(correoSugerido?: string): Promise<void> {
   if ((await proveedorHabilitado('azure')) === false) throw new Error('provider is not enabled');
 
-  const redirectTo = urlDeRetorno();
+  const redirectTo = `${window.location.origin}/${RUTA_CALLBACK}`;
   const queryParams: Record<string, string> = { domain_hint: USC_EMAIL_DOMAIN };
   if (correoSugerido && esCorreoInstitucional(correoSugerido)) {
     queryParams.login_hint = correoSugerido.trim().toLowerCase();
   }
 
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  const { error } = await supabase.auth.signInWithOAuth({
     provider: 'azure',
-    options: {
-      scopes: 'email',
-      redirectTo,
-      queryParams,
-      skipBrowserRedirect: Platform.OS !== 'web',
-    },
+    options: { scopes: 'email', redirectTo, queryParams },
   });
   if (error) throw error;
-  if (Platform.OS === 'web') return true;
-
-  canjeEnCurso = true;
-  try {
-    const resultado = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
-    if (resultado.type !== 'success') return false;
-    await completarSesionDesdeUrl(resultado.url);
-    return true;
-  } finally {
-    canjeEnCurso = false;
-  }
-}
-
-/** Lee ?code= (o el error) que Supabase deja en la URL de retorno y abre la sesión. */
-export async function completarSesionDesdeUrl(url: string): Promise<void> {
-  const params = parametrosDeUrl(url);
-  const errorProveedor = params.get('error_description') ?? params.get('error');
-  if (errorProveedor) throw new Error(errorProveedor);
-
-  const code = params.get('code');
-  if (!code) throw new Error('Microsoft no devolvió un código de acceso. Intenta de nuevo.');
-
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) throw error;
-}
-
-function parametrosDeUrl(url: string): URLSearchParams {
-  // Supabase puede devolver los parámetros en la query (?code=) o en el fragmento (#error=).
-  const params = new URLSearchParams();
-  const [sinHash, hash = ''] = url.split('#');
-  const query = sinHash.includes('?') ? sinHash.slice(sinHash.indexOf('?') + 1) : '';
-  for (const parte of [query, hash]) {
-    new URLSearchParams(parte).forEach((v, k) => params.set(k, v));
-  }
-  return params;
 }
 
 export async function cerrarSesion() {

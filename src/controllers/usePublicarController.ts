@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useAuth } from '../lib/AuthContext';
-import { listarBloques, listarMateriasDeCarrera } from '../models/catalogo';
+import { claveFranja, listarBloques, listarMateriasDeCarrera, resolverBloque, type Franja } from '../models/catalogo';
 import { crearOferta, esMatchReciproco, listarMisOfertas, listarOfertasActivas } from '../models/ofertas';
 import { mensajeDeError } from './auth';
 import { useCargaEnFoco } from './useCargaEnFoco';
@@ -20,8 +20,8 @@ export function usePublicarController() {
 
   const [materiaId, setMateriaId] = useState<number | null>(null);
   const [grupo, setGrupo] = useState('');
-  const [actualId, setActualId] = useState<number | null>(null);
-  const [buscoIds, setBuscoIds] = useState<number[]>([]);
+  const [actual, setActual] = useState<Franja | null>(null);
+  const [busco, setBusco] = useState<Franja[]>([]);
   const [comentario, setComentario] = useState('');
   const [errores, setErrores] = useState<Partial<Record<Campo, string>>>({});
   const [errorFormulario, setErrorFormulario] = useState<string | null>(null);
@@ -48,22 +48,24 @@ export function usePublicarController() {
     limpiar('materia');
   };
 
-  const elegirActual = (id: number) => {
-    setActualId(id);
-    setBuscoIds((b) => b.filter((x) => x !== id)); // no se busca lo que ya se tiene
+  const elegirActual = (f: Franja) => {
+    setActual(f);
+    setBusco((b) => b.filter((x) => claveFranja(x) !== claveFranja(f))); // no se busca lo que ya se tiene
     limpiar('actual');
   };
 
-  const alternarBusco = (id: number) => {
-    setBuscoIds((b) => (b.includes(id) ? b.filter((x) => x !== id) : [...b, id]));
+  const agregarBusco = (f: Franja) => {
+    setBusco((b) => (b.some((x) => claveFranja(x) === claveFranja(f)) ? b : [...b, f]));
     limpiar('busco');
   };
+
+  const quitarBusco = (f: Franja) => setBusco((b) => b.filter((x) => claveFranja(x) !== claveFranja(f)));
 
   const reiniciar = useCallback(() => {
     setMateriaId(null);
     setGrupo('');
-    setActualId(null);
-    setBuscoIds([]);
+    setActual(null);
+    setBusco([]);
     setComentario('');
     setErrores({});
     setErrorFormulario(null);
@@ -79,20 +81,23 @@ export function usePublicarController() {
           ? 'Ya tienes una oferta activa de esta materia. Retírala en Mis cambios para publicar otra.'
           : undefined,
       grupo: grupo.trim() ? undefined : 'Escribe tu número de grupo',
-      actual: actualId ? undefined : 'Elige el horario que tienes',
-      busco: buscoIds.length ? undefined : 'Elige al menos un horario que te sirva',
+      actual: actual ? undefined : 'Elige el horario que tienes',
+      busco: busco.length ? undefined : 'Agrega al menos un horario que te sirva',
     };
     setErrores(nuevos);
     if (Object.values(nuevos).some(Boolean)) return;
 
     setPublicando(true);
     try {
+      // Cada franja escrita se traduce al id de su bloque (existente o recién creado).
+      const bloques = carga.datos?.bloques ?? [];
+      const [bloqueActualId, ...bloquesBuscoIds] = await Promise.all([actual!, ...busco].map((f) => resolverBloque(f, bloques)));
       const id = await crearOferta({
         userId,
         materiaId: materiaId!,
         grupo,
-        bloqueActualId: actualId!,
-        bloquesBuscoIds: buscoIds,
+        bloqueActualId,
+        bloquesBuscoIds,
         comentario,
       });
       const activas = await listarOfertasActivas([materiaId!]);
@@ -109,21 +114,22 @@ export function usePublicarController() {
     } finally {
       setPublicando(false);
     }
-  }, [materiaId, grupo, actualId, buscoIds, comentario, userId, carga, materiasConOfertaActiva]);
+  }, [materiaId, grupo, actual, busco, comentario, userId, carga, materiasConOfertaActiva]);
 
   return {
     ...carga,
     materias: carga.datos?.materias ?? [],
-    bloques: carga.datos?.bloques ?? [],
     materiasConOfertaActiva,
-    campos: { materiaId, grupo, actualId, buscoIds, comentario },
+    campos: { materiaId, grupo, actual, busco, comentario },
     elegirMateria,
     setGrupo: (v: string) => {
       setGrupo(v);
       limpiar('grupo');
     },
     elegirActual,
-    alternarBusco,
+    quitarActual: () => setActual(null),
+    agregarBusco,
+    quitarBusco,
     setComentario,
     errores,
     errorFormulario,
