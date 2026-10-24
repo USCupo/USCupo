@@ -16,10 +16,12 @@ export function BrandPanel() {
 
   return (
     <View style={[styles.panel, { padding: spacing.xxl }]}>
-      <LogoCompleto width={92} sobre="azul" />
-
-      <View style={{ maxWidth: 480 }}>
-        <Text accessibilityRole="header" style={[styles.titular, { color: colors.onBackground }]}>
+      <View style={styles.bloque}>
+        {/* Logo centrado justo encima del titular. */}
+        <View style={{ alignItems: 'center', marginBottom: spacing.xl }}>
+          <LogoCompleto width={148} sobre="azul" />
+        </View>
+        <Text accessibilityRole="header" style={[styles.titular, { color: colors.onBackground, textAlign: 'center' }]}>
           Encuentra a alguien que quiera tu horario y te dé el suyo.
         </Text>
 
@@ -38,7 +40,7 @@ export function BrandPanel() {
         </View>
       </View>
 
-      <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted }]}>
+      <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted, position: 'absolute', bottom: spacing.xxl, left: spacing.xxl }]}>
         Exclusivo para estudiantes con correo <Text style={{ color: colors.accent }}>@{USC_EMAIL_DOMAIN}</Text>
       </Text>
     </View>
@@ -48,7 +50,12 @@ export function BrandPanel() {
 const styles = StyleSheet.create({
   panel: {
     flex: 1,
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bloque: {
+    width: '100%',
+    maxWidth: 480,
   },
   titular: {
     fontFamily: 'Poppins_600SemiBold',

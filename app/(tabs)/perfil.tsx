@@ -2,11 +2,13 @@ import { Link } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { Interruptor } from '../../src/components/Contacto';
+import { InfoNotice } from '../../src/components/InfoNotice';
 import { OfertaCard } from '../../src/components/OfertaCard';
 import { TextField } from '../../src/components/TextField';
 import { ThemeToggle } from '../../src/components/ThemeToggle';
 import { Aviso, DialogoConfirmar, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
 import { PALABRA_ELIMINAR, usePerfilController } from '../../src/controllers/usePerfilController';
+import { useAuth } from '../../src/lib/AuthContext';
 import { AVISO_NO_OFICIAL, RESPONSABLE } from '../../src/models/legal';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
@@ -17,12 +19,18 @@ export default function PerfilScreen() {
   const { breakpoint } = useBreakpoint();
   const amplio = breakpoint === 'amplio';
   const d = c.datos;
+  const { perfil } = useAuth();
 
   return (
     <>
       <Pantalla titulo="Perfil" subtitulo={c.correo}>
         <View style={[amplio && styles.columnas, { gap: spacing.lg }]}>
           <View style={[amplio && { flex: 1.3 }, { gap: spacing.lg }]}>
+            {perfil?.rol === 'admin' ? (
+              <InfoNotice>
+                Cuenta de revisión (admin): ves y usas solo ofertas de prueba. Los estudiantes reales no las ven.
+              </InfoNotice>
+            ) : null}
             <Tarjeta>
               <TituloSeccion>Tus datos</TituloSeccion>
               <TextField label="Nombre completo" value={c.campos.nombre} onChangeText={c.setNombre} error={c.errores.nombre} autoCapitalize="words" autoComplete="name" />
