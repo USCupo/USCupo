@@ -7,6 +7,7 @@ import { mensajeDeError } from '../../src/controllers/auth';
 import { useAuth } from '../../src/lib/AuthContext';
 import { cristalClaro, glass } from '../../src/theme/glass';
 import { useTheme } from '../../src/theme/useTheme';
+import { MetaPagina } from '../../src/components/MetaPagina';
 
 // Retorno de Microsoft. Supabase canjea el ?code= al cargar la página (detectSessionInUrl);
 // aquí solo se espera la sesión o se muestra el error que devolvió el proveedor.
@@ -29,6 +30,7 @@ export default function AuthCallback() {
 
   return (
     <GradientBackground>
+      <MetaPagina titulo="Iniciando sesión" />
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.lg }}>
         {error ? (
           <View

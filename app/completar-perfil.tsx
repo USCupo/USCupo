@@ -14,6 +14,7 @@ import { useBreakpoint } from '../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../src/theme/glass';
 import { useTheme } from '../src/theme/useTheme';
 import { FooterWeb } from '../src/components/FooterWeb';
+import { MetaPagina } from '../src/components/MetaPagina';
 
 export default function CompletarPerfilScreen() {
   const { session, perfil, loading } = useAuth();
@@ -31,6 +32,7 @@ function Contenido() {
 
   return (
     <GradientBackground>
+      <MetaPagina titulo="Completa tu perfil" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
           contentContainerStyle={[

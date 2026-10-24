@@ -1,4 +1,3 @@
-import Head from 'expo-router/head';
 import { Link } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,9 +7,10 @@ import { useTheme } from '../theme/useTheme';
 import { FooterWeb } from './FooterWeb';
 import { GradientBackground } from './GradientBackground';
 import { Logo } from './Logo';
+import { MetaPagina } from './MetaPagina';
 
 // Página pública (sin sesión) para documentos legales. Google Play y quien no tenga la app la enlazan.
-export function DocumentoLegal({ doc }: { doc: Documento }) {
+export function DocumentoLegal({ doc, ruta }: { doc: Documento; ruta: string }) {
   const { colors, spacing, radius, type } = useTheme();
   const insets = useSafeAreaInsets();
   const conFooter = useBreakpoint().breakpoint !== 'compacto';
@@ -33,10 +33,7 @@ export function DocumentoLegal({ doc }: { doc: Documento }) {
 
   return (
     <GradientBackground>
-      <Head>
-        <title>{`${doc.titulo} · USCupo`}</title>
-        <meta name="description" content={doc.resumen} />
-      </Head>
+      <MetaPagina titulo={doc.titulo} descripcion={doc.resumen} ruta={ruta} />
       <ScrollView
         contentContainerStyle={{
           paddingTop: insets.top + spacing.lg,

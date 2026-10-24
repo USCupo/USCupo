@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /$
+Allow: /login
+Allow: /privacidad
+Allow: /terminos
+Allow: /eliminar-cuenta
+Disallow: /
+
+Sitemap: https://uscupo.vercel.app/sitemap.xml

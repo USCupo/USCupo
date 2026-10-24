@@ -20,6 +20,7 @@ import { useTheme } from '../theme/useTheme';
 import { Button } from './Button';
 import { GradientBackground } from './GradientBackground';
 import { FooterWeb } from './FooterWeb';
+import { MetaPagina } from './MetaPagina';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -35,9 +36,11 @@ interface PantallaProps {
   children: ReactNode;
   anchoMax?: number;
   onRefrescar?: () => void;
+  /** Título de la pestaña del navegador si no es `titulo` (p. ej. Inicio, que saluda por nombre). */
+  tituloPagina?: string;
 }
 
-export function Pantalla({ titulo, prefijoTitulo, subtitulo, acciones, children, anchoMax = 1080 }: PantallaProps) {
+export function Pantalla({ titulo, prefijoTitulo, subtitulo, acciones, children, anchoMax = 1080, tituloPagina }: PantallaProps) {
   const { colors, spacing, type } = useTheme();
   const { breakpoint } = useBreakpoint();
   const insets = useSafeAreaInsets();
@@ -46,6 +49,8 @@ export function Pantalla({ titulo, prefijoTitulo, subtitulo, acciones, children,
 
   return (
     <GradientBackground>
+      {/* Pantallas con sesión: título propio y fuera de los buscadores. */}
+      <MetaPagina titulo={tituloPagina ?? titulo} />
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{

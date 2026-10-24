@@ -31,6 +31,7 @@ import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../../src/theme/glass';
 import { useTheme } from '../../src/theme/useTheme';
 import { FooterWeb } from '../../src/components/FooterWeb';
+import { MetaPagina } from '../../src/components/MetaPagina';
 
 export default function LoginScreen() {
   const { colors, spacing } = useTheme();
@@ -43,6 +44,11 @@ export default function LoginScreen() {
   if (breakpoint === 'amplio') {
     return (
       <GradientBackground>
+        <MetaPagina
+          titulo="Ingresar"
+          ruta="/login"
+          descripcion="Ingresa o crea tu cuenta de USCupo con tu correo @usc.edu.co para cambiar de horario con otros estudiantes de la Universidad Santiago de Cali."
+        />
         <View style={styles.split}>
         <View style={styles.splitMarca}>
           <BrandPanel />
@@ -70,6 +76,11 @@ export default function LoginScreen() {
 
   return (
     <GradientBackground>
+      <MetaPagina
+        titulo="Ingresar"
+        ruta="/login"
+        descripcion="Ingresa o crea tu cuenta de USCupo con tu correo @usc.edu.co para cambiar de horario con otros estudiantes de la Universidad Santiago de Cali."
+      />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
           contentContainerStyle={[

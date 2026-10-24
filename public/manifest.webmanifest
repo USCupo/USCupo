@@ -1,0 +1,16 @@
+{
+  "name": "USCupo",
+  "short_name": "USCupo",
+  "description": "Cambios de horario entre estudiantes de la Universidad Santiago de Cali. Proyecto independiente, no oficial.",
+  "lang": "es-CO",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0A2959",
+  "theme_color": "#0A2959",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
