@@ -6,7 +6,8 @@ import { InfoNotice } from '../../src/components/InfoNotice';
 import { SelectorFranjas } from '../../src/components/SelectorFranjas';
 import { SelectorLista, type ItemLista } from '../../src/components/SelectorLista';
 import { TextField } from '../../src/components/TextField';
-import { Cargando, ErrorCarga, EstadoVacio, Pantalla, Tarjeta } from '../../src/components/ui';
+import { EsqueletoFormulario } from '../../src/components/Esqueleto';
+import { ErrorCarga, EstadoVacio, Pantalla, Tarjeta } from '../../src/components/ui';
 import { usePublicarController } from '../../src/controllers/usePublicarController';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
@@ -60,7 +61,7 @@ export default function PublicarScreen() {
   return (
     <Pantalla titulo="Publicar un cupo" subtitulo="Cuenta qué grupo tienes y qué horarios te sirven" anchoMax={amplio ? 1080 : 720}>
       {c.cargando && !c.datos ? (
-        <Cargando sobreFondo />
+        <EsqueletoFormulario />
       ) : c.error && !c.datos ? (
         <ErrorCarga mensaje={c.error} onReintentar={c.recargar} />
       ) : c.materias.length === 0 ? (

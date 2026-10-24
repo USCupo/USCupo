@@ -3,7 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { Contacto } from '../../src/components/Contacto';
 import { OfertaCard } from '../../src/components/OfertaCard';
-import { Aviso, Cargando, DialogoConfirmar, ErrorCarga, EstadoVacio, Insignia, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
+import { EsqueletoMisCambios } from '../../src/components/Esqueleto';
+import { Aviso, DialogoConfirmar, ErrorCarga, EstadoVacio, Insignia, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
 import { useMisCambiosController, type AccionPendiente } from '../../src/controllers/useMisCambiosController';
 import { diasRestantes } from '../../src/models/ofertas';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
@@ -48,7 +49,7 @@ export default function MisCambiosScreen() {
     <>
       <Pantalla titulo="Mis cambios" subtitulo="Tus ofertas y las conversaciones en curso">
         {c.cargando && !d ? (
-          <Cargando sobreFondo />
+          <EsqueletoMisCambios />
         ) : c.error && !d ? (
           <ErrorCarga mensaje={c.error} onReintentar={c.recargar} />
         ) : vacio ? (
