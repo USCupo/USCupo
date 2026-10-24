@@ -102,3 +102,53 @@ test('las recargas con datos no vuelven a mostrar "cargando"', async () => {
   assert.ok(m.estados.every((e, i) => i === 0 || !e.cargando || e.datos === null));
   assert.equal(m.ultimo().cargando, false);
 });
+
+test('un foco pide aunque sea pronto si otra pantalla cambió datos', async () => {
+  let version = 0;
+  const pedidos: ReturnType<typeof diferido<string>>[] = [];
+  const c = new Cargador<string>({
+    cargar: () => {
+      const d = diferido<string>();
+      pedidos.push(d);
+      return d.promesa;
+    },
+    alCambiar: () => {},
+    ahora: () => 0,
+    version: () => version,
+    mensajeDeError: (e) => String(e),
+  });
+  c.alFoco();
+  pedidos[0].resolver('a');
+  await c.enCurso;
+  c.alFoco();
+  assert.equal(pedidos.length, 1);
+  version++;
+  c.alFoco();
+  assert.equal(pedidos.length, 2);
+  pedidos[1].resolver('b');
+  await c.enCurso;
+  c.alFoco();
+  assert.equal(pedidos.length, 2);
+});
+
+test('un cambio de datos durante la carga obliga a pedir otra vez en el próximo foco', async () => {
+  let version = 0;
+  const pedidos: ReturnType<typeof diferido<string>>[] = [];
+  const c = new Cargador<string>({
+    cargar: () => {
+      const d = diferido<string>();
+      pedidos.push(d);
+      return d.promesa;
+    },
+    alCambiar: () => {},
+    ahora: () => 0,
+    version: () => version,
+    mensajeDeError: (e) => String(e),
+  });
+  c.alFoco();
+  version++;
+  pedidos[0].resolver('a');
+  await c.enCurso;
+  c.alFoco();
+  assert.equal(pedidos.length, 2);
+});

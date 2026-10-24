@@ -8,7 +8,6 @@ import { TextField } from '../../src/components/TextField';
 import { ThemeToggle } from '../../src/components/ThemeToggle';
 import { Aviso, DialogoConfirmar, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
 import { PALABRA_ELIMINAR, usePerfilController } from '../../src/controllers/usePerfilController';
-import { useAuth } from '../../src/lib/AuthContext';
 import { AVISO_NO_OFICIAL, RESPONSABLE } from '../../src/models/legal';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
@@ -19,14 +18,13 @@ export default function PerfilScreen() {
   const { breakpoint } = useBreakpoint();
   const amplio = breakpoint === 'amplio';
   const d = c.datos;
-  const { perfil } = useAuth();
 
   return (
     <>
       <Pantalla titulo="Perfil" subtitulo={c.correo}>
         <View style={[amplio && styles.columnas, { gap: spacing.lg }]}>
           <View style={[amplio && { flex: 1.3 }, { gap: spacing.lg }]}>
-            {perfil?.rol === 'admin' ? (
+            {c.esAdmin ? (
               <InfoNotice>
                 Cuenta de revisión (admin): ves y usas solo ofertas de prueba. Los estudiantes reales no las ven.
               </InfoNotice>

@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { OfertaCard } from '../../src/components/OfertaCard';
@@ -23,6 +23,13 @@ export default function BuscarScreen() {
   const materiaParam = params.materia ? Number(params.materia) : undefined;
   const c = useBuscarController(materiaParam);
   const moderacion = useModeracionController(c.recargar);
+  // Un solo aviso en pantalla: el de moderación o el de la pantalla.
+  const { cerrarAviso: cerrarAvisoModeracion } = moderacion;
+  const { cerrarAviso: cerrarAvisoPantalla } = c;
+  const cerrarAvisos = useCallback(() => {
+    cerrarAvisoModeracion();
+    cerrarAvisoPantalla();
+  }, [cerrarAvisoModeracion, cerrarAvisoPantalla]);
   const { session } = useAuth();
   const router = useRouter();
   const { colors, spacing, type } = useTheme();
@@ -166,8 +173,8 @@ export default function BuscarScreen() {
         onConfirmar={c.confirmarInteres}
         onCancelar={c.cancelarInteres}
       />
-      <Aviso mensaje={c.aviso} onCerrar={c.cerrarAviso} />
-      <DialogosModeracion moderacion={moderacion} />
+      <Aviso mensaje={moderacion.estado.aviso ?? c.aviso} onCerrar={cerrarAvisos} />
+      <DialogosModeracion moderacion={moderacion} conAviso={false} />
     </>
   );
 }

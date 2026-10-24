@@ -91,3 +91,45 @@ test('vaciar borra solo las claves del catálogo y olvida lo revalidado', async 
   await cache.leer('bloques', async () => (++pedidos, [2]));
   assert.equal(pedidos, 1);
 });
+
+test('con avisar: false la revalidación actualiza la caché pero no avisa', async () => {
+  const a = almacenEnMemoria({ 'uscupo.catalogo.bloques': '[1]' });
+  const cache = crearCacheCatalogo(a);
+  let avisos = 0;
+  cache.alCambiar(() => avisos++);
+  await cache.leer('bloques', async () => [1, 2], { avisar: false });
+  await esperar();
+  assert.equal(avisos, 0);
+  assert.equal(a.datos.get('uscupo.catalogo.bloques'), '[1,2]');
+});
+
+test('una revalidación que termina después de vaciar no vuelve a guardar ni avisa', async () => {
+  const a = almacenEnMemoria({ 'uscupo.catalogo.materias-1': '[1]' });
+  const cache = crearCacheCatalogo(a);
+  let avisos = 0;
+  cache.alCambiar(() => avisos++);
+  let soltar!: (v: number[]) => void;
+  await cache.leer('materias-1', () => new Promise<number[]>((r) => (soltar = r)));
+  cache.vaciar();
+  soltar([1, 2]);
+  await esperar();
+  assert.equal(a.datos.has('uscupo.catalogo.materias-1'), false);
+  assert.equal(avisos, 0);
+  // La próxima sesión revalida de nuevo.
+  let pedidos = 0;
+  a.datos.set('uscupo.catalogo.materias-1', '[1]');
+  await cache.leer('materias-1', async () => (++pedidos, [1]));
+  await esperar();
+  assert.equal(pedidos, 1);
+});
+
+test('una carga sin caché que termina después de vaciar no se guarda', async () => {
+  const a = almacenEnMemoria();
+  const cache = crearCacheCatalogo(a);
+  let soltar!: (v: number[]) => void;
+  const p = cache.leer('carreras', () => new Promise<number[]>((r) => (soltar = r)));
+  cache.vaciar();
+  soltar([7]);
+  assert.deepEqual(await p, [7]);
+  assert.equal(a.datos.has('uscupo.catalogo.carreras'), false);
+});

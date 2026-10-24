@@ -21,7 +21,18 @@ const RADIO_MENU = 32;
  * la publicó. Sin `onReportar` solo ofrece bloquear (p. ej. al interesado en mi propia oferta).
  * Va en un Modal para que ninguna tarjeta vecina lo tape; Escape y el clic fuera lo cierran.
  */
-export function MenuModeracion({ nombre, onBloquear, onReportar }: { nombre: string; onBloquear: () => void; onReportar?: () => void }) {
+export function MenuModeracion({
+  nombre,
+  onBloquear,
+  onReportar,
+  etiqueta = `Opciones de la oferta de ${nombre}`,
+}: {
+  nombre: string;
+  onBloquear: () => void;
+  onReportar?: () => void;
+  /** Nombre accesible del menú; en mi propia oferta no es "la oferta de" quien se nombra. */
+  etiqueta?: string;
+}) {
   const { colors, minTouchSize } = useTheme();
   const { width, height } = useWindowDimensions();
   const reducir = useReducedMotion();
@@ -72,7 +83,7 @@ export function MenuModeracion({ nombre, onBloquear, onReportar }: { nombre: str
         {pos ? (
           <Animated.View
             role="menu"
-            accessibilityLabel={`Opciones de la oferta de ${nombre}`}
+            accessibilityLabel={etiqueta}
             style={[
               styles.panel,
               cristalClaro(colors),
@@ -145,8 +156,12 @@ export function MenuDeOferta({ oferta, moderacion }: { oferta: OfertaDetalle; mo
   );
 }
 
-/** Diálogo de reporte o de bloqueo (el que esté abierto) y el aviso de resultado. */
-export function DialogosModeracion({ moderacion: m }: { moderacion: ModeracionController }) {
+/**
+ * Diálogo de reporte o de bloqueo (el que esté abierto) y el aviso de resultado. Las pantallas
+ * que ya tienen su propio <Aviso> pasan `conAviso={false}` y muestran ahí `estado.aviso`, para
+ * que no se apilen dos avisos en el mismo sitio.
+ */
+export function DialogosModeracion({ moderacion: m, conAviso = true }: { moderacion: ModeracionController; conAviso?: boolean }) {
   const s = m.estado;
   return (
     <>
@@ -189,7 +204,7 @@ export function DialogosModeracion({ moderacion: m }: { moderacion: ModeracionCo
         onConfirmar={m.confirmar}
         onCancelar={m.cancelar}
       />
-      <Aviso mensaje={s.aviso} onCerrar={m.cerrarAviso} />
+      {conAviso ? <Aviso mensaje={s.aviso} onCerrar={m.cerrarAviso} /> : null}
     </>
   );
 }

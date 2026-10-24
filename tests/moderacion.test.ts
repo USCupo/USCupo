@@ -57,3 +57,12 @@ test('los avisos de éxito son los mismos que en Android', () => {
     'Bloqueaste a Ana. Ya no verán sus ofertas entre ustedes.'
   );
 });
+
+test('reportar una oferta en la que marqué interés no promete que desaparezca', () => {
+  // La RLS se la sigue mostrando al interesado mientras el cambio está en curso.
+  const enCurso = { id: 2, materia: { nombre: 'Cálculo' }, estado: 'en_proceso' as const };
+  assert.equal(
+    t.exito({ ...ESTADO_INICIAL, reportando: enCurso, motivo: 'spam' }).aviso,
+    'Gracias por avisar. Revisaremos la oferta.'
+  );
+});

@@ -17,6 +17,8 @@ export const MAX_DETALLE = 500;
 export interface OfertaReportable {
   id: number;
   materia: { nombre: string };
+  /** En proceso conmigo como interesado: la RLS me la sigue mostrando tras reportarla. */
+  estado?: string;
 }
 
 export interface Bloqueable {
@@ -62,7 +64,9 @@ export const transiciones = {
   exito: <S extends E>(s: S): S => ({
     ...ESTADO_INICIAL,
     aviso: s.reportando
-      ? 'Gracias por avisar. Revisaremos la oferta y ya no la verás.'
+      ? s.reportando.estado === 'en_proceso'
+        ? 'Gracias por avisar. Revisaremos la oferta.'
+        : 'Gracias por avisar. Revisaremos la oferta y ya no la verás.'
       : `Bloqueaste a ${s.bloqueando?.nombre}. Ya no verán sus ofertas entre ustedes.`,
   }) as S,
 };

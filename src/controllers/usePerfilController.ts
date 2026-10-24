@@ -133,6 +133,8 @@ export function usePerfilController() {
   return {
     ...carga,
     correo: perfil?.correo ?? session?.user.email ?? '',
+    /** Cuenta de revisión: solo ve el arenero de ofertas de prueba. */
+    esAdmin: perfil?.rol === 'admin',
     campos: { nombre, whatsapp, mostrarCorreo, mostrarWhatsapp },
     setNombre: (v: string) => {
       setNombre(v);

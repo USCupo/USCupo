@@ -69,11 +69,12 @@ function Superior({ rutas, activa, ir, pendientes }: VistaProps) {
   return (
     <View pointerEvents="box-none" style={[styles.capaSuperior, { paddingTop: insets.top + glass.margen }]}>
       <View style={[styles.pildora, cristalOscuro(colors)]}>
-        {/* En computador el logo es el enlace a Inicio; el dock del teléfono conserva su botón. */}
+        {/* En computador el logo es el enlace a Inicio (fuera del tablist, por eso link y no tab);
+            el dock del teléfono conserva su botón. */}
         <Pressable
-          accessibilityRole="tab"
-          accessibilityState={{ selected: activa === 'index' }}
-          accessibilityLabel="Inicio"
+          accessibilityRole="link"
+          aria-current={activa === 'index' ? 'page' : undefined}
+          accessibilityLabel="USCupo, ir a Inicio"
           disabled={!inicioRuta}
           onPress={() => inicioRuta && ir(inicioRuta, activa === 'index')}
           style={({ hovered, pressed }: { hovered?: boolean; pressed: boolean }) => [

@@ -5,6 +5,12 @@
 /** Un foco no vuelve a pedir si la última carga buena tiene menos de esto. */
 export const VIGENCIA_MS = 15_000;
 
+// Sube con cada acción que cambia datos (publicar, marcar interés, bloquear…): las demás
+// pantallas recargan al ganar foco aunque sus datos tengan menos de VIGENCIA_MS.
+let versionDatos = 0;
+export const datosCambiaron = () => void versionDatos++;
+const versionActual = () => versionDatos;
+
 export interface EstadoCarga<T> {
   datos: T | null;
   cargando: boolean;
@@ -17,6 +23,7 @@ interface Opciones<T> {
   mensajeDeError: (e: unknown) => string;
   ahora?: () => number;
   vigenciaMs?: number;
+  version?: () => number;
 }
 
 export class Cargador<T> {
@@ -25,6 +32,7 @@ export class Cargador<T> {
   enCurso: Promise<void> | null = null;
   private turno = 0;
   private cargadoEn: number | null = null;
+  private versionCargada = -1;
   private o: Opciones<T>;
 
   constructor(opciones: Opciones<T>) {
@@ -36,7 +44,12 @@ export class Cargador<T> {
     if (this.enCurso) return null;
     const ahora = this.o.ahora ?? Date.now;
     const ultima = this.cargadoEn;
-    if (ultima !== null && this.estado.error === null && ahora() - ultima < (this.o.vigenciaMs ?? VIGENCIA_MS)) return null;
+    const vigentes =
+      ultima !== null &&
+      this.estado.error === null &&
+      this.versionCargada === this.version() &&
+      ahora() - ultima < (this.o.vigenciaMs ?? VIGENCIA_MS);
+    if (vigentes) return null;
     return this.recargar();
   }
 
@@ -53,11 +66,18 @@ export class Cargador<T> {
     this.cargadoEn = null;
   }
 
+  private version() {
+    return (this.o.version ?? versionActual)();
+  }
+
   private async ejecutar(mio: number) {
+    // Se toma antes de pedir: un cambio durante la carga puede no estar en lo que llega.
+    const version = this.version();
     try {
       const datos = await this.o.cargar();
       if (mio !== this.turno) return;
       this.cargadoEn = (this.o.ahora ?? Date.now)();
+      this.versionCargada = version;
       this.publicar({ datos, cargando: false, error: null });
     } catch (e) {
       if (mio !== this.turno) return;

@@ -40,7 +40,7 @@ export function BrandPanel() {
         </View>
       </View>
 
-      <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted, position: 'absolute', bottom: spacing.xxl, left: spacing.xxl }]}>
+      <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted, alignSelf: 'flex-start' }]}>
         Exclusivo para estudiantes con correo <Text style={{ color: colors.accent }}>@{USC_EMAIL_DOMAIN}</Text>
       </Text>
     </View>
@@ -48,12 +48,15 @@ export function BrandPanel() {
 }
 
 const styles = StyleSheet.create({
+  // El bloque ocupa el alto libre y se centra en él; el pie va debajo en el flujo, así en
+  // ventanas bajas empuja en vez de montarse sobre la lista.
   panel: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   bloque: {
+    flex: 1,
+    justifyContent: 'center',
     width: '100%',
     maxWidth: 480,
   },

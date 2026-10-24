@@ -19,12 +19,19 @@ export function listarMateriasDeCarrera(carreraId: number): Promise<Materia[]> {
   });
 }
 
+// Cada horario personalizado agrega un bloque, así que la lista casi siempre cambia al
+// revalidar: se actualiza la caché sin recargar las pantallas. Un bloque que falte se resuelve
+// en el servidor al publicar (resolverBloque).
 export function listarBloques(): Promise<BloqueHorario[]> {
-  return cacheCatalogo.leer('bloques', async () => {
-    const { data, error } = await supabase.from('bloques_horario').select('*').order('id');
-    if (error) throw error;
-    return data as BloqueHorario[];
-  });
+  return cacheCatalogo.leer(
+    'bloques',
+    async () => {
+      const { data, error } = await supabase.from('bloques_horario').select('*').order('id');
+      if (error) throw error;
+      return data as BloqueHorario[];
+    },
+    { avisar: false }
+  );
 }
 
 // ── Presentación de franjas ──────────────────────────────────────────────────────

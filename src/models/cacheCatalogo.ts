@@ -11,9 +11,16 @@ export interface Almacen {
 
 const PREFIJO = 'uscupo.catalogo.';
 
+export interface OpcionesLectura {
+  /** Avisar a las pantallas si la revalidación trae algo distinto (por defecto, sí). */
+  avisar?: boolean;
+}
+
 export function crearCacheCatalogo(almacen: Almacen) {
   const revalidados = new Set<string>();
   const oyentes = new Set<() => void>();
+  // Sube al vaciar: lo que llegue de una petición anterior ya no se guarda.
+  let generacion = 0;
 
   // El almacén puede lanzar (modo privado, cuota llena): eso cuenta como caché vacía.
   const intentar = <R>(f: () => R, siFalla: R): R => {
@@ -31,26 +38,32 @@ export function crearCacheCatalogo(almacen: Almacen) {
     return Array.isArray(valor) && valor.length > 0 ? (valor as T[]) : null;
   }
 
-  async function pedirYGuardar<T>(clave: string, pedir: () => Promise<T[]>): Promise<T[]> {
+  /** Pide y guarda; `vigente` es false si se vació la caché mientras tanto (no se guardó). */
+  async function pedirYGuardar<T>(clave: string, pedir: () => Promise<T[]>): Promise<{ nuevos: T[]; vigente: boolean }> {
+    const mia = generacion;
     const nuevos = await pedir();
+    if (mia !== generacion) return { nuevos, vigente: false };
     const json = JSON.stringify(nuevos);
     intentar(() => almacen.escribir(PREFIJO + clave, json), undefined);
     revalidados.add(clave);
-    return nuevos;
+    return { nuevos, vigente: true };
   }
 
   return {
-    async leer<T>(clave: string, pedir: () => Promise<T[]>): Promise<T[]> {
+    async leer<T>(clave: string, pedir: () => Promise<T[]>, opciones: OpcionesLectura = {}): Promise<T[]> {
       const cache = leerGuardado<T>(clave);
-      if (!cache) return pedirYGuardar(clave, pedir);
+      if (!cache) return (await pedirYGuardar(clave, pedir)).nuevos;
       if (!revalidados.has(clave)) {
         revalidados.add(clave);
+        const mia = generacion;
         pedirYGuardar(clave, pedir)
-          .then((nuevos) => {
-            if (JSON.stringify(nuevos) !== JSON.stringify(cache)) oyentes.forEach((f) => f());
+          .then(({ nuevos, vigente }) => {
+            if (vigente && opciones.avisar !== false && JSON.stringify(nuevos) !== JSON.stringify(cache)) oyentes.forEach((f) => f());
           })
           // Falló: se queda la caché y se reintenta en la próxima lectura.
-          .catch(() => revalidados.delete(clave));
+          .catch(() => {
+            if (mia === generacion) revalidados.delete(clave);
+          });
       }
       return cache;
     },
@@ -67,6 +80,7 @@ export function crearCacheCatalogo(almacen: Almacen) {
 
     /** Al cerrar sesión o eliminar la cuenta. */
     vaciar() {
+      generacion++;
       revalidados.clear();
       for (const k of intentar(() => almacen.claves(), [])) {
         if (k.startsWith(PREFIJO)) intentar(() => almacen.borrar(k), undefined);

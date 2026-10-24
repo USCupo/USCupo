@@ -2,16 +2,17 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { alCambiarCatalogo } from '../models/catalogo';
 import { mensajeDeError } from './auth';
-import { Cargador, type EstadoCarga } from './cargador';
+import { Cargador, datosCambiaron, type EstadoCarga } from './cargador';
 
 interface Estado<T> extends EstadoCarga<T> {
   recargar: () => Promise<void>;
 }
 
-// Carga datos cada vez que la pantalla gana foco (al volver a una pestaña se ven los cambios
-// hechos en otra), salvo que la última carga buena tenga menos de 15 s. La primera carga muestra
-// "cargando"; las siguientes refrescan en silencio. Las acciones y "Reintentar" usan `recargar`,
-// que siempre pide.
+// Carga datos cada vez que la pantalla gana foco, salvo que la última carga buena tenga menos de
+// 15 s y nadie haya cambiado datos desde entonces (al volver a una pestaña se ven los cambios
+// hechos en otra). La primera carga muestra "cargando"; las siguientes refrescan en silencio. Las
+// acciones y "Reintentar" usan `recargar`, que siempre pide y marca las demás pantallas para
+// recargar en su próximo foco.
 export function useCargaEnFoco<T>(cargar: () => Promise<T>, deps: unknown[]): Estado<T> {
   const cargarRef = useRef(cargar);
   cargarRef.current = cargar;
@@ -43,6 +44,9 @@ export function useCargaEnFoco<T>(cargar: () => Promise<T>, deps: unknown[]): Es
   // El catálogo se revalidó con cambios (p. ej. una materia nueva): recarga silenciosa.
   useEffect(() => alCambiarCatalogo(() => void c.recargar()), [c]);
 
-  const recargar = useCallback(() => c.recargar(), [c]);
+  const recargar = useCallback(() => {
+    datosCambiaron();
+    return c.recargar();
+  }, [c]);
   return { ...estado, recargar };
 }

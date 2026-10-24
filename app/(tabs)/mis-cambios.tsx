@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { Contacto } from '../../src/components/Contacto';
@@ -35,6 +36,13 @@ const DIALOGOS: Record<AccionPendiente['tipo'], { titulo: string; mensaje: (m: s
 export default function MisCambiosScreen() {
   const c = useMisCambiosController();
   const moderacion = useModeracionController(c.recargar);
+  // Un solo aviso en pantalla: el de moderación o el de la pantalla.
+  const { cerrarAviso: cerrarAvisoModeracion } = moderacion;
+  const { cerrarAviso: cerrarAvisoPantalla } = c;
+  const cerrarAvisos = useCallback(() => {
+    cerrarAvisoModeracion();
+    cerrarAvisoPantalla();
+  }, [cerrarAvisoModeracion, cerrarAvisoPantalla]);
   const router = useRouter();
   const { colors, spacing, type } = useTheme();
   const { breakpoint } = useBreakpoint();
@@ -82,6 +90,7 @@ export default function MisCambiosScreen() {
                           o.interesado_id ? (
                             <MenuModeracion
                               nombre={o.interesado?.nombre_completo ?? 'este estudiante'}
+                              etiqueta={`Opciones sobre ${o.interesado?.nombre_completo ?? 'este estudiante'}`}
                               onBloquear={() => moderacion.pedirBloqueo(o.interesado_id!, o.interesado?.nombre_completo ?? 'este estudiante')}
                             />
                           ) : undefined
@@ -189,8 +198,8 @@ export default function MisCambiosScreen() {
         onConfirmar={c.ejecutar}
         onCancelar={c.cancelarAccion}
       />
-      <Aviso mensaje={c.aviso} onCerrar={c.cerrarAviso} />
-      <DialogosModeracion moderacion={moderacion} />
+      <Aviso mensaje={moderacion.estado.aviso ?? c.aviso} onCerrar={cerrarAvisos} />
+      <DialogosModeracion moderacion={moderacion} conAviso={false} />
     </>
   );
 }
