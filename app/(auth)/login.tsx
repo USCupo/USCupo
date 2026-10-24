@@ -18,6 +18,7 @@ import { GradientBackground } from '../../src/components/GradientBackground';
 import { InfoNotice } from '../../src/components/InfoNotice';
 import { Logo } from '../../src/components/Logo';
 import { MicrosoftButton } from '../../src/components/MicrosoftButton';
+import { PieLegal } from '../../src/components/PieLegal';
 import { SegmentedControl } from '../../src/components/SegmentedControl';
 import { TextField } from '../../src/components/TextField';
 import { ThemeToggle } from '../../src/components/ThemeToggle';
@@ -304,6 +305,10 @@ function Formulario({ c }: { c: LoginController }) {
           <InfoNotice>
             {`USCupo solo conecta estudiantes. La gestión del cambio de horario se hace directamente en los canales oficiales de la USC. ${AVISO_NO_OFICIAL}`}
           </InfoNotice>
+        </View>
+
+        <View style={{ marginTop: spacing.sm }}>
+          <PieLegal />
         </View>
       </View>
     </Animated.View>

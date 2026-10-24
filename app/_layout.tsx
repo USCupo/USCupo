@@ -2,6 +2,7 @@ import { useFonts as usePoppins, Poppins_600SemiBold } from '@expo-google-fonts/
 import { useFonts as useInter, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Slot } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AvisoCookies } from '../src/components/AvisoCookies';
 import { AuthProvider } from '../src/lib/AuthContext';
 import { ThemeProvider } from '../src/theme/ThemeProvider';
 
@@ -17,6 +18,7 @@ export default function RootLayout() {
       <ThemeProvider>
         <AuthProvider>
           <Slot />
+          <AvisoCookies />
         </AuthProvider>
       </ThemeProvider>
     </SafeAreaProvider>

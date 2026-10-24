@@ -1,14 +1,14 @@
-import { Link } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { Interruptor } from '../../src/components/Contacto';
 import { InfoNotice } from '../../src/components/InfoNotice';
 import { OfertaCard } from '../../src/components/OfertaCard';
+import { PieLegal } from '../../src/components/PieLegal';
 import { TextField } from '../../src/components/TextField';
 import { ThemeToggle } from '../../src/components/ThemeToggle';
 import { Aviso, DialogoConfirmar, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
 import { PALABRA_ELIMINAR, usePerfilController } from '../../src/controllers/usePerfilController';
-import { AVISO_NO_OFICIAL, RESPONSABLE } from '../../src/models/legal';
+import { AVISO_NO_OFICIAL } from '../../src/models/legal';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
 
@@ -125,16 +125,8 @@ export default function PerfilScreen() {
             <Tarjeta>
               <TituloSeccion>Acerca de USCupo</TituloSeccion>
               <Text style={[type.bodyMuted, { color: colors.textMuted }]}>{AVISO_NO_OFICIAL}</Text>
-              <View style={[styles.enlaces, { marginTop: spacing.sm }]}>
-                <Link href="/terminos" style={[type.bodyMuted, styles.enlace, { color: colors.link }]}>
-                  Términos de uso
-                </Link>
-                <Link href="/privacidad" style={[type.bodyMuted, styles.enlace, { color: colors.link }]}>
-                  Política de privacidad
-                </Link>
-                <Link href={`mailto:${RESPONSABLE.correo}`} style={[type.bodyMuted, styles.enlace, { color: colors.link }]}>
-                  Escríbenos: {RESPONSABLE.correo}
-                </Link>
+              <View style={{ marginTop: spacing.sm }}>
+                <PieLegal conEliminarCuenta={false} />
               </View>
             </Tarjeta>
 
@@ -192,8 +184,6 @@ export default function PerfilScreen() {
 const styles = StyleSheet.create({
   columnas: { flexDirection: 'row', alignItems: 'flex-start' },
   dato: {},
-  enlaces: { gap: 4 },
-  enlace: { textDecorationLine: 'underline', paddingVertical: 8, fontFamily: 'Inter_700Bold' },
   entre: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   bloqueado: { borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 8 },
 });
