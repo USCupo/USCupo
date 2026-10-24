@@ -92,6 +92,30 @@ export default function PerfilScreen() {
               )}
             </Tarjeta>
 
+            {d && d.bloqueados.length > 0 ? (
+              <Tarjeta>
+                <TituloSeccion>Usuarios bloqueados</TituloSeccion>
+                <Text style={[type.bodyMuted, { color: colors.textMuted, marginBottom: spacing.sm }]}>
+                  No ven tus ofertas ni tú las suyas.
+                </Text>
+                {d.bloqueados.map((u) => (
+                  <View key={u.usuario_id} style={[styles.entre, styles.bloqueado, { borderTopColor: colors.border }]}>
+                    <Text style={[type.body, { color: colors.text, flex: 1 }]} numberOfLines={1}>
+                      {u.nombre_completo}
+                    </Text>
+                    <Button
+                      label="Desbloquear"
+                      variant="secondary"
+                      onPress={() => c.desbloquear(u)}
+                      loading={c.desbloqueando === u.usuario_id}
+                      loadingLabel="Desbloqueando…"
+                      disabled={!!c.desbloqueando}
+                    />
+                  </View>
+                ))}
+              </Tarjeta>
+            ) : null}
+
             <Tarjeta>
               <TituloSeccion>Acerca de USCupo</TituloSeccion>
               <Text style={[type.bodyMuted, { color: colors.textMuted }]}>{AVISO_NO_OFICIAL}</Text>
@@ -165,4 +189,5 @@ const styles = StyleSheet.create({
   enlaces: { gap: 4 },
   enlace: { textDecorationLine: 'underline', paddingVertical: 8, fontFamily: 'Inter_700Bold' },
   entre: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  bloqueado: { borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 8 },
 });

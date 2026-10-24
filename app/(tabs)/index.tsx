@@ -5,7 +5,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { EspacioAnuncio } from '../../src/components/EspacioAnuncio';
 import { EsqueletoInicio } from '../../src/components/Esqueleto';
+import { DialogosModeracion, MenuDeOferta } from '../../src/components/Moderacion';
 import { OfertaCard } from '../../src/components/OfertaCard';
+import { useModeracionController, type ModeracionController } from '../../src/controllers/useModeracionController';
 import { Chip, ErrorCarga, EstadoVacio, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
 import { useInicioController } from '../../src/controllers/useInicioController';
 import { textoNotificacion } from '../../src/models/notificaciones';
@@ -15,6 +17,7 @@ import { useTheme } from '../../src/theme/useTheme';
 
 export default function InicioScreen() {
   const c = useInicioController();
+  const moderacion = useModeracionController(c.recargar);
   const router = useRouter();
   const { colors, spacing, type } = useTheme();
   const { breakpoint } = useBreakpoint();
@@ -25,8 +28,10 @@ export default function InicioScreen() {
     router.push(materiaId ? { pathname: '/buscar', params: { materia: String(materiaId) } } : '/buscar');
 
   return (
+    <>
     <Pantalla
-      titulo={`Hola, ${c.primerNombre}`}
+      prefijoTitulo="Hola, "
+      titulo={c.primerNombre}
       subtitulo={d?.carrera ?? 'Cambios de horario entre estudiantes USC'}
       acciones={
         dosColumnas ? (
@@ -90,6 +95,7 @@ export default function InicioScreen() {
                         esMatch
                         resaltarTiene
                         miBloqueActualId={mia.bloque_actual_id}
+                        menu={<MenuDeOferta oferta={oferta} moderacion={moderacion} />}
                         pie={<Button label="Ver y marcar interés" variant="secondary" onPress={() => irABuscar(oferta.materia_id)} />}
                       />
                     </View>
@@ -115,7 +121,7 @@ export default function InicioScreen() {
               )}
             </View>
 
-            <OfertasCarrera ofertas={d.ofertasCarrera} hayMaterias={d.hayMaterias} irABuscar={irABuscar} />
+            <OfertasCarrera ofertas={d.ofertasCarrera} hayMaterias={d.hayMaterias} irABuscar={irABuscar} moderacion={moderacion} />
 
             {!dosColumnas ? <EspacioAnuncio slot={process.env.EXPO_PUBLIC_ADSENSE_SLOT_INICIO} /> : null}
           </View>
@@ -174,6 +180,8 @@ export default function InicioScreen() {
         </View>
       ) : null}
     </Pantalla>
+    <DialogosModeracion moderacion={moderacion} />
+    </>
   );
 }
 
@@ -185,10 +193,12 @@ function OfertasCarrera({
   ofertas,
   hayMaterias,
   irABuscar,
+  moderacion,
 }: {
   ofertas: OfertaDetalle[];
   hayMaterias: boolean;
   irABuscar: (materiaId?: number) => void;
+  moderacion: ModeracionController;
 }) {
   const { spacing } = useTheme();
   const [materiaId, setMateriaId] = useState<number | null>(null);
@@ -236,7 +246,7 @@ function OfertasCarrera({
           {/* Una oferta por fila, a todo el ancho: en rejilla se veían amontonadas. */}
           <View style={{ gap: spacing.md }}>
             {filtradas.slice(0, visibles).map((o) => (
-              <OfertaCard key={o.id} oferta={o} pie={<Button label="Ver en Buscar" variant="secondary" onPress={() => irABuscar(o.materia_id)} />} />
+              <OfertaCard key={o.id} oferta={o} menu={<MenuDeOferta oferta={o} moderacion={moderacion} />} pie={<Button label="Ver en Buscar" variant="secondary" onPress={() => irABuscar(o.materia_id)} />} />
             ))}
           </View>
 

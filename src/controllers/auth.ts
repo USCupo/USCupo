@@ -1,4 +1,5 @@
 import { proveedorHabilitado, supabase, USC_EMAIL_DOMAIN } from '../lib/supabase';
+import { cacheCatalogo } from '../models/catalogo';
 
 // Acceso exclusivo con cuentas institucionales @usc.edu.co: cuenta Microsoft 365 de la USC
 // o correo institucional + contraseña. El trigger handle_new_user en la base de datos
@@ -127,6 +128,7 @@ export async function iniciarSesionConMicrosoft(correoSugerido?: string): Promis
 }
 
 export async function cerrarSesion() {
+  cacheCatalogo.vaciar();
   const { error } = await supabase.auth.signOut();
   // Si el servidor no responde (sin red, o la cuenta ya se borró) igual se cierra en este equipo.
   if (error) await supabase.auth.signOut({ scope: 'local' });

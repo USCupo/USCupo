@@ -2,7 +2,9 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { Contacto } from '../../src/components/Contacto';
+import { DialogosModeracion, MenuDeOferta, MenuModeracion } from '../../src/components/Moderacion';
 import { OfertaCard } from '../../src/components/OfertaCard';
+import { useModeracionController } from '../../src/controllers/useModeracionController';
 import { EsqueletoMisCambios } from '../../src/components/Esqueleto';
 import { Aviso, DialogoConfirmar, ErrorCarga, EstadoVacio, Insignia, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
 import { useMisCambiosController, type AccionPendiente } from '../../src/controllers/useMisCambiosController';
@@ -32,6 +34,7 @@ const DIALOGOS: Record<AccionPendiente['tipo'], { titulo: string; mensaje: (m: s
 
 export default function MisCambiosScreen() {
   const c = useMisCambiosController();
+  const moderacion = useModeracionController(c.recargar);
   const router = useRouter();
   const { colors, spacing, type } = useTheme();
   const { breakpoint } = useBreakpoint();
@@ -75,6 +78,14 @@ export default function MisCambiosScreen() {
                       <OfertaCard
                         oferta={o}
                         esMia
+                        menu={
+                          o.interesado_id ? (
+                            <MenuModeracion
+                              nombre={o.interesado?.nombre_completo ?? 'este estudiante'}
+                              onBloquear={() => moderacion.pedirBloqueo(o.interesado_id!, o.interesado?.nombre_completo ?? 'este estudiante')}
+                            />
+                          ) : undefined
+                        }
                         pie={
                           <View style={{ gap: spacing.md }}>
                             <View style={styles.entre}>
@@ -110,6 +121,7 @@ export default function MisCambiosScreen() {
                     <View key={o.id} style={celda}>
                       <OfertaCard
                         oferta={o}
+                        menu={<MenuDeOferta oferta={o} moderacion={moderacion} />}
                         pie={
                           <View style={{ gap: spacing.md }}>
                             <View style={styles.entre}>
@@ -178,6 +190,7 @@ export default function MisCambiosScreen() {
         onCancelar={c.cancelarAccion}
       />
       <Aviso mensaje={c.aviso} onCerrar={c.cerrarAviso} />
+      <DialogosModeracion moderacion={moderacion} />
     </>
   );
 }

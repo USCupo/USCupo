@@ -6,6 +6,8 @@ import { OfertaCard } from '../../src/components/OfertaCard';
 import { SelectorLista, type ItemLista } from '../../src/components/SelectorLista';
 import { TextField } from '../../src/components/TextField';
 import { EsqueletoBuscar } from '../../src/components/Esqueleto';
+import { DialogosModeracion, MenuDeOferta } from '../../src/components/Moderacion';
+import { useModeracionController } from '../../src/controllers/useModeracionController';
 import { Aviso, Chip, DialogoConfirmar, ErrorCarga, EstadoVacio, Pantalla, Tarjeta } from '../../src/components/ui';
 import { useBuscarController } from '../../src/controllers/useBuscarController';
 import { useAuth } from '../../src/lib/AuthContext';
@@ -20,6 +22,7 @@ export default function BuscarScreen() {
   const params = useLocalSearchParams<{ materia?: string }>();
   const materiaParam = params.materia ? Number(params.materia) : undefined;
   const c = useBuscarController(materiaParam);
+  const moderacion = useModeracionController(c.recargar);
   const { session } = useAuth();
   const router = useRouter();
   const { colors, spacing, type } = useTheme();
@@ -90,6 +93,7 @@ export default function BuscarScreen() {
                   resaltarTiene={meSirve}
                   miBloqueActualId={mia?.bloque_actual_id}
                   mostrarMateria={!c.materiaSeleccionada}
+                  menu={<MenuDeOferta oferta={oferta} moderacion={moderacion} />}
                   pie={
                     oferta.estado === 'disponible' ? (
                       <Button label="Me interesa" onPress={() => c.pedirInteres(oferta)} />
@@ -163,6 +167,7 @@ export default function BuscarScreen() {
         onCancelar={c.cancelarInteres}
       />
       <Aviso mensaje={c.aviso} onCerrar={c.cerrarAviso} />
+      <DialogosModeracion moderacion={moderacion} />
     </>
   );
 }

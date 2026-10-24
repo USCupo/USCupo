@@ -1,21 +1,30 @@
 import { supabase } from '../lib/supabase';
+import { almacenLocal, crearCacheCatalogo } from './cacheCatalogo';
 import type { BloqueHorario, Materia } from './types';
 
-export async function listarMateriasDeCarrera(carreraId: number): Promise<Materia[]> {
-  const { data, error } = await supabase
-    .from('materias')
-    .select('*')
-    .eq('carrera_id', carreraId)
-    .order('semestre', { nullsFirst: false })
-    .order('nombre');
-  if (error) throw error;
-  return data as Materia[];
+/** Caché del catálogo en localStorage, compartida por carreras, materias y bloques. */
+export const cacheCatalogo = crearCacheCatalogo(almacenLocal());
+export const alCambiarCatalogo = cacheCatalogo.alCambiar;
+
+export function listarMateriasDeCarrera(carreraId: number): Promise<Materia[]> {
+  return cacheCatalogo.leer(`materias-${carreraId}`, async () => {
+    const { data, error } = await supabase
+      .from('materias')
+      .select('*')
+      .eq('carrera_id', carreraId)
+      .order('semestre', { nullsFirst: false })
+      .order('nombre');
+    if (error) throw error;
+    return data as Materia[];
+  });
 }
 
-export async function listarBloques(): Promise<BloqueHorario[]> {
-  const { data, error } = await supabase.from('bloques_horario').select('*').order('id');
-  if (error) throw error;
-  return data as BloqueHorario[];
+export function listarBloques(): Promise<BloqueHorario[]> {
+  return cacheCatalogo.leer('bloques', async () => {
+    const { data, error } = await supabase.from('bloques_horario').select('*').order('id');
+    if (error) throw error;
+    return data as BloqueHorario[];
+  });
 }
 
 // ── Presentación de franjas ──────────────────────────────────────────────────────

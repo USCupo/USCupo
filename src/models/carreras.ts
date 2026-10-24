@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { cacheCatalogo } from './catalogo';
 import { CARRERAS_LOCALES } from './data/carrerasLocales';
 import type { Carrera } from './types';
 
@@ -20,17 +21,23 @@ function ordenar(carreras: Carrera[]): Carrera[] {
 
 // Lee el catálogo de Supabase; si el servidor no responde o la tabla está vacía, usa la
 // copia local del seed para que el selector de carrera nunca quede vacío.
+async function pedirCarreras(): Promise<Carrera[]> {
+  const { data, error } = await supabase
+    .from('carreras')
+    .select('*')
+    .eq('activa', true)
+    .order('facultad')
+    .order('nombre');
+  if (error) throw error;
+  return ordenar((data ?? []) as Carrera[]);
+}
+
+// Caché primero (ver cacheCatalogo); si no hay caché y el servidor no responde o la tabla está
+// vacía, usa la copia local del seed para que el selector de carrera nunca quede vacío.
 export async function listarCarreras(): Promise<CatalogoCarreras> {
   try {
-    const { data, error } = await supabase
-      .from('carreras')
-      .select('*')
-      .eq('activa', true)
-      .order('facultad')
-      .order('nombre');
-
-    if (error) throw error;
-    if (data && data.length > 0) return { carreras: ordenar(data as Carrera[]), origen: 'remoto' };
+    const carreras = await cacheCatalogo.leer('carreras', pedirCarreras);
+    if (carreras.length > 0) return { carreras, origen: 'remoto' };
   } catch {
     // Cae al catálogo local.
   }
@@ -65,6 +72,8 @@ export function filtrarCarreras(carreras: Carrera[], busqueda: string): Carrera[
 }
 
 export async function obtenerCarrera(id: number): Promise<Carrera | null> {
+  const guardada = cacheCatalogo.guardado<Carrera>('carreras')?.find((c) => c.id === id);
+  if (guardada) return guardada;
   const { data, error } = await supabase.from('carreras').select('*').eq('id', id).maybeSingle();
   if (error) throw error;
   return (data as Carrera | null) ?? null;

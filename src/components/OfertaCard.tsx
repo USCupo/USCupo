@@ -17,8 +17,13 @@ interface Props {
   esMatch?: boolean;
   esMia?: boolean;
   pie?: ReactNode;
+  /** Reportar/bloquear: va junto al nombre de quien la publicó. */
+  menu?: ReactNode;
   mostrarMateria?: boolean;
 }
+
+/** "9:00 a.m." nunca se parte en dos líneas: espacio no separable antes de a.m./p.m./m. */
+const sinPartirHoras = (texto: string) => texto.replace(/ (a\.m\.|p\.m\.|m\.)/g, ' $1');
 
 function Franja({ bloque, resaltada }: { bloque: BloqueHorario; resaltada?: boolean }) {
   const { colors, type, radius } = useTheme();
@@ -33,13 +38,13 @@ function Franja({ bloque, resaltada }: { bloque: BloqueHorario; resaltada?: bool
         },
       ]}
     >
-      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: 'Inter_700Bold' }]}>{diasCortos(bloque.dias)}</Text>
-      <Text style={[type.bodyMuted, { color: colors.textMuted }]}>{rangoHoras(bloque)}</Text>
+      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: 'Inter_700Bold', textAlign: 'center' }]}>{diasCortos(bloque.dias)}</Text>
+      <Text style={[type.bodyMuted, { color: colors.textMuted, textAlign: 'center' }]}>{sinPartirHoras(rangoHoras(bloque))}</Text>
     </View>
   );
 }
 
-export function OfertaCard({ oferta, resaltarTiene, miBloqueActualId, esMatch, esMia, pie, mostrarMateria = true }: Props) {
+export function OfertaCard({ oferta, resaltarTiene, miBloqueActualId, esMatch, esMia, pie, menu, mostrarMateria = true }: Props) {
   const { colors, spacing, type, radius } = useTheme();
   const enProceso = oferta.estado === 'en_proceso';
 
@@ -77,12 +82,12 @@ export function OfertaCard({ oferta, resaltarTiene, miBloqueActualId, esMatch, e
 
       <View style={[styles.intercambio, { marginTop: spacing.md, gap: spacing.md }]}>
         <View style={styles.columna}>
-          <Text style={[type.bodyMuted, { color: colors.textMuted, marginBottom: 6 }]}>Tiene</Text>
+          <Text style={[type.bodyMuted, { color: colors.textMuted, marginBottom: 6, textAlign: 'center' }]}>Tiene</Text>
           <Franja bloque={oferta.bloque_actual} resaltada={resaltarTiene} />
         </View>
         <Ionicons name="swap-horizontal" size={18} color={colors.textMuted} style={{ marginTop: 26 }} />
         <View style={styles.columna}>
-          <Text style={[type.bodyMuted, { color: colors.textMuted, marginBottom: 6 }]}>Busca</Text>
+          <Text style={[type.bodyMuted, { color: colors.textMuted, marginBottom: 6, textAlign: 'center' }]}>Busca</Text>
           <View style={{ gap: 6 }}>
             {oferta.busco.map((b) => (
               <Franja key={b.id} bloque={b} resaltada={miBloqueActualId === b.id} />
@@ -97,11 +102,12 @@ export function OfertaCard({ oferta, resaltarTiene, miBloqueActualId, esMatch, e
         </Text>
       ) : null}
 
-      <View style={[styles.pieMeta, { marginTop: spacing.md, borderTopColor: colors.border, paddingTop: spacing.sm + 2 }]}>
+      <View style={[styles.pieMeta, { marginTop: spacing.md, borderTopColor: colors.border, paddingTop: menu ? spacing.xs : spacing.sm + 2 }]}>
         <Ionicons name="person-circle-outline" size={18} color={colors.textMuted} />
         <Text style={[type.bodyMuted, { color: colors.textMuted, flex: 1 }]} numberOfLines={1}>
           {esMia ? 'Tu oferta' : (oferta.dueno?.nombre_completo ?? 'Estudiante USC')} · {hace(oferta.created_at)}
         </Text>
+        {menu}
       </View>
 
       {pie ? <View style={{ marginTop: spacing.md }}>{pie}</View> : null}
