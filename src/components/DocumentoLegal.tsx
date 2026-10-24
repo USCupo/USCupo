@@ -82,7 +82,7 @@ export function DocumentoLegal({ doc }: { doc: Documento }) {
             </Link>
           </View>
           <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted, textAlign: 'center', marginTop: spacing.sm }]}>
-            Contacto: {RESPONSABLE.correo}
+            Contacto: {RESPONSABLE.correo} · {RESPONSABLE.telefono}
           </Text>
         </View>
       </ScrollView>
