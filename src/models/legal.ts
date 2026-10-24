@@ -2,13 +2,14 @@
 // Al cambiar cualquiera de los dos documentos se sube VERSION_LEGAL (aquí y en la app) y todos
 // vuelven a aceptar al entrar (Ley 1581: prueba de la autorización).
 
-export const VERSION_LEGAL = '2026-10-24.2';
+export const VERSION_LEGAL = '2026-10-24.3';
 export const VIGENTE_DESDE = '24 de octubre de 2026';
 
 export const RESPONSABLE = {
   nombre: 'Gustavo Andrés Cerón Galeano',
   ciudad: 'Cali, Valle del Cauca, Colombia',
   correo: 'uscupo.app@outlook.com',
+  telefono: '316 352 0199',
 } as const;
 
 export const ERROR_SIN_ACEPTAR = 'Para usar USCupo necesitas aceptar los términos y la política de privacidad.';
@@ -28,7 +29,7 @@ export const PRIVACIDAD: Documento = {
     {
       titulo: '1. Responsable del tratamiento',
       bloques: [
-        `${RESPONSABLE.nombre}, persona natural, domiciliado en ${RESPONSABLE.ciudad}. Correo para peticiones, consultas y reclamos: ${RESPONSABLE.correo}.`,
+        `${RESPONSABLE.nombre}, persona natural, domiciliado en ${RESPONSABLE.ciudad}. Correo para peticiones, consultas y reclamos: ${RESPONSABLE.correo}. Teléfono: ${RESPONSABLE.telefono}.`,
         AVISO_NO_OFICIAL +
           ' La Universidad no es responsable ni encargada del tratamiento de los datos que se recogen en USCupo.',
       ],
