@@ -5,7 +5,8 @@ import { Button } from '../../src/components/Button';
 import { OfertaCard } from '../../src/components/OfertaCard';
 import { SelectorLista, type ItemLista } from '../../src/components/SelectorLista';
 import { TextField } from '../../src/components/TextField';
-import { Aviso, Cargando, Chip, DialogoConfirmar, ErrorCarga, EstadoVacio, Pantalla, Tarjeta } from '../../src/components/ui';
+import { EsqueletoBuscar } from '../../src/components/Esqueleto';
+import { Aviso, Chip, DialogoConfirmar, ErrorCarga, EstadoVacio, Pantalla, Tarjeta } from '../../src/components/ui';
 import { useBuscarController } from '../../src/controllers/useBuscarController';
 import { useAuth } from '../../src/lib/AuthContext';
 import { diasClave, diasCortos, PATRONES_DIAS } from '../../src/models/catalogo';
@@ -113,7 +114,7 @@ export default function BuscarScreen() {
     <>
       <Pantalla titulo="Buscar" subtitulo="Ofertas de cambio en las materias de tu carrera" anchoMax={1180}>
         {c.cargando && !c.datos ? (
-          <Cargando sobreFondo texto="Buscando ofertas…" />
+          <EsqueletoBuscar />
         ) : c.error && !c.datos ? (
           <ErrorCarga mensaje={c.error} onReintentar={c.recargar} />
         ) : c.materias.length === 0 ? (

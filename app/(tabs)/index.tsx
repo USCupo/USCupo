@@ -4,8 +4,9 @@ import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { EspacioAnuncio } from '../../src/components/EspacioAnuncio';
+import { EsqueletoInicio } from '../../src/components/Esqueleto';
 import { OfertaCard } from '../../src/components/OfertaCard';
-import { Cargando, Chip, ErrorCarga, EstadoVacio, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
+import { Chip, ErrorCarga, EstadoVacio, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
 import { useInicioController } from '../../src/controllers/useInicioController';
 import { textoNotificacion } from '../../src/models/notificaciones';
 import { diasRestantes, hace, type OfertaDetalle } from '../../src/models/ofertas';
@@ -36,7 +37,7 @@ export default function InicioScreen() {
       }
     >
       {c.cargando && !d ? (
-        <Cargando sobreFondo texto="Cargando tu resumen…" />
+        <EsqueletoInicio />
       ) : c.error && !d ? (
         <ErrorCarga mensaje={c.error} onReintentar={c.recargar} />
       ) : d ? (
@@ -190,7 +191,6 @@ function OfertasCarrera({
   irABuscar: (materiaId?: number) => void;
 }) {
   const { spacing } = useTheme();
-  const { breakpoint } = useBreakpoint();
   const [materiaId, setMateriaId] = useState<number | null>(null);
   const [visibles, setVisibles] = useState(POR_PAGINA);
 
@@ -233,11 +233,10 @@ function OfertasCarrera({
             </View>
           ) : null}
 
-          <View style={[styles.rejilla, { gap: spacing.md }]}>
+          {/* Una oferta por fila, a todo el ancho: en rejilla se veían amontonadas. */}
+          <View style={{ gap: spacing.md }}>
             {filtradas.slice(0, visibles).map((o) => (
-              <View key={o.id} style={breakpoint === 'compacto' ? styles.celdaCompleta : styles.celdaMitad}>
-                <OfertaCard oferta={o} pie={<Button label="Ver en Buscar" variant="secondary" onPress={() => irABuscar(o.materia_id)} />} />
-              </View>
+              <OfertaCard key={o.id} oferta={o} pie={<Button label="Ver en Buscar" variant="secondary" onPress={() => irABuscar(o.materia_id)} />} />
             ))}
           </View>
 
