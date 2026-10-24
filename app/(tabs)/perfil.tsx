@@ -126,7 +126,7 @@ export default function PerfilScreen() {
               <TituloSeccion>Acerca de USCupo</TituloSeccion>
               <Text style={[type.bodyMuted, { color: colors.textMuted }]}>{AVISO_NO_OFICIAL}</Text>
               <View style={{ marginTop: spacing.sm }}>
-                <PieLegal conEliminarCuenta={false} />
+                <PieLegal />
               </View>
             </Tarjeta>
 

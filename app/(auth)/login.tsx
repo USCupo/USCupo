@@ -30,6 +30,7 @@ import { animarResorte, resorte, useReducedMotion } from '../../src/theme/motion
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../../src/theme/glass';
 import { useTheme } from '../../src/theme/useTheme';
+import { FooterWeb } from '../../src/components/FooterWeb';
 
 export default function LoginScreen() {
   const { colors, spacing } = useTheme();
@@ -41,7 +42,8 @@ export default function LoginScreen() {
 
   if (breakpoint === 'amplio') {
     return (
-      <GradientBackground style={styles.split}>
+      <GradientBackground>
+        <View style={styles.split}>
         <View style={styles.splitMarca}>
           <BrandPanel />
         </View>
@@ -58,6 +60,8 @@ export default function LoginScreen() {
             </Tarjeta>
           </ScrollView>
         </View>
+        </View>
+        <FooterWeb style={{ width: 'auto', marginHorizontal: spacing.lg, marginBottom: spacing.lg }} />
       </GradientBackground>
     );
   }
@@ -87,6 +91,7 @@ export default function LoginScreen() {
                 <Formulario c={c} />
               </Tarjeta>
             </View>
+            <FooterWeb style={{ marginTop: spacing.xl }} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -134,6 +139,7 @@ function Encabezado() {
 
 function Formulario({ c }: { c: LoginController }) {
   const { colors, spacing, type } = useTheme();
+  const { breakpoint } = useBreakpoint();
   const reducir = useReducedMotion();
   const registro = c.modo === 'registro';
   const ocupado = c.enviando || c.microsoftCargando;
@@ -307,9 +313,12 @@ function Formulario({ c }: { c: LoginController }) {
           </InfoNotice>
         </View>
 
-        <View style={{ marginTop: spacing.sm }}>
-          <PieLegal />
-        </View>
+        {/* En tablet y computador los enlaces legales van en el FooterWeb. */}
+        {breakpoint === 'compacto' ? (
+          <View style={{ marginTop: spacing.sm }}>
+            <PieLegal />
+          </View>
+        ) : null}
       </View>
     </Animated.View>
   );
@@ -334,6 +343,7 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
   },
   split: {
+    flex: 1,
     flexDirection: 'row',
   },
   splitMarca: {

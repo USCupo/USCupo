@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RESPONSABLE, VIGENTE_DESDE, type Bloque, type Documento } from '../models/legal';
 import { useTheme } from '../theme/useTheme';
+import { FooterWeb } from './FooterWeb';
 import { GradientBackground } from './GradientBackground';
 import { Logo } from './Logo';
 
@@ -84,6 +85,7 @@ export function DocumentoLegal({ doc }: { doc: Documento }) {
           <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted, textAlign: 'center', marginTop: spacing.sm }]}>
             Contacto: {RESPONSABLE.correo} · {RESPONSABLE.telefono}
           </Text>
+          <FooterWeb style={{ marginTop: spacing.xl }} />
         </View>
       </ScrollView>
     </GradientBackground>

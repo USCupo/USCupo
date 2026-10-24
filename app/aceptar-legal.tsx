@@ -14,6 +14,7 @@ import { aceptarLegal, legalVigente } from '../src/models/perfiles';
 import { useBreakpoint } from '../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../src/theme/glass';
 import { useTheme } from '../src/theme/useTheme';
+import { FooterWeb } from '../src/components/FooterWeb';
 
 // Cuentas que aún no aceptan la versión vigente (Microsoft, anteriores a la casilla o texto nuevo).
 export default function AceptarLegalScreen() {
@@ -104,6 +105,7 @@ function Contenido() {
               <InfoNotice>{AVISO_NO_OFICIAL}</InfoNotice>
             </View>
           </View>
+          <FooterWeb style={{ marginTop: spacing.xl }} />
         </View>
       </ScrollView>
     </GradientBackground>

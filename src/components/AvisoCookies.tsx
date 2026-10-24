@@ -32,9 +32,11 @@ export function AvisoCookies() {
   if (!bannerVisible) return null;
 
   const amplio = breakpoint === 'amplio';
-  // En el teléfono, dentro de las pestañas, va por encima del dock.
+  // En el teléfono, dentro de las pestañas, va por encima del dock; en el Login de computador,
+  // por encima del FooterWeb fijo (alto ~56 + su margen inferior).
   const conDock = !amplio && segmentos[0] === '(tabs)';
-  const abajo = insets.bottom + (conDock ? glass.altoBarraInferior + glass.margen * 2 : spacing.md);
+  const sobreFooter = amplio && segmentos[0] === '(auth)';
+  const abajo = insets.bottom + (conDock ? glass.altoBarraInferior + glass.margen * 2 : sobreFooter ? 56 + spacing.lg + spacing.sm : spacing.md);
 
   // Píldoras sobre el cristal oscuro, como los enlaces de la navbar; la elegida lleva aro amarillo.
   const opcion = (p: PreferenciaAnuncios, texto: string) => {
