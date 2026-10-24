@@ -17,6 +17,18 @@ export default function PerfilScreen() {
   const { colors, spacing, type } = useTheme();
   const { breakpoint } = useBreakpoint();
   const amplio = breakpoint === 'amplio';
+  // En computador el tema y Cerrar sesión están en la navbar; desde tablet el aviso y los
+  // enlaces legales están en el FooterWeb.
+  const conFooter = breakpoint !== 'compacto';
+  const eliminarCuenta = (
+    <Pressable
+      accessibilityRole="button"
+      onPress={c.pedirEliminar}
+      style={{ marginTop: spacing.xs, alignItems: 'center', paddingVertical: spacing.sm, minHeight: 44, justifyContent: 'center' }}
+    >
+      <Text style={[type.body, { color: colors.danger, fontFamily: 'Inter_700Bold' }]}>Eliminar cuenta</Text>
+    </Pressable>
+  );
   const d = c.datos;
 
   return (
@@ -71,16 +83,19 @@ export default function PerfilScreen() {
                 <Button label="Guardar cambios" loadingLabel="Guardando…" onPress={c.guardar} loading={c.guardando} disabled={!c.hayCambios} />
               </View>
             </Tarjeta>
+            {amplio ? eliminarCuenta : null}
           </View>
 
           <View style={[amplio && { flex: 1 }, { gap: spacing.lg }]}>
-            <Tarjeta>
-              <TituloSeccion>Apariencia</TituloSeccion>
-              <View style={[styles.entre, { padding: spacing.md, borderRadius: 14, backgroundColor: colors.background }]}>
-                <Text style={[type.body, { color: colors.onBackground }]}>Tema claro u oscuro</Text>
-                <ThemeToggle />
-              </View>
-            </Tarjeta>
+            {amplio ? null : (
+              <Tarjeta>
+                <TituloSeccion>Apariencia</TituloSeccion>
+                <View style={[styles.entre, { padding: spacing.md, borderRadius: 14, backgroundColor: colors.background }]}>
+                  <Text style={[type.body, { color: colors.onBackground }]}>Tema claro u oscuro</Text>
+                  <ThemeToggle />
+                </View>
+              </Tarjeta>
+            )}
 
             <Tarjeta>
               <TituloSeccion>Historial</TituloSeccion>
@@ -122,25 +137,23 @@ export default function PerfilScreen() {
               </Tarjeta>
             ) : null}
 
-            <Tarjeta>
-              <TituloSeccion>Acerca de USCupo</TituloSeccion>
-              <Text style={[type.bodyMuted, { color: colors.textMuted }]}>{AVISO_NO_OFICIAL}</Text>
-              <View style={{ marginTop: spacing.sm }}>
-                <PieLegal />
-              </View>
-            </Tarjeta>
+            {conFooter ? null : (
+              <Tarjeta>
+                <TituloSeccion>Acerca de USCupo</TituloSeccion>
+                <Text style={[type.bodyMuted, { color: colors.textMuted }]}>{AVISO_NO_OFICIAL}</Text>
+                <View style={{ marginTop: spacing.sm }}>
+                  <PieLegal />
+                </View>
+              </Tarjeta>
+            )}
 
-            <Tarjeta>
-              <TituloSeccion>Sesión</TituloSeccion>
-              <Button label="Cerrar sesión" variant="secondary" onPress={c.pedirSalida} style={{ borderWidth: 1, borderColor: colors.danger }} />
-              <Pressable
-                accessibilityRole="button"
-                onPress={c.pedirEliminar}
-                style={{ marginTop: spacing.xs, alignItems: 'center', paddingVertical: spacing.sm, minHeight: 44, justifyContent: 'center' }}
-              >
-                <Text style={[type.body, { color: colors.danger, fontFamily: 'Inter_700Bold' }]}>Eliminar cuenta</Text>
-              </Pressable>
-            </Tarjeta>
+            {amplio ? null : (
+              <Tarjeta>
+                <TituloSeccion>Sesión</TituloSeccion>
+                <Button label="Cerrar sesión" variant="secondary" onPress={c.pedirSalida} style={{ borderWidth: 1, borderColor: colors.danger }} />
+                {eliminarCuenta}
+              </Tarjeta>
+            )}
           </View>
         </View>
       </Pantalla>
