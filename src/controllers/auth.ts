@@ -61,9 +61,11 @@ export interface DatosRegistro {
   correo: string;
   contrasena: string;
   carreraId: number;
+  /** Versión de términos y política aceptada en el formulario; el trigger de alta la guarda con la hora. */
+  legalVersion: string;
 }
 
-export async function registrarse({ nombreCompleto, correo, contrasena, carreraId }: DatosRegistro) {
+export async function registrarse({ nombreCompleto, correo, contrasena, carreraId, legalVersion }: DatosRegistro) {
   if (!esCorreoInstitucional(correo)) {
     throw new Error(`Usa tu correo institucional, terminado en @${USC_EMAIL_DOMAIN}`);
   }
@@ -75,6 +77,7 @@ export async function registrarse({ nombreCompleto, correo, contrasena, carreraI
       data: {
         nombre_completo: nombreCompleto.trim(),
         carrera_id: String(carreraId),
+        legal_version: legalVersion,
       },
     },
   });
@@ -125,5 +128,6 @@ export async function iniciarSesionConMicrosoft(correoSugerido?: string): Promis
 
 export async function cerrarSesion() {
   const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+  // Si el servidor no responde (sin red, o la cuenta ya se borró) igual se cierra en este equipo.
+  if (error) await supabase.auth.signOut({ scope: 'local' });
 }
