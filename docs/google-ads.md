@@ -31,9 +31,10 @@ AdSense no funciona dentro de apps.
   `src/models/consentimientoAnuncios.ts`): panel de cristal que no bloquea el uso, con
   "No personalizados" / "Personalizados" y enlace a la política. Hasta que se elija,
   `EspacioAnuncio` pide anuncios no personalizados (`requestNonPersonalizedAds = 1`). La
-  elección se guarda en el navegador (`uscupo.anuncios`) y se cambia en Perfil → "Opciones de
-  privacidad de anuncios" (también en el pie legal del Login). Un cambio aplica a los anuncios
-  que se pidan después de recargar.
+  elección se guarda en el navegador (`uscupo.anuncios`) y se cambia con "Opciones de
+  privacidad de anuncios": en el teléfono, en Perfil → Acerca de USCupo y en el pie del Login;
+  en tablet y computador, en el FooterWeb. Cerrar el aviso sin elegir lo oculta en esa visita
+  (sigue en no personalizados). Un cambio aplica a los anuncios al recargar; el aviso lo dice.
 
 ## Paso a paso: activar AdSense en la web
 

@@ -28,12 +28,15 @@ export function MenuFlotante({
   etiquetaMenu,
   opciones,
   estiloBoton,
+  actual,
   children,
 }: {
   etiquetaBoton: string;
   etiquetaMenu: string;
   opciones: OpcionMenuFlotante[];
   estiloBoton: (estado: { pressed: boolean; hovered?: boolean; abierto: boolean }) => StyleProp<ViewStyle>;
+  /** El botón representa la página en la que se está (avatar en Perfil). */
+  actual?: boolean;
   children: ReactNode;
 }) {
   const { colors, minTouchSize } = useTheme();
@@ -70,6 +73,7 @@ export function MenuFlotante({
         accessibilityLabel={etiquetaBoton}
         aria-haspopup="menu"
         aria-expanded={!!pos}
+        aria-current={actual ? 'page' : undefined}
         onPress={abrir}
         style={({ pressed, hovered }: { pressed: boolean; hovered?: boolean }) => estiloBoton({ pressed, hovered, abierto: !!pos })}
       >

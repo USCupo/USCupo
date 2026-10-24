@@ -3,6 +3,7 @@ import { Link } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RESPONSABLE, VIGENTE_DESDE, type Bloque, type Documento } from '../models/legal';
+import { useBreakpoint } from '../theme/useBreakpoint';
 import { useTheme } from '../theme/useTheme';
 import { FooterWeb } from './FooterWeb';
 import { GradientBackground } from './GradientBackground';
@@ -12,6 +13,7 @@ import { Logo } from './Logo';
 export function DocumentoLegal({ doc }: { doc: Documento }) {
   const { colors, spacing, radius, type } = useTheme();
   const insets = useSafeAreaInsets();
+  const conFooter = useBreakpoint().breakpoint !== 'compacto';
 
   const parrafo = (b: Bloque, i: number) =>
     typeof b === 'string' ? (
@@ -72,12 +74,17 @@ export function DocumentoLegal({ doc }: { doc: Documento }) {
             ))}
           </View>
           <View style={[styles.pie, { marginTop: spacing.lg }]}>
-            <Link href="/terminos" style={[type.bodyMuted, styles.enlace, { color: colors.onBackground }]}>
-              Términos de uso
-            </Link>
-            <Link href="/privacidad" style={[type.bodyMuted, styles.enlace, { color: colors.onBackground }]}>
-              Privacidad
-            </Link>
+            {/* Desde tablet Términos y Privacidad ya están en el FooterWeb. */}
+            {conFooter ? null : (
+              <>
+                <Link href="/terminos" style={[type.bodyMuted, styles.enlace, { color: colors.onBackground }]}>
+                  Términos de uso
+                </Link>
+                <Link href="/privacidad" style={[type.bodyMuted, styles.enlace, { color: colors.onBackground }]}>
+                  Privacidad
+                </Link>
+              </>
+            )}
             <Link href="/eliminar-cuenta" style={[type.bodyMuted, styles.enlace, { color: colors.onBackground }]}>
               Eliminar cuenta
             </Link>

@@ -42,10 +42,14 @@ test('abrir opciones vuelve a mostrar el banner sin perder la elección', () => 
   assert.equal(c.estado().bannerVisible, false);
 });
 
-test('cerrar sin haber elegido no oculta el banner', () => {
-  const c = crearConsentimiento(almacen());
+test('cerrar sin haber elegido lo oculta en esta visita, sin guardar nada', () => {
+  const a = almacen();
+  const c = crearConsentimiento(a);
   c.cerrar();
-  assert.equal(c.estado().bannerVisible, true);
+  assert.deepEqual(c.estado(), { preferencia: null, bannerVisible: false, noPersonalizados: true });
+  assert.equal(a.datos.has(CLAVE_CONSENTIMIENTO), false);
+  // En la próxima visita vuelve a preguntar.
+  assert.equal(crearConsentimiento(a).estado().bannerVisible, true);
 });
 
 test('sin almacenamiento (modo privado) funciona en memoria', () => {

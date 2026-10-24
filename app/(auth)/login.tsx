@@ -61,7 +61,7 @@ export default function LoginScreen() {
           </ScrollView>
         </View>
         </View>
-        <FooterWeb style={{ width: 'auto', marginHorizontal: spacing.lg, marginBottom: spacing.lg }} />
+        <FooterWeb fijo conContacto={false} style={{ width: 'auto', marginHorizontal: spacing.lg, marginBottom: spacing.lg }} />
       </GradientBackground>
     );
   }
@@ -91,7 +91,7 @@ export default function LoginScreen() {
                 <Formulario c={c} />
               </Tarjeta>
             </View>
-            <FooterWeb style={{ marginTop: spacing.xl }} />
+            <FooterWeb conContacto={false} style={{ marginTop: spacing.xl }} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

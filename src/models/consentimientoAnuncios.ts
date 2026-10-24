@@ -30,10 +30,16 @@ export function crearConsentimiento(almacen: Almacen) {
     // Almacenamiento bloqueado: se trabaja en memoria.
   }
   let abiertoAMano = false;
+  // Cerrado sin elegir: se oculta en esta visita y vuelve a preguntar en la próxima.
+  let descartado = false;
   let estado = calcular();
 
   function calcular(): EstadoConsentimiento {
-    return { preferencia, bannerVisible: preferencia === null || abiertoAMano, noPersonalizados: preferencia !== 'personalizados' };
+    return {
+      preferencia,
+      bannerVisible: abiertoAMano || (preferencia === null && !descartado),
+      noPersonalizados: preferencia !== 'personalizados',
+    };
   }
   function publicar() {
     estado = calcular();
@@ -58,9 +64,10 @@ export function crearConsentimiento(almacen: Almacen) {
       abiertoAMano = true;
       publicar();
     },
-    /** Cerrar el aviso reabierto; sin elección previa sigue visible. */
+    /** Cerrar el aviso; sin elección se queda en no personalizados y no se guarda nada. */
     cerrar() {
       abiertoAMano = false;
+      descartado = true;
       publicar();
     },
     alCambiar(f: () => void): () => void {

@@ -34,12 +34,13 @@ export function EspacioAnuncio({ slot, alto = 120 }: { slot?: string; alto?: num
 
   useEffect(() => {
     if (!activo || pedido.current) return;
-    cargarScript(CLIENTE!);
     try {
+      // Antes de cargar adsbygoogle.js: AdSense lee la preferencia al arrancar, así que un cambio
+      // en el aviso de cookies aplica al recargar la página (el aviso lo dice). Hasta que el
+      // visitante elija, no personalizados.
       const cola = (window.adsbygoogle = window.adsbygoogle || []);
-      // Hasta que el visitante elija en el aviso de cookies, no personalizados. Un cambio de
-      // preferencia aplica a los anuncios que se pidan después (al recargar la página).
       cola.requestNonPersonalizedAds = consentimientoAnuncios.estado().noPersonalizados ? 1 : 0;
+      cargarScript(CLIENTE!);
       cola.push({});
       pedido.current = true;
     } catch {

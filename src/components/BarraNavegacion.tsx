@@ -140,11 +140,23 @@ function Superior({ rutas, activa, ir, pendientes }: VistaProps) {
 function MenuCuenta({ nombre, inicial, enPerfil, irAPerfil }: { nombre: string; inicial: string; enPerfil: boolean; irAPerfil: () => void }) {
   const { colors } = useTheme();
   const [confirmar, setConfirmar] = useState(false);
+  const [saliendo, setSaliendo] = useState(false);
+  const salir = async () => {
+    if (saliendo) return;
+    setSaliendo(true);
+    try {
+      await cerrarSesion();
+    } finally {
+      setSaliendo(false);
+      setConfirmar(false);
+    }
+  };
   return (
     <>
       <MenuFlotante
         etiquetaBoton={`Abrir menú de cuenta (${nombre})`}
         etiquetaMenu="Menú de cuenta"
+        actual={enPerfil}
         opciones={[
           { texto: 'Perfil', icono: 'person-outline', color: colors.link, fondo: colors.primaryTint, onPress: irAPerfil },
           { texto: 'Cerrar sesión', icono: 'log-out-outline', color: colors.danger, fondo: conAlfa(colors.danger, 0.14), onPress: () => setConfirmar(true) },
@@ -166,7 +178,8 @@ function MenuCuenta({ nombre, inicial, enPerfil, irAPerfil }: { nombre: string; 
         mensaje="Tendrás que ingresar de nuevo con tu correo institucional."
         confirmar="Cerrar sesión"
         peligroso
-        onConfirmar={cerrarSesion}
+        cargando={saliendo}
+        onConfirmar={salir}
         onCancelar={() => setConfirmar(false)}
       />
     </>

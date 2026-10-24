@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useConsentimientoAnuncios } from '../controllers/useConsentimientoAnuncios';
+import { useAltoFooterFijo } from '../lib/footerFijo';
 import type { PreferenciaAnuncios } from '../models/consentimientoAnuncios';
 import { cristalOscuro, glass } from '../theme/glass';
 import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
@@ -21,6 +22,7 @@ export function AvisoCookies() {
   const segmentos = useSegments();
   const reducir = useReducedMotion();
   const { bannerVisible, preferencia, elegir, cerrar } = useConsentimientoAnuncios();
+  const altoFooter = useAltoFooterFijo();
   const entrada = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -33,10 +35,9 @@ export function AvisoCookies() {
 
   const amplio = breakpoint === 'amplio';
   // En el teléfono, dentro de las pestañas, va por encima del dock; en el Login de computador,
-  // por encima del FooterWeb fijo (alto ~56 + su margen inferior).
+  // por encima del FooterWeb fijo (su alto medido + su margen inferior).
   const conDock = !amplio && segmentos[0] === '(tabs)';
-  const sobreFooter = amplio && segmentos[0] === '(auth)';
-  const abajo = insets.bottom + (conDock ? glass.altoBarraInferior + glass.margen * 2 : sobreFooter ? 56 + spacing.lg + spacing.sm : spacing.md);
+  const abajo = insets.bottom + (conDock ? glass.altoBarraInferior + glass.margen * 2 : altoFooter > 0 ? altoFooter + spacing.lg + spacing.sm : spacing.md);
 
   // Píldoras sobre el cristal oscuro, como los enlaces de la navbar; la elegida lleva aro amarillo.
   const opcion = (p: PreferenciaAnuncios, texto: string) => {
@@ -85,19 +86,17 @@ export function AvisoCookies() {
           <Text accessibilityRole="header" style={[type.body, { color: colors.accent, fontFamily: 'Inter_700Bold', flex: 1 }]}>
             Cookies y publicidad
           </Text>
-          {preferencia ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Cerrar aviso"
-              onPress={cerrar}
-              style={({ hovered }: { hovered?: boolean; pressed: boolean }) => [
-                styles.cerrar,
-                { width: minTouchSize, height: minTouchSize, backgroundColor: hovered ? 'rgba(255,255,255,0.12)' : 'transparent' },
-              ]}
-            >
-              <Ionicons name="close" size={20} color={colors.onBackgroundMuted} />
-            </Pressable>
-          ) : null}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar aviso"
+            onPress={cerrar}
+            style={({ hovered }: { hovered?: boolean; pressed: boolean }) => [
+              styles.cerrar,
+              { width: minTouchSize, height: minTouchSize, backgroundColor: hovered ? 'rgba(255,255,255,0.12)' : 'transparent' },
+            ]}
+          >
+            <Ionicons name="close" size={20} color={colors.onBackgroundMuted} />
+          </Pressable>
         </View>
         <Text style={[type.bodyMuted, { color: colors.onBackground }]}>
           USCupo se financia con anuncios de Google AdSense, que usa cookies. Elige si pueden ser personalizados; mientras no
@@ -106,6 +105,9 @@ export function AvisoCookies() {
             Política de privacidad
           </Link>
         </Text>
+        {preferencia ? (
+          <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted, fontSize: 13 }]}>Un cambio se aplica a los anuncios al recargar la página.</Text>
+        ) : null}
         <View style={[styles.botones, { gap: spacing.sm }]}>
           {opcion('no_personalizados', 'No personalizados')}
           {opcion('personalizados', 'Personalizados')}
