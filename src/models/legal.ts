@@ -2,7 +2,7 @@
 // Al cambiar cualquiera de los dos documentos se sube VERSION_LEGAL (aquí y en la app) y todos
 // vuelven a aceptar al entrar (Ley 1581: prueba de la autorización).
 
-export const VERSION_LEGAL = '2026-10-24.3';
+export const VERSION_LEGAL = '2026-10-24.4';
 export const VIGENTE_DESDE = '24 de octubre de 2026';
 
 export const RESPONSABLE = {
@@ -45,6 +45,7 @@ export const PRIVACIDAD: Documento = {
             'Número de WhatsApp, solo si decides agregarlo.',
             'Tus ofertas de cambio: materia, grupo, horario que tienes, horarios que buscas y el comentario opcional.',
             'Tu actividad en el servicio: interés en ofertas, cambios confirmados y avisos.',
+            'Los reportes que haces (oferta, motivo y detalle opcional) y los estudiantes que bloqueas.',
           ],
         },
         'Datos que se generan al usar el servicio:',
@@ -68,7 +69,7 @@ export const PRIVACIDAD: Documento = {
             'Cuando alguien marca interés en tu oferta (o tú en la de otro), mostrar a ambos los datos de contacto que cada uno decidió dejar visibles, durante 7 días, para que coordinen el cambio.',
             'Enviarte avisos dentro del servicio sobre tus ofertas.',
             'Mostrar anuncios que financian el servicio.',
-            'Mantener la seguridad, prevenir abusos y atender tus solicitudes.',
+            'Mantener la seguridad, prevenir abusos, revisar los reportes de contenido y aplicar los bloqueos entre estudiantes.',
           ],
         },
         'USCupo no gestiona ni garantiza el cambio de horario: ese trámite se hace en los canales oficiales de la Universidad.',
@@ -96,7 +97,7 @@ export const PRIVACIDAD: Documento = {
     {
       titulo: '6. Cuánto tiempo los guardamos',
       bloques: [
-        'Mientras tengas tu cuenta. Tus ofertas resueltas o vencidas quedan en tu historial. Si eliminas tu cuenta, borramos de inmediato tu perfil, tus ofertas, tus avisos y tu historial; las copias de seguridad del proveedor pueden conservarlos hasta 30 días antes de borrarse.',
+        'Mientras tengas tu cuenta. Tus ofertas resueltas o vencidas quedan en tu historial. Los reportes se guardan hasta que se revisan y, como mucho, mientras exista la oferta reportada. Si eliminas tu cuenta, borramos de inmediato tu perfil, tus ofertas, tus avisos, tu historial, tus reportes y tus bloqueos; las copias de seguridad del proveedor pueden conservarlos hasta 30 días antes de borrarse.',
       ],
     },
     {
@@ -187,11 +188,12 @@ export const TERMINOS: Documento = {
             'Publicar solo ofertas reales de grupos que tienes.',
             'Usar los datos de contacto de otros solo para coordinar el cambio.',
             'No cobrar, vender ni pedir dinero por un cupo o un cambio.',
-            'No publicar contenido ofensivo, discriminatorio, engañoso, publicidad ni datos personales de terceros.',
+            'No publicar contenido ofensivo, acosador, discriminatorio, sexual, violento, engañoso, publicidad ni datos personales de terceros. USCupo tiene tolerancia cero con este contenido.',
             'No intentar acceder a cuentas o datos ajenos ni afectar el funcionamiento del servicio.',
           ],
         },
-        'Podemos retirar contenido o suspender cuentas que incumplan estas reglas.',
+        'Puedes reportar cualquier oferta y bloquear a cualquier estudiante desde el menú de la oferta. Quien es reportado o bloqueado no se entera. Revisamos los reportes; una oferta con varios reportes se oculta mientras la revisamos.',
+        'Retiramos el contenido que incumpla estas reglas y podemos suspender o eliminar las cuentas que lo publiquen.',
       ],
     },
     {
