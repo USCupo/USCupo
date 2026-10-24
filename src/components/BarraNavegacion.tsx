@@ -76,7 +76,8 @@ function Superior({ rutas, activa, ir, pendientes }: VistaProps) {
         </View>
 
         <View accessibilityRole="tablist" style={styles.enlaces}>
-          {rutas.map((r) => {
+          {/* Perfil no va aquí: en computador se llega por el avatar con la inicial. */}
+          {rutas.filter((r) => r.name !== 'perfil').map((r) => {
             const item = ITEMS[r.name];
             const sel = r.name === activa;
             return (
@@ -109,12 +110,18 @@ function Superior({ rutas, activa, ir, pendientes }: VistaProps) {
           <ThemeToggle />
           {perfilRuta ? (
             <Pressable
-              accessibilityRole="button"
+              accessibilityRole="tab"
+              accessibilityState={{ selected: activa === 'perfil' }}
               accessibilityLabel={`Perfil de ${perfil?.nombre_completo ?? 'estudiante'}`}
               onPress={() => ir(perfilRuta, activa === 'perfil')}
               style={({ hovered }: { hovered?: boolean; pressed: boolean }) => [
                 styles.avatar,
-                { backgroundColor: colors.accent, opacity: hovered ? 0.88 : 1 },
+                {
+                  backgroundColor: colors.accent,
+                  opacity: hovered ? 0.88 : 1,
+                  // Aro de "pestaña activa" ahora que Perfil no tiene enlace propio.
+                  borderColor: activa === 'perfil' ? colors.onBackground : 'transparent',
+                },
               ]}
             >
               <Text style={{ color: '#0A2959', fontFamily: 'Inter_700Bold', fontSize: 15 }}>{inicial}</Text>
@@ -224,6 +231,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
