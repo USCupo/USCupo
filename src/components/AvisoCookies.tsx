@@ -5,11 +5,10 @@ import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useConsentimientoAnuncios } from '../controllers/useConsentimientoAnuncios';
 import type { PreferenciaAnuncios } from '../models/consentimientoAnuncios';
-import { cristalClaro, glass } from '../theme/glass';
+import { cristalOscuro, glass } from '../theme/glass';
 import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
 import { useBreakpoint } from '../theme/useBreakpoint';
 import { useTheme } from '../theme/useTheme';
-import { Button } from './Button';
 
 /**
  * Aviso de cookies y publicidad: panel de cristal flotante que no bloquea el uso. Hasta que el
@@ -37,14 +36,29 @@ export function AvisoCookies() {
   const conDock = !amplio && segmentos[0] === '(tabs)';
   const abajo = insets.bottom + (conDock ? glass.altoBarraInferior + glass.margen * 2 : spacing.md);
 
-  const opcion = (p: PreferenciaAnuncios, texto: string) => (
-    <Button
-      label={preferencia === p ? `${texto} ✓` : texto}
-      variant="secondary"
-      onPress={() => elegir(p)}
-      style={{ flexGrow: 1, flexBasis: 160 }}
-    />
-  );
+  // Píldoras sobre el cristal oscuro, como los enlaces de la navbar; la elegida lleva aro amarillo.
+  const opcion = (p: PreferenciaAnuncios, texto: string) => {
+    const sel = preferencia === p;
+    return (
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ selected: sel }}
+        onPress={() => elegir(p)}
+        style={({ hovered, pressed }: { hovered?: boolean; pressed: boolean }) => [
+          styles.opcion,
+          {
+            minHeight: minTouchSize,
+            backgroundColor: hovered || sel ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.08)',
+            borderColor: sel ? colors.accent : colors.onBackgroundBorder,
+            opacity: pressed ? 0.85 : 1,
+          },
+        ]}
+      >
+        {sel ? <Ionicons name="checkmark" size={18} color={colors.accent} /> : null}
+        <Text style={[type.body, { color: colors.onBackground, fontFamily: 'Inter_700Bold' }]}>{texto}</Text>
+      </Pressable>
+    );
+  };
 
   return (
     <View pointerEvents="box-none" style={[styles.capa, { bottom: abajo, paddingHorizontal: amplio ? spacing.lg : spacing.md, alignItems: amplio ? 'flex-start' : 'stretch' }]}>
@@ -53,7 +67,7 @@ export function AvisoCookies() {
         aria-label="Aviso de cookies y publicidad"
         style={[
           styles.panel,
-          cristalClaro(colors),
+          cristalOscuro(colors),
           {
             borderRadius: glass.panel,
             padding: spacing.md,
@@ -65,8 +79,8 @@ export function AvisoCookies() {
         ]}
       >
         <View style={styles.titulo}>
-          <Ionicons name="shield-checkmark-outline" size={20} color={colors.link} />
-          <Text accessibilityRole="header" style={[type.body, { color: colors.text, fontFamily: 'Inter_700Bold', flex: 1 }]}>
+          <Ionicons name="shield-checkmark-outline" size={20} color={colors.accent} />
+          <Text accessibilityRole="header" style={[type.body, { color: colors.accent, fontFamily: 'Inter_700Bold', flex: 1 }]}>
             Cookies y publicidad
           </Text>
           {preferencia ? (
@@ -76,17 +90,17 @@ export function AvisoCookies() {
               onPress={cerrar}
               style={({ hovered }: { hovered?: boolean; pressed: boolean }) => [
                 styles.cerrar,
-                { width: minTouchSize, height: minTouchSize, backgroundColor: hovered ? colors.primaryTint : 'transparent' },
+                { width: minTouchSize, height: minTouchSize, backgroundColor: hovered ? 'rgba(255,255,255,0.12)' : 'transparent' },
               ]}
             >
-              <Ionicons name="close" size={20} color={colors.textMuted} />
+              <Ionicons name="close" size={20} color={colors.onBackgroundMuted} />
             </Pressable>
           ) : null}
         </View>
-        <Text style={[type.bodyMuted, { color: colors.textMuted }]}>
+        <Text style={[type.bodyMuted, { color: colors.onBackground }]}>
           USCupo se financia con anuncios de Google AdSense, que usa cookies. Elige si pueden ser personalizados; mientras no
           elijas, son no personalizados.{' '}
-          <Link href="/privacidad" style={{ color: colors.link, fontFamily: 'Inter_700Bold', textDecorationLine: 'underline' }}>
+          <Link href="/privacidad" style={{ color: colors.accent, fontFamily: 'Inter_700Bold', textDecorationLine: 'underline' }}>
             Política de privacidad
           </Link>
         </Text>
@@ -105,4 +119,15 @@ const styles = StyleSheet.create({
   titulo: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   cerrar: { alignItems: 'center', justifyContent: 'center', borderRadius: 999, marginVertical: -8, marginRight: -8 },
   botones: { flexDirection: 'row', flexWrap: 'wrap' },
+  opcion: {
+    flexGrow: 1,
+    flexBasis: 160,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    borderRadius: glass.pill,
+    borderWidth: 1,
+    paddingHorizontal: 16,
+  },
 });
