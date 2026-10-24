@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BrandPanel } from '../../src/components/BrandPanel';
 import { Button } from '../../src/components/Button';
 import { CarreraPicker } from '../../src/components/CarreraPicker';
+import { CasillaLegal } from '../../src/components/CasillaLegal';
 import { GradientBackground } from '../../src/components/GradientBackground';
 import { InfoNotice } from '../../src/components/InfoNotice';
 import { Logo } from '../../src/components/Logo';
@@ -23,6 +24,7 @@ import { ThemeToggle } from '../../src/components/ThemeToggle';
 import { MIN_CONTRASENA } from '../../src/controllers/auth';
 import { useLoginController, type LoginController } from '../../src/controllers/useLoginController';
 import { USC_EMAIL_DOMAIN } from '../../src/lib/supabase';
+import { AVISO_NO_OFICIAL } from '../../src/models/legal';
 import { animarResorte, resorte, useReducedMotion } from '../../src/theme/motion';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../../src/theme/glass';
@@ -239,6 +241,15 @@ function Formulario({ c }: { c: LoginController }) {
           editable={!ocupado}
         />
 
+        {registro && (
+          <CasillaLegal
+            aceptado={c.campos.aceptaLegal}
+            onCambiar={c.setAceptaLegal}
+            error={c.errores.legal}
+            disabled={ocupado}
+          />
+        )}
+
         {c.carreras.origen === 'local' && registro && (
           <View style={{ marginBottom: spacing.md }}>
             <InfoNotice>
@@ -288,8 +299,7 @@ function Formulario({ c }: { c: LoginController }) {
 
         <View style={{ marginTop: spacing.md }}>
           <InfoNotice>
-            USCupo solo conecta estudiantes. La gestión del cambio de horario se hace directamente en los canales
-            oficiales de la USC.
+            {`USCupo solo conecta estudiantes. La gestión del cambio de horario se hace directamente en los canales oficiales de la USC. ${AVISO_NO_OFICIAL}`}
           </InfoNotice>
         </View>
       </View>

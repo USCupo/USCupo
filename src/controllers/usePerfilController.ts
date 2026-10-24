@@ -2,9 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../lib/AuthContext';
 import { obtenerCarrera } from '../models/carreras';
 import { listarMisOfertas } from '../models/ofertas';
-import { actualizarPerfilPropio } from '../models/perfiles';
+import { actualizarPerfilPropio, eliminarMiCuenta } from '../models/perfiles';
 import { cerrarSesion, errorNombre, mensajeDeError } from './auth';
 import { useCargaEnFoco } from './useCargaEnFoco';
+
+export const PALABRA_ELIMINAR = 'ELIMINAR';
 
 // WhatsApp opcional: 10 dígitos colombianos (con o sin +57, espacios o guiones).
 export function normalizarWhatsapp(v: string): string | null {
@@ -27,6 +29,12 @@ export function usePerfilController() {
   const [guardando, setGuardando] = useState(false);
   const [aviso, setAviso] = useState<string | null>(null);
   const [confirmarSalida, setConfirmarSalida] = useState(false);
+  // Borrar cuenta: hay que escribir la palabra; un toque accidental no basta.
+  const [confirmarEliminar, setConfirmarEliminar] = useState(false);
+  const [textoEliminar, setTextoEliminar] = useState('');
+  const [eliminando, setEliminando] = useState(false);
+  const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
+  const puedeEliminar = textoEliminar.trim().toUpperCase() === PALABRA_ELIMINAR;
 
   useEffect(() => {
     if (!perfil) return;
@@ -86,6 +94,20 @@ export function usePerfilController() {
     }
   }, [nombre, whatsapp, mostrarCorreo, mostrarWhatsapp, userId, recargarPerfil]);
 
+  const eliminarCuenta = useCallback(async () => {
+    if (eliminando || !puedeEliminar) return;
+    setEliminando(true);
+    setErrorEliminar(null);
+    try {
+      await eliminarMiCuenta();
+      // La sesión ya no vale: se cierra en este equipo y el índice vuelve al login.
+      await cerrarSesion();
+    } catch (e) {
+      setErrorEliminar(mensajeDeError(e));
+      setEliminando(false);
+    }
+  }, [eliminando, puedeEliminar]);
+
   return {
     ...carga,
     correo: perfil?.correo ?? session?.user.email ?? '',
@@ -111,5 +133,23 @@ export function usePerfilController() {
     pedirSalida: () => setConfirmarSalida(true),
     cancelarSalida: () => setConfirmarSalida(false),
     salir: cerrarSesion,
+    confirmarEliminar,
+    textoEliminar,
+    setTextoEliminar: (v: string) => {
+      setTextoEliminar(v);
+      setErrorEliminar(null);
+    },
+    puedeEliminar,
+    eliminando,
+    errorEliminar,
+    pedirEliminar: () => {
+      setTextoEliminar('');
+      setErrorEliminar(null);
+      setConfirmarEliminar(true);
+    },
+    cancelarEliminar: () => {
+      if (!eliminando) setConfirmarEliminar(false);
+    },
+    eliminarCuenta,
   };
 }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { listarCarreras, type OrigenCatalogo } from '../models/carreras';
 import type { Carrera } from '../models/types';
+import { ERROR_SIN_ACEPTAR, VERSION_LEGAL } from '../models/legal';
 import {
   errorContrasena,
   errorCorreo,
@@ -13,7 +14,7 @@ import {
 
 export type ModoLogin = 'registro' | 'ingreso';
 
-type Campo = 'nombre' | 'correo' | 'carrera' | 'contrasena';
+type Campo = 'nombre' | 'correo' | 'carrera' | 'contrasena' | 'legal';
 type Errores = Partial<Record<Campo, string>>;
 
 export interface EstadoCarreras {
@@ -30,6 +31,8 @@ export function useLoginController() {
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [carrera, setCarrera] = useState<Carrera | null>(null);
+  // Casilla de términos y política (Ley 1581): solo al crear cuenta y nunca marcada de entrada.
+  const [aceptaLegal, setAceptaLegalState] = useState(false);
 
   const [carreras, setCarreras] = useState<EstadoCarreras>({ lista: [], cargando: true, origen: null });
   const [errores, setErrores] = useState<Errores>({});
@@ -96,6 +99,7 @@ export function useLoginController() {
     if (modo === 'registro') {
       nuevos.nombre = errorNombre(nombreCompleto);
       nuevos.carrera = carrera ? undefined : 'Elige tu carrera para continuar';
+      nuevos.legal = aceptaLegal ? undefined : ERROR_SIN_ACEPTAR;
     }
     setErrores(nuevos);
     if (Object.values(nuevos).some(Boolean)) return;
@@ -103,7 +107,7 @@ export function useLoginController() {
     setEnviando(true);
     try {
       if (modo === 'registro') {
-        const { session } = await registrarse({ nombreCompleto, correo, contrasena, carreraId: carrera!.id });
+        const { session } = await registrarse({ nombreCompleto, correo, contrasena, carreraId: carrera!.id, legalVersion: VERSION_LEGAL });
         if (!session) {
           setAvisoConfirmacion(correo.trim().toLowerCase());
           setContrasena('');
@@ -116,7 +120,12 @@ export function useLoginController() {
     } finally {
       setEnviando(false);
     }
-  }, [modo, nombreCompleto, correo, contrasena, carrera]);
+  }, [modo, nombreCompleto, correo, contrasena, carrera, aceptaLegal]);
+
+  const setAceptaLegal = useCallback((v: boolean) => {
+    setAceptaLegalState(v);
+    setErrores((e) => (e.legal ? { ...e, legal: undefined } : e));
+  }, []);
 
   // Sirve igual para crear cuenta e iniciar sesión: Supabase crea el perfil la primera vez.
   const entrarConMicrosoft = useCallback(async () => {
@@ -136,7 +145,8 @@ export function useLoginController() {
     modo,
     setModo,
     alternarModo,
-    campos: { nombreCompleto, correo, contrasena, carrera },
+    campos: { nombreCompleto, correo, contrasena, carrera, aceptaLegal },
+    setAceptaLegal,
     setNombreCompleto,
     setCorreo,
     setContrasena,

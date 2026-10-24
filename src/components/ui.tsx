@@ -231,11 +231,27 @@ interface ConfirmarProps {
   confirmar: string;
   peligroso?: boolean;
   cargando?: boolean;
+  /** Error de la acción, dentro del diálogo para no perderlo detrás del modal. */
+  error?: string | null;
+  confirmarDeshabilitado?: boolean;
+  children?: ReactNode;
   onConfirmar: () => void;
   onCancelar: () => void;
 }
 
-export function DialogoConfirmar({ visible, titulo, mensaje, confirmar, peligroso, cargando, onConfirmar, onCancelar }: ConfirmarProps) {
+export function DialogoConfirmar({
+  visible,
+  titulo,
+  mensaje,
+  confirmar,
+  peligroso,
+  cargando,
+  error,
+  confirmarDeshabilitado,
+  children,
+  onConfirmar,
+  onCancelar,
+}: ConfirmarProps) {
   const { colors, spacing, type, radius } = useTheme();
   const reducir = useReducedMotion();
   const entrada = useRef(new Animated.Value(0)).current;
@@ -249,7 +265,7 @@ export function DialogoConfirmar({ visible, titulo, mensaje, confirmar, peligros
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancelar} statusBarTranslucent>
       <View style={[styles.centro, { flex: 1, padding: spacing.lg }]}>
-        <Pressable accessibilityLabel="Cancelar" onPress={onCancelar} style={[StyleSheet.absoluteFill, styles.scrim]} />
+        <Pressable accessibilityLabel="Cancelar" onPress={cargando ? undefined : onCancelar} style={[StyleSheet.absoluteFill, styles.scrim]} />
         <Animated.View
           accessibilityViewIsModal
           style={[
@@ -267,6 +283,12 @@ export function DialogoConfirmar({ visible, titulo, mensaje, confirmar, peligros
             {titulo}
           </Text>
           <Text style={[type.body, { color: colors.textMuted, marginTop: spacing.sm }]}>{mensaje}</Text>
+          {children ? <View style={{ marginTop: spacing.md }}>{children}</View> : null}
+          {error ? (
+            <Text role="alert" style={[type.bodyMuted, { color: colors.danger, marginTop: spacing.sm }]}>
+              {error}
+            </Text>
+          ) : null}
           <View style={[styles.filaBotones, { marginTop: spacing.lg }]}>
             <View style={{ flex: 1 }}>
               <Button label="Cancelar" variant="secondary" onPress={onCancelar} disabled={cargando} />
@@ -277,6 +299,7 @@ export function DialogoConfirmar({ visible, titulo, mensaje, confirmar, peligros
                 onPress={onConfirmar}
                 loading={cargando}
                 loadingLabel="Un momento…"
+                disabled={confirmarDeshabilitado}
                 style={peligroso ? { backgroundColor: colors.danger } : undefined}
               />
             </View>

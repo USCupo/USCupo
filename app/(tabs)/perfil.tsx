@@ -1,11 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Link } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { Interruptor } from '../../src/components/Contacto';
 import { OfertaCard } from '../../src/components/OfertaCard';
 import { TextField } from '../../src/components/TextField';
 import { ThemeToggle } from '../../src/components/ThemeToggle';
 import { Aviso, DialogoConfirmar, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
-import { usePerfilController } from '../../src/controllers/usePerfilController';
+import { PALABRA_ELIMINAR, usePerfilController } from '../../src/controllers/usePerfilController';
+import { AVISO_NO_OFICIAL, RESPONSABLE } from '../../src/models/legal';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
 
@@ -91,8 +93,31 @@ export default function PerfilScreen() {
             </Tarjeta>
 
             <Tarjeta>
+              <TituloSeccion>Acerca de USCupo</TituloSeccion>
+              <Text style={[type.bodyMuted, { color: colors.textMuted }]}>{AVISO_NO_OFICIAL}</Text>
+              <View style={[styles.enlaces, { marginTop: spacing.sm }]}>
+                <Link href="/terminos" style={[type.bodyMuted, styles.enlace, { color: colors.link }]}>
+                  Términos de uso
+                </Link>
+                <Link href="/privacidad" style={[type.bodyMuted, styles.enlace, { color: colors.link }]}>
+                  Política de privacidad
+                </Link>
+                <Link href={`mailto:${RESPONSABLE.correo}`} style={[type.bodyMuted, styles.enlace, { color: colors.link }]}>
+                  Escríbenos: {RESPONSABLE.correo}
+                </Link>
+              </View>
+            </Tarjeta>
+
+            <Tarjeta>
               <TituloSeccion>Sesión</TituloSeccion>
               <Button label="Cerrar sesión" variant="secondary" onPress={c.pedirSalida} style={{ borderWidth: 1, borderColor: colors.danger }} />
+              <Pressable
+                accessibilityRole="button"
+                onPress={c.pedirEliminar}
+                style={{ marginTop: spacing.xs, alignItems: 'center', paddingVertical: spacing.sm, minHeight: 44, justifyContent: 'center' }}
+              >
+                <Text style={[type.body, { color: colors.danger, fontFamily: 'Inter_700Bold' }]}>Eliminar cuenta</Text>
+              </Pressable>
             </Tarjeta>
           </View>
         </View>
@@ -107,6 +132,28 @@ export default function PerfilScreen() {
         onConfirmar={c.salir}
         onCancelar={c.cancelarSalida}
       />
+      <DialogoConfirmar
+        visible={c.confirmarEliminar}
+        titulo="¿Eliminar tu cuenta?"
+        mensaje="Se borran para siempre tu perfil, todas tus ofertas (también las que están en conversación), tus avisos y tu historial. Si marcaste interés en la oferta de otra persona, esa oferta vuelve a quedar disponible. No se puede deshacer."
+        confirmar="Eliminar"
+        peligroso
+        cargando={c.eliminando}
+        error={c.errorEliminar}
+        confirmarDeshabilitado={!c.puedeEliminar}
+        onConfirmar={c.eliminarCuenta}
+        onCancelar={c.cancelarEliminar}
+      >
+        <TextField
+          label={`Escribe ${PALABRA_ELIMINAR} para confirmar`}
+          value={c.textoEliminar}
+          onChangeText={c.setTextoEliminar}
+          autoCapitalize="characters"
+          autoCorrect={false}
+          editable={!c.eliminando}
+          onSubmitEditing={c.eliminarCuenta}
+        />
+      </DialogoConfirmar>
       <Aviso mensaje={c.aviso} onCerrar={c.cerrarAviso} />
     </>
   );
@@ -115,5 +162,7 @@ export default function PerfilScreen() {
 const styles = StyleSheet.create({
   columnas: { flexDirection: 'row', alignItems: 'flex-start' },
   dato: {},
+  enlaces: { gap: 4 },
+  enlace: { textDecorationLine: 'underline', paddingVertical: 8, fontFamily: 'Inter_700Bold' },
   entre: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
 });

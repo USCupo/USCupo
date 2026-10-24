@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react';
 import { BarraNavegacion } from '../../src/components/BarraNavegacion';
 import { useAuth } from '../../src/lib/AuthContext';
 import { supabase } from '../../src/lib/supabase';
-import { perfilCompleto } from '../../src/models/perfiles';
+import { legalVigente, perfilCompleto } from '../../src/models/perfiles';
 
 type BarraProps = ComponentProps<typeof BarraNavegacion>;
 
@@ -33,6 +33,7 @@ export default function TabsLayout() {
 
   // "/" resuelve a (tabs)/index: redirigir ahí volvería a este layout en bucle.
   if (!loading && !session) return <Redirect href="/(auth)/login" />;
+  if (!loading && !legalVigente(perfil)) return <Redirect href="/aceptar-legal" />;
   if (!loading && !perfilCompleto(perfil)) return <Redirect href="/completar-perfil" />;
 
   return (

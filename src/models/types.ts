@@ -35,6 +35,8 @@ export interface Profile {
   mostrar_correo: boolean;
   mostrar_whatsapp: boolean;
   created_at: string;
+  /** Versión de términos y política aceptada (Ley 1581); null = nunca aceptó. */
+  legal_version: string | null;
 }
 
 export interface PerfilPublico {

@@ -9,14 +9,14 @@ import { TextField } from '../src/components/TextField';
 import { ThemeToggle } from '../src/components/ThemeToggle';
 import { useCompletarPerfilController } from '../src/controllers/useCompletarPerfilController';
 import { useAuth } from '../src/lib/AuthContext';
-import { perfilCompleto } from '../src/models/perfiles';
+import { legalVigente, perfilCompleto } from '../src/models/perfiles';
 import { useBreakpoint } from '../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../src/theme/glass';
 import { useTheme } from '../src/theme/useTheme';
 
 export default function CompletarPerfilScreen() {
   const { session, perfil, loading } = useAuth();
-  if (!loading && (!session || perfilCompleto(perfil))) return <Redirect href="/" />;
+  if (!loading && (!session || !legalVigente(perfil) || perfilCompleto(perfil))) return <Redirect href="/" />;
   if (loading) return null;
   return <Contenido />;
 }
