@@ -15,6 +15,7 @@ import { agruparPorFacultad, filtrarCarreras } from '../models/carreras';
 import type { Carrera } from '../models/types';
 import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
 import { useBreakpoint } from '../theme/useBreakpoint';
+import { cristalClaro } from '../theme/glass';
 import { useTheme } from '../theme/useTheme';
 import { TextField } from './TextField';
 
@@ -114,10 +115,7 @@ export function CarreraPicker({ label, carreras, cargando, selectedId, onSelect,
             accessibilityViewIsModal
             style={[
               styles.panel,
-              {
-                backgroundColor: colors.surface,
-                borderColor: colors.border,
-              },
+              cristalClaro(colors),
               comoDialogo
                 ? { width: '92%', maxWidth: 560, height: Math.min(height * 0.8, 720), borderRadius: radius.card + 4 }
                 : {
@@ -261,12 +259,6 @@ const styles = StyleSheet.create({
   },
   panel: {
     overflow: 'hidden',
-    borderWidth: StyleSheet.hairlineWidth,
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 12,
   },
   grabber: {
     alignSelf: 'center',

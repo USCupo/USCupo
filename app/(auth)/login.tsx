@@ -25,6 +25,7 @@ import { useLoginController, type LoginController } from '../../src/controllers/
 import { USC_EMAIL_DOMAIN } from '../../src/lib/supabase';
 import { animarResorte, resorte, useReducedMotion } from '../../src/theme/motion';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
+import { cristalClaro, glass } from '../../src/theme/glass';
 import { useTheme } from '../../src/theme/useTheme';
 
 export default function LoginScreen() {
@@ -97,9 +98,8 @@ function Tarjeta({ children, ancho }: { children: React.ReactNode; ancho?: numbe
     <View
       style={[
         styles.tarjeta,
+        cristalClaro(colors),
         {
-          backgroundColor: colors.surface,
-          borderColor: colors.border,
           padding: breakpoint === 'compacto' ? spacing.lg : spacing.xl,
         },
         ancho ? { width: '100%', maxWidth: ancho } : null,
@@ -329,12 +329,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tarjeta: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.22,
-    shadowRadius: 32,
-    shadowOffset: { width: 0, height: 16 },
-    elevation: 8,
+    borderRadius: glass.panel,
   },
 });

@@ -45,6 +45,16 @@ export function cristalClaro(colors: ThemeColors): ViewStyle {
   };
 }
 
+/** Cristal de botón: el color de relleno (primario, tinte…) translúcido, mismo borde y sombra. */
+export function cristalBoton(fondo: string, borde = 'rgba(255,255,255,0.18)'): ViewStyle {
+  return {
+    backgroundColor: conAlfa(fondo, 0.85),
+    borderColor: borde,
+    borderWidth: 1,
+    ...sombraYDesenfoque(),
+  };
+}
+
 function sombraYDesenfoque(): ViewStyle {
   return {
     boxShadow: '0px 18px 40px -24px rgba(0,0,0,0.8)',

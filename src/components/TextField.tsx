@@ -40,7 +40,8 @@ export function TextField({ label, error, style, password, onFocus, onBlur, ...r
             styles.input,
             {
               minHeight: minTouchSize + 4,
-              borderRadius: radius.control,
+              // El área de texto multilínea no cabe en una píldora: usa el radio de tarjeta.
+              borderRadius: rest.multiline ? radius.card : radius.control,
               borderColor,
               backgroundColor: colors.surface,
               color: colors.text,

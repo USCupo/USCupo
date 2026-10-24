@@ -1,4 +1,5 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, ViewStyle } from 'react-native';
+import { cristalBoton } from '../theme/glass';
 import { useTheme } from '../theme/useTheme';
 
 type Variant = 'primary' | 'secondary' | 'ghost';
@@ -17,8 +18,12 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
   const { colors, radius, minTouchSize, type } = useTheme();
   const isDisabled = disabled || loading;
 
-  const backgroundColor =
-    variant === 'primary' ? colors.primary : variant === 'secondary' ? colors.primaryTint : 'transparent';
+  const relleno =
+    variant === 'primary'
+      ? cristalBoton(colors.primary)
+      : variant === 'secondary'
+        ? cristalBoton(colors.primaryTint, colors.border)
+        : { backgroundColor: 'transparent' };
   const textColor = variant === 'primary' ? colors.onPrimary : colors.link;
 
   return (
@@ -30,7 +35,7 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
       style={({ pressed }) => [
         styles.base,
         {
-          backgroundColor,
+          ...relleno,
           borderRadius: radius.control,
           minHeight: minTouchSize,
           opacity: isDisabled ? 0.6 : pressed ? 0.85 : 1,

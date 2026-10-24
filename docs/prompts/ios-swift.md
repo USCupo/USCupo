@@ -59,6 +59,25 @@ Medicina Veterinaria.
 - El trigger `handle_new_user` crea el perfil y rechaza correos fuera de `@usc.edu.co`.
 - Hay una Edge Function `expirar-ofertas` (cron) que vence ofertas en proceso tras 7 días.
 
+## Datos locales y caché
+
+Supabase es la **única fuente de verdad**, la misma que usa la web. No crees una base de datos
+propia que la reemplace ni sincronización bidireccional.
+
+- **Siempre en vivo desde Supabase:** `ofertas`, `ofertas_busco`, `notificaciones`, `profiles`
+  y todas las RPC. Las cambian otros estudiantes; una copia local quedaría vieja. Todas las
+  escrituras (publicar, expresar interés, confirmar, editar perfil) van directo a Supabase.
+- **Caché opcional con SwiftData:** `carreras`, `materias` y `bloques_horario` (cambian poco).
+  Patrón en el repositorio: devolver primero lo de SwiftData, pedir a Supabase, actualizar
+  SwiftData y publicar el resultado nuevo. Refresca al abrir la app y con `.refreshable`.
+- **`@AppStorage`:** tema y preferencias de UI (último filtro, borradores de formulario).
+- **Sesión:** la gestiona `supabase-swift` en el Keychain; no la copies a SwiftData ni a
+  `UserDefaults`.
+- **Sin conexión:** muestra el catálogo en caché y un aviso "Sin conexión". Bloquea las acciones
+  que escriben con un mensaje claro; **no las encoles** para enviarlas después (la oferta pudo
+  cambiar de estado mientras tanto).
+- Al cerrar sesión, borra la caché de SwiftData y las preferencias ligadas al usuario.
+
 ## Reglas de dominio
 
 - Match recíproco: misma materia, distinto dueño, la otra ofrece un bloque que yo busco **y**

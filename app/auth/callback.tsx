@@ -5,6 +5,7 @@ import { Button } from '../../src/components/Button';
 import { GradientBackground } from '../../src/components/GradientBackground';
 import { mensajeDeError } from '../../src/controllers/auth';
 import { useAuth } from '../../src/lib/AuthContext';
+import { cristalClaro, glass } from '../../src/theme/glass';
 import { useTheme } from '../../src/theme/useTheme';
 
 // Retorno de Microsoft. Supabase canjea el ?code= al cargar la página (detectSessionInUrl);
@@ -31,13 +32,10 @@ export default function AuthCallback() {
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.lg }}>
         {error ? (
           <View
-            style={{
-              width: '100%',
-              maxWidth: 420,
-              backgroundColor: colors.surface,
-              borderRadius: 24,
-              padding: spacing.xl,
-            }}
+            style={[
+              cristalClaro(colors),
+              { width: '100%', maxWidth: 420, borderRadius: glass.panel, padding: spacing.xl },
+            ]}
           >
             <Text
               accessibilityRole="header"

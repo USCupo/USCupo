@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { diasCortos, rangoHoras } from '../models/catalogo';
 import { hace, type OfertaDetalle } from '../models/ofertas';
 import type { BloqueHorario } from '../models/types';
+import { cristalClaro } from '../theme/glass';
 import { useTheme } from '../theme/useTheme';
 import { Insignia } from './ui';
 
@@ -45,9 +46,8 @@ export function OfertaCard({ oferta, resaltarTiene, miBloqueActualId, esMatch, e
   return (
     <View
       style={[
-        styles.card,
+        cristalClaro(colors),
         {
-          backgroundColor: colors.surface,
           borderColor: esMatch ? colors.accent : colors.border,
           borderWidth: esMatch ? 1.5 : StyleSheet.hairlineWidth,
           borderRadius: radius.card + 4,
@@ -110,13 +110,6 @@ export function OfertaCard({ oferta, resaltarTiene, miBloqueActualId, esMatch, e
 }
 
 const styles = StyleSheet.create({
-  card: {
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 2,
-  },
   cabecera: {
     flexDirection: 'row',
     alignItems: 'flex-start',

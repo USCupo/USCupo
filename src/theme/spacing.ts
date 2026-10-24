@@ -1,3 +1,5 @@
+import { glass } from './glass';
+
 // Base de 8 pt (design system del mockup).
 export const spacing = {
   xs: 4,
@@ -8,9 +10,10 @@ export const spacing = {
   xxl: 40,
 } as const;
 
+// Mismo redondeado que la navbar de cristal: controles en píldora, tarjetas con card + 4 = glass.panel.
 export const radius = {
-  control: 12,
-  card: 16,
+  control: glass.pill,
+  card: glass.panel - 4,
 } as const;
 
 export const minTouchSize = 44;

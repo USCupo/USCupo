@@ -1,5 +1,6 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
+import { cristalClaro } from '../theme/glass';
 import { useTheme } from '../theme/useTheme';
 
 // Logo oficial de Microsoft (cuatro cuadros) con sus colores de marca, sin modificar.
@@ -34,11 +35,12 @@ export function MicrosoftButton({ onPress, loading, disabled }: Props) {
       disabled={isDisabled}
       style={({ pressed, hovered }: { pressed: boolean; hovered?: boolean }) => [
         styles.base,
+        cristalClaro(colors),
         {
           minHeight: minTouchSize + 4,
           borderRadius: radius.control,
           borderColor: hovered ? colors.link : colors.border,
-          backgroundColor: hovered ? colors.primaryTint : colors.surface,
+          ...(hovered ? { backgroundColor: colors.primaryTint } : null),
           opacity: isDisabled ? 0.6 : pressed ? 0.85 : 1,
           transform: [{ scale: pressed ? 0.985 : 1 }],
         },

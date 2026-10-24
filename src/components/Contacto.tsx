@@ -15,7 +15,7 @@ export function Contacto({ contacto, materia }: { contacto: ContactoRevelado | n
   const wa = contacto.whatsapp?.replace(/\D/g, '');
 
   return (
-    <View style={[styles.caja, { backgroundColor: colors.primaryTint, borderRadius: radius.control, padding: spacing.md, gap: spacing.sm }]}>
+    <View style={[styles.caja, { backgroundColor: colors.primaryTint, borderRadius: radius.card, padding: spacing.md, gap: spacing.sm }]}>
       <Text style={[type.body, { color: colors.text, fontFamily: 'Inter_700Bold' }]}>{contacto.nombre_completo}</Text>
       {contacto.correo ? (
         <Enlace icono="mail-outline" texto={contacto.correo} url={`mailto:${contacto.correo}?subject=${encodeURIComponent('Cambio de horario · USCupo')}&body=${mensaje}`} />

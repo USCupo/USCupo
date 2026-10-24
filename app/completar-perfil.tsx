@@ -11,6 +11,7 @@ import { useCompletarPerfilController } from '../src/controllers/useCompletarPer
 import { useAuth } from '../src/lib/AuthContext';
 import { perfilCompleto } from '../src/models/perfiles';
 import { useBreakpoint } from '../src/theme/useBreakpoint';
+import { cristalClaro, glass } from '../src/theme/glass';
 import { useTheme } from '../src/theme/useTheme';
 
 export default function CompletarPerfilScreen() {
@@ -53,10 +54,9 @@ function Contenido() {
             <View
               style={[
                 styles.tarjeta,
+                cristalClaro(colors),
                 {
                   marginTop: spacing.lg,
-                  backgroundColor: colors.surface,
-                  borderColor: colors.border,
                   padding: tarjeta ? spacing.xl : spacing.lg,
                 },
               ]}
@@ -129,12 +129,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tarjeta: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.22,
-    shadowRadius: 32,
-    shadowOffset: { width: 0, height: 16 },
-    elevation: 8,
+    borderRadius: glass.panel,
   },
 });

@@ -8,7 +8,7 @@ export function InfoNotice({ children }: { children: string }) {
     <View
       style={[
         styles.box,
-        { backgroundColor: colors.primaryTint, borderRadius: radius.control, padding: spacing.md },
+        { backgroundColor: colors.primaryTint, borderRadius: radius.card, padding: spacing.md },
       ]}
     >
       <Text style={[type.bodyMuted, { color: colors.textMuted }]}>{children}</Text>

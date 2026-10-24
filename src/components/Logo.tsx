@@ -1,37 +1,48 @@
 import Svg, { G, Path } from 'react-native-svg';
 import { usc } from '../theme/colors';
-import { FLECHA, FLECHA_GIRO, PALABRA_UPO, PALABRA_USC } from './logoPaths';
+import {
+  FLECHA_C,
+  FLECHA_U,
+  ISOTIPO_TRANSFORM,
+  ISOTIPO_VIEWBOX,
+  PALABRA_UPO,
+  PALABRA_USC,
+  VERTICAL_TRANSFORM,
+  VERTICAL_VIEWBOX,
+} from './logoPaths';
 
 // Sobre fondo blanco el logo va en azul nativo + amarillo; sobre azul, la parte azul pasa
-// a blanco para no perderse (el amarillo se mantiene como acento).
+// a blanco para no perderse (versión "negativo" del kit; el amarillo se mantiene como acento).
 export type FondoLogo = 'blanco' | 'azul';
 
 function tintas(sobre: FondoLogo) {
   return { principal: sobre === 'azul' ? usc.blanco : usc.azulNativo, acento: usc.amarillo };
 }
 
-/** Solo el símbolo (dos flechas que se intercambian). */
+/** Solo el isotipo (flechas U y C que se intercambian). */
 export function Logo({ size = 40, sobre = 'blanco' }: { size?: number; sobre?: FondoLogo }) {
   const { principal, acento } = tintas(sobre);
   return (
-    <Svg width={size} height={size} viewBox="4.5 -46.6 450 450" accessibilityLabel="USCupo">
-      <Path d={FLECHA} fill={principal} />
-      <Path d={FLECHA} fill={acento} transform={FLECHA_GIRO} />
+    <Svg width={size} height={size} viewBox={ISOTIPO_VIEWBOX} accessibilityLabel="USCupo">
+      <G transform={ISOTIPO_TRANSFORM}>
+        <Path d={FLECHA_U} fill={principal} />
+        <Path d={FLECHA_C} fill={acento} />
+      </G>
     </Svg>
   );
 }
 
-/** Símbolo + wordmark "USCupo" en composición vertical. */
+/** Isotipo + wordmark "USCupo" en composición vertical. */
 export function LogoCompleto({ width = 160, sobre = 'blanco' }: { width?: number; sobre?: FondoLogo }) {
   const { principal, acento } = tintas(sobre);
   return (
-    <Svg width={width} height={(width * 484) / 459} viewBox="0 0 459 484" accessibilityLabel="USCupo">
-      <G>
-        <Path d={FLECHA} fill={principal} />
-        <Path d={FLECHA} fill={acento} transform={FLECHA_GIRO} />
+    <Svg width={width} height={(width * 464.2) / 455} viewBox={VERTICAL_VIEWBOX} accessibilityLabel="USCupo">
+      <G transform={VERTICAL_TRANSFORM}>
+        <Path d={FLECHA_U} fill={principal} />
+        <Path d={FLECHA_C} fill={acento} />
+        <Path d={PALABRA_USC} fill={principal} />
+        <Path d={PALABRA_UPO} fill={acento} />
       </G>
-      <Path d={PALABRA_USC} fill={principal} />
-      <Path d={PALABRA_UPO} fill={acento} />
     </Svg>
   );
 }

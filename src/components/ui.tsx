@@ -13,7 +13,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { glass } from '../theme/glass';
+import { cristalBoton, cristalClaro, glass } from '../theme/glass';
 import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
 import { useBreakpoint } from '../theme/useBreakpoint';
 import { useTheme } from '../theme/useTheme';
@@ -79,8 +79,8 @@ export function Tarjeta({ children, style, padding }: { children: ReactNode; sty
   return (
     <View
       style={[
-        styles.tarjeta,
-        { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radius.card + 4, padding: padding ?? spacing.lg },
+                cristalClaro(colors),
+        { borderRadius: radius.card + 4, padding: padding ?? spacing.lg },
         style,
       ]}
     >
@@ -254,8 +254,8 @@ export function DialogoConfirmar({ visible, titulo, mensaje, confirmar, peligros
           accessibilityViewIsModal
           style={[
             styles.dialogo,
+            cristalClaro(colors),
             {
-              backgroundColor: colors.surface,
               borderRadius: radius.card + 4,
               padding: spacing.lg,
               opacity: entrada,
@@ -309,7 +309,7 @@ export function Aviso({ mensaje, onCerrar }: { mensaje: string | null; onCerrar:
       <View
         accessibilityLiveRegion="polite"
         role="status"
-        style={[styles.aviso, { backgroundColor: colors.text, borderRadius: radius.control, padding: spacing.md }]}
+        style={[styles.aviso, cristalBoton(colors.text), { borderRadius: radius.card, padding: spacing.md }]}
       >
         <Ionicons name="checkmark-circle" size={20} color={colors.accent} />
         <Text style={[type.body, { color: colors.surface, flex: 1 }]}>{mensaje}</Text>
@@ -324,14 +324,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     gap: 16,
     flexWrap: 'wrap',
-  },
-  tarjeta: {
-    borderWidth: StyleSheet.hairlineWidth,
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 3,
   },
   filaEntre: {
     flexDirection: 'row',
@@ -373,11 +365,6 @@ const styles = StyleSheet.create({
   dialogo: {
     width: '100%',
     maxWidth: 440,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
-    shadowOffset: { width: 0, height: 16 },
-    elevation: 12,
   },
   filaBotones: {
     flexDirection: 'row',
@@ -396,10 +383,5 @@ const styles = StyleSheet.create({
     gap: 10,
     maxWidth: 520,
     width: '100%',
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 10,
   },
 });
