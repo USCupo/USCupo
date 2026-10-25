@@ -26,7 +26,9 @@ type IconName = ComponentProps<typeof Ionicons>['name'];
 // Encabezado sobre el degradado institucional + contenido con ancho máximo legible.
 
 interface PantallaProps {
+  /** Va en amarillo (accent); `prefijoTitulo` (p. ej. "Hola, ") lo antecede en blanco. */
   titulo: string;
+  prefijoTitulo?: string;
   subtitulo?: string;
   acciones?: ReactNode;
   children: ReactNode;
@@ -34,7 +36,7 @@ interface PantallaProps {
   onRefrescar?: () => void;
 }
 
-export function Pantalla({ titulo, subtitulo, acciones, children, anchoMax = 1080 }: PantallaProps) {
+export function Pantalla({ titulo, prefijoTitulo, subtitulo, acciones, children, anchoMax = 1080 }: PantallaProps) {
   const { colors, spacing, type } = useTheme();
   const { breakpoint } = useBreakpoint();
   const insets = useSafeAreaInsets();
@@ -56,7 +58,8 @@ export function Pantalla({ titulo, subtitulo, acciones, children, anchoMax = 108
         <View style={{ width: '100%', maxWidth: anchoMax }}>
           <View style={[styles.encabezado, { marginBottom: spacing.lg, paddingHorizontal: breakpoint === 'compacto' ? spacing.xs : 0 }]}>
             <View style={{ flex: 1 }}>
-              <Text accessibilityRole="header" style={[type.screenTitle, { color: colors.onBackground, fontSize: amplio ? 32 : 26, lineHeight: amplio ? 38 : 32 }]}>
+              <Text accessibilityRole="header" style={[type.screenTitle, { color: colors.accent, fontSize: amplio ? 32 : 26, lineHeight: amplio ? 38 : 32 }]}>
+                {prefijoTitulo ? <Text style={{ color: colors.onBackground }}>{prefijoTitulo}</Text> : null}
                 {titulo}
               </Text>
               {subtitulo ? (

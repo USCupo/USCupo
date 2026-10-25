@@ -2,6 +2,7 @@ import { Link } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { Interruptor } from '../../src/components/Contacto';
+import { InfoNotice } from '../../src/components/InfoNotice';
 import { OfertaCard } from '../../src/components/OfertaCard';
 import { TextField } from '../../src/components/TextField';
 import { ThemeToggle } from '../../src/components/ThemeToggle';
@@ -23,6 +24,11 @@ export default function PerfilScreen() {
       <Pantalla titulo="Perfil" subtitulo={c.correo}>
         <View style={[amplio && styles.columnas, { gap: spacing.lg }]}>
           <View style={[amplio && { flex: 1.3 }, { gap: spacing.lg }]}>
+            {c.esAdmin ? (
+              <InfoNotice>
+                Cuenta de revisión (admin): ves y usas solo ofertas de prueba. Los estudiantes reales no las ven.
+              </InfoNotice>
+            ) : null}
             <Tarjeta>
               <TituloSeccion>Tus datos</TituloSeccion>
               <TextField label="Nombre completo" value={c.campos.nombre} onChangeText={c.setNombre} error={c.errores.nombre} autoCapitalize="words" autoComplete="name" />
@@ -91,6 +97,30 @@ export default function PerfilScreen() {
                 </View>
               )}
             </Tarjeta>
+
+            {d && d.bloqueados.length > 0 ? (
+              <Tarjeta>
+                <TituloSeccion>Usuarios bloqueados</TituloSeccion>
+                <Text style={[type.bodyMuted, { color: colors.textMuted, marginBottom: spacing.sm }]}>
+                  No ven tus ofertas ni tú las suyas.
+                </Text>
+                {d.bloqueados.map((u) => (
+                  <View key={u.usuario_id} style={[styles.entre, styles.bloqueado, { borderTopColor: colors.border }]}>
+                    <Text style={[type.body, { color: colors.text, flex: 1 }]} numberOfLines={1}>
+                      {u.nombre_completo}
+                    </Text>
+                    <Button
+                      label="Desbloquear"
+                      variant="secondary"
+                      onPress={() => c.desbloquear(u)}
+                      loading={c.desbloqueando === u.usuario_id}
+                      loadingLabel="Desbloqueando…"
+                      disabled={!!c.desbloqueando}
+                    />
+                  </View>
+                ))}
+              </Tarjeta>
+            ) : null}
 
             <Tarjeta>
               <TituloSeccion>Acerca de USCupo</TituloSeccion>
@@ -165,4 +195,5 @@ const styles = StyleSheet.create({
   enlaces: { gap: 4 },
   enlace: { textDecorationLine: 'underline', paddingVertical: 8, fontFamily: 'Inter_700Bold' },
   entre: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  bloqueado: { borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 8 },
 });

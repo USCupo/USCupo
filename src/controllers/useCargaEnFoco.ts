@@ -1,44 +1,52 @@
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { alCambiarCatalogo } from '../models/catalogo';
 import { mensajeDeError } from './auth';
+import { Cargador, datosCambiaron, type EstadoCarga } from './cargador';
 
-interface Estado<T> {
-  datos: T | null;
-  cargando: boolean;
-  error: string | null;
+interface Estado<T> extends EstadoCarga<T> {
   recargar: () => Promise<void>;
 }
 
-// Carga datos cada vez que la pantalla gana foco (al volver a una pestaña se ven los
-// cambios hechos en otra). La primera carga muestra "cargando"; las siguientes refrescan
-// en silencio para no hacer parpadear la vista.
+// Carga datos cada vez que la pantalla gana foco, salvo que la última carga buena tenga menos de
+// 15 s y nadie haya cambiado datos desde entonces (al volver a una pestaña se ven los cambios
+// hechos en otra). La primera carga muestra "cargando"; las siguientes refrescan en silencio. Las
+// acciones y "Reintentar" usan `recargar`, que siempre pide y marca las demás pantallas para
+// recargar en su próximo foco.
 export function useCargaEnFoco<T>(cargar: () => Promise<T>, deps: unknown[]): Estado<T> {
-  const [datos, setDatos] = useState<T | null>(null);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const turno = useRef(0);
+  const cargarRef = useRef(cargar);
+  cargarRef.current = cargar;
+  const [estado, setEstado] = useState<EstadoCarga<T>>({ datos: null, cargando: true, error: null });
+  const cargador = useRef<Cargador<T> | null>(null);
+  if (!cargador.current) {
+    cargador.current = new Cargador<T>({ cargar: () => cargarRef.current(), alCambiar: setEstado, mensajeDeError });
+  }
+  const c = cargador.current;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const recargar = useCallback(async () => {
-    const mio = ++turno.current;
-    try {
-      const r = await cargar();
-      if (mio === turno.current) {
-        setDatos(r);
-        setError(null);
-      }
-    } catch (e) {
-      if (mio === turno.current) setError(mensajeDeError(e));
-    } finally {
-      if (mio === turno.current) setCargando(false);
+  // Otro usuario u otra carrera: lo cargado ya no vale y se pide de nuevo.
+  const primera = useRef(true);
+  useEffect(() => {
+    if (primera.current) {
+      primera.current = false;
+      return;
     }
+    c.invalidar();
+    c.recargar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
   useFocusEffect(
     useCallback(() => {
-      recargar();
-    }, [recargar])
+      c.alFoco();
+    }, [c])
   );
 
-  return { datos, cargando, error, recargar };
+  // El catálogo se revalidó con cambios (p. ej. una materia nueva): recarga silenciosa.
+  useEffect(() => alCambiarCatalogo(() => void c.recargar()), [c]);
+
+  const recargar = useCallback(() => {
+    datosCambiaron();
+    return c.recargar();
+  }, [c]);
+  return { ...estado, recargar };
 }

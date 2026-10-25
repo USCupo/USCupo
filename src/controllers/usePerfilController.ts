@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../lib/AuthContext';
 import { obtenerCarrera } from '../models/carreras';
+import { desbloquearUsuario, listarBloqueados, type UsuarioBloqueado } from '../models/moderacion';
 import { listarMisOfertas } from '../models/ofertas';
 import { actualizarPerfilPropio, eliminarMiCuenta } from '../models/perfiles';
 import { cerrarSesion, errorNombre, mensajeDeError } from './auth';
@@ -45,12 +46,15 @@ export function usePerfilController() {
   }, [perfil]);
 
   const carga = useCargaEnFoco(async () => {
-    const [carrera, mias] = await Promise.all([
+    const [carrera, mias, bloqueados] = await Promise.all([
       perfil?.carrera_id ? obtenerCarrera(perfil.carrera_id) : Promise.resolve(null),
       listarMisOfertas(userId),
+      // La tarjeta solo aparece si hay bloqueados: un fallo aquí no debe tumbar el perfil.
+      listarBloqueados().catch((): UsuarioBloqueado[] => []),
     ]);
     return {
       carrera,
+      bloqueados,
       historial: mias.filter((o) => o.estado === 'resuelta' || o.estado === 'expirada'),
       resueltas: mias.filter((o) => o.estado === 'resuelta').length,
     };
@@ -94,6 +98,24 @@ export function usePerfilController() {
     }
   }, [nombre, whatsapp, mostrarCorreo, mostrarWhatsapp, userId, recargarPerfil]);
 
+  const [desbloqueando, setDesbloqueando] = useState<string | null>(null);
+  const desbloquear = useCallback(
+    async (u: UsuarioBloqueado) => {
+      if (desbloqueando) return;
+      setDesbloqueando(u.usuario_id);
+      try {
+        await desbloquearUsuario(u.usuario_id);
+        setAviso(`Desbloqueaste a ${u.nombre_completo}`);
+        await carga.recargar();
+      } catch (e) {
+        setAviso(mensajeDeError(e));
+      } finally {
+        setDesbloqueando(null);
+      }
+    },
+    [desbloqueando, carga]
+  );
+
   const eliminarCuenta = useCallback(async () => {
     if (eliminando || !puedeEliminar) return;
     setEliminando(true);
@@ -111,6 +133,8 @@ export function usePerfilController() {
   return {
     ...carga,
     correo: perfil?.correo ?? session?.user.email ?? '',
+    /** Cuenta de revisión: solo ve el arenero de ofertas de prueba. */
+    esAdmin: perfil?.rol === 'admin',
     campos: { nombre, whatsapp, mostrarCorreo, mostrarWhatsapp },
     setNombre: (v: string) => {
       setNombre(v);
@@ -151,5 +175,7 @@ export function usePerfilController() {
       if (!eliminando) setConfirmarEliminar(false);
     },
     eliminarCuenta,
+    desbloquear,
+    desbloqueando,
   };
 }

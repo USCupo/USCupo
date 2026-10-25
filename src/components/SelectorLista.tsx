@@ -159,7 +159,7 @@ export function SelectorLista(p: Props) {
               contentContainerStyle={{ paddingHorizontal: spacing.lg, paddingBottom: spacing.xl }}
               ListHeaderComponent={
                 p.opcionTodas && !q ? (
-                  <Opcion
+                  <OpcionLista
                     titulo={p.opcionTodas}
                     activa={p.selectedId === null}
                     onPress={() => {
@@ -186,7 +186,7 @@ export function SelectorLista(p: Props) {
                 </Text>
               )}
               renderItem={({ item }) => (
-                <Opcion
+                <OpcionLista
                   titulo={item.titulo}
                   subtitulo={item.subtitulo}
                   nota={item.nota}
@@ -206,7 +206,7 @@ export function SelectorLista(p: Props) {
   );
 }
 
-function Opcion(o: { titulo: string; subtitulo?: string; nota?: string; activa: boolean; deshabilitada?: boolean; onPress: () => void }) {
+export function OpcionLista(o: { titulo: string; subtitulo?: string; nota?: string; activa: boolean; deshabilitada?: boolean; onPress: () => void }) {
   const { colors, radius, type, minTouchSize } = useTheme();
   return (
     <Pressable

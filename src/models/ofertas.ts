@@ -119,6 +119,12 @@ export async function eliminarOferta(ofertaId: number): Promise<void> {
 
 /** El dueño libera una oferta en proceso: vuelve a estar disponible para otros. */
 export async function liberarOferta(ofertaId: number): Promise<void> {
+  const { error: errorRpc } = await supabase.rpc('liberar_oferta', { p_oferta_id: ofertaId });
+  // Sin la migración 20261024000004 aplicada todavía, se libera como antes.
+  if (errorRpc?.code !== 'PGRST202') {
+    if (errorRpc) throw errorRpc;
+    return;
+  }
   const { error } = await supabase
     .from('ofertas')
     .update({ estado: 'disponible', interesado_id: null, interesado_at: null, expires_at: null })

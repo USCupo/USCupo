@@ -63,21 +63,34 @@ function Superior({ rutas, activa, ir, pendientes }: VistaProps) {
   const { perfil } = useAuth();
   const insets = useSafeAreaInsets();
   const perfilRuta = rutas.find((r) => r.name === 'perfil');
+  const inicioRuta = rutas.find((r) => r.name === 'index');
   const inicial = (perfil?.nombre_completo ?? 'E').trim().charAt(0).toUpperCase();
 
   return (
     <View pointerEvents="box-none" style={[styles.capaSuperior, { paddingTop: insets.top + glass.margen }]}>
       <View style={[styles.pildora, cristalOscuro(colors)]}>
-        <View style={styles.marca}>
+        {/* En computador el logo es el enlace a Inicio (fuera del tablist, por eso link y no tab);
+            el dock del teléfono conserva su botón. */}
+        <Pressable
+          accessibilityRole="link"
+          aria-current={activa === 'index' ? 'page' : undefined}
+          accessibilityLabel="USCupo, ir a Inicio"
+          disabled={!inicioRuta}
+          onPress={() => inicioRuta && ir(inicioRuta, activa === 'index')}
+          style={({ hovered, pressed }: { hovered?: boolean; pressed: boolean }) => [
+            styles.marca,
+            { opacity: pressed ? 0.8 : hovered ? 0.9 : 1 },
+          ]}
+        >
           <Logo size={32} sobre="azul" />
           <Text style={[type.sectionTitle, { color: colors.onBackground, fontSize: 19 }]}>
             USC<Text style={{ color: colors.accent }}>upo</Text>
           </Text>
-        </View>
+        </Pressable>
 
         <View accessibilityRole="tablist" style={styles.enlaces}>
-          {/* Perfil no va aquí: en computador se llega por el avatar con la inicial. */}
-          {rutas.filter((r) => r.name !== 'perfil').map((r) => {
+          {/* Inicio y Perfil no van aquí: en computador se llega por el logo y por el avatar. */}
+          {rutas.filter((r) => r.name !== 'perfil' && r.name !== 'index').map((r) => {
             const item = ITEMS[r.name];
             const sel = r.name === activa;
             return (

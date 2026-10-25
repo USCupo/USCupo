@@ -37,6 +37,8 @@ export interface Profile {
   created_at: string;
   /** Versión de términos y política aceptada (Ley 1581); null = nunca aceptó. */
   legal_version: string | null;
+  /** 'admin' = cuenta de revisión; 'demo' = sus contrapartes. Ausente antes de la migración 000005. */
+  rol?: 'estudiante' | 'admin' | 'demo';
 }
 
 export interface PerfilPublico {

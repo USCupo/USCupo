@@ -116,14 +116,17 @@ function Encabezado() {
   const { colors, spacing, type } = useTheme();
   return (
     <View style={styles.header}>
-      <Logo size={44} sobre="azul" />
-      <View style={{ marginLeft: spacing.sm, flex: 1 }}>
-        <Text style={[type.sectionTitle, { color: colors.onBackground }]}>
-          USC<Text style={{ color: colors.accent }}>upo</Text>
-        </Text>
-        <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted }]}>Cambios de horario entre estudiantes USC</Text>
+      <View style={styles.toggleEncabezado}>
+        <ThemeToggle />
       </View>
-      <ThemeToggle />
+      {/* Logo centrado, más grande y justo encima del eslogan. */}
+      <Logo size={72} sobre="azul" />
+      <Text style={[type.sectionTitle, { color: colors.onBackground, marginTop: spacing.sm, textAlign: 'center' }]}>
+        USC<Text style={{ color: colors.accent }}>upo</Text>
+      </Text>
+      <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted, textAlign: 'center' }]}>
+        Cambios de horario entre estudiantes USC
+      </Text>
     </View>
   );
 }
@@ -309,8 +312,13 @@ function Formulario({ c }: { c: LoginController }) {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
     alignItems: 'center',
+  },
+  toggleEncabezado: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    zIndex: 10,
   },
   divisor: {
     flexDirection: 'row',
