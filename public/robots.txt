@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /buscar
+Disallow: /publicar
+Disallow: /mis-cambios
+Disallow: /perfil
+Disallow: /aceptar-legal
+Disallow: /completar-perfil
+Disallow: /auth/
+
+Sitemap: https://uscupo.vercel.app/sitemap.xml

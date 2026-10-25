@@ -30,6 +30,7 @@ export default function InicioScreen() {
   return (
     <>
     <Pantalla
+      tituloPagina="Inicio"
       prefijoTitulo="Hola, "
       titulo={c.primerNombre}
       subtitulo={d?.carrera ?? 'Cambios de horario entre estudiantes USC'}
