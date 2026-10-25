@@ -33,6 +33,9 @@ import { useTheme } from '../../src/theme/useTheme';
 import { FooterWeb } from '../../src/components/FooterWeb';
 import { MetaPagina } from '../../src/components/MetaPagina';
 
+const DESCRIPCION_LOGIN =
+  'Ingresa o crea tu cuenta de USCupo con tu correo @usc.edu.co para cambiar de horario con otros estudiantes de la Universidad Santiago de Cali.';
+
 export default function LoginScreen() {
   const { colors, spacing } = useTheme();
   const { breakpoint } = useBreakpoint();
@@ -40,15 +43,12 @@ export default function LoginScreen() {
   // El controlador vive aquí y no dentro del formulario: si la ventana cruza un
   // breakpoint, el layout cambia pero lo escrito se conserva.
   const c = useLoginController();
+  const meta = <MetaPagina titulo="Ingresar" ruta="/login" descripcion={DESCRIPCION_LOGIN} />;
 
   if (breakpoint === 'amplio') {
     return (
       <GradientBackground>
-        <MetaPagina
-          titulo="Ingresar"
-          ruta="/login"
-          descripcion="Ingresa o crea tu cuenta de USCupo con tu correo @usc.edu.co para cambiar de horario con otros estudiantes de la Universidad Santiago de Cali."
-        />
+        {meta}
         <View style={styles.split}>
         <View style={styles.splitMarca}>
           <BrandPanel />
@@ -76,11 +76,7 @@ export default function LoginScreen() {
 
   return (
     <GradientBackground>
-      <MetaPagina
-        titulo="Ingresar"
-        ruta="/login"
-        descripcion="Ingresa o crea tu cuenta de USCupo con tu correo @usc.edu.co para cambiar de horario con otros estudiantes de la Universidad Santiago de Cali."
-      />
+      {meta}
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
           contentContainerStyle={[

@@ -21,8 +21,12 @@ import { MetaPagina } from '../src/components/MetaPagina';
 export default function AceptarLegalScreen() {
   const { session, perfil, loading } = useAuth();
   if (!loading && (!session || legalVigente(perfil))) return <Redirect href="/" />;
-  if (loading) return null;
-  return <Contenido />;
+  return (
+    <>
+      <MetaPagina titulo="Acepta los términos" />
+      {loading ? null : <Contenido />}
+    </>
+  );
 }
 
 function Contenido() {
@@ -55,7 +59,6 @@ function Contenido() {
 
   return (
     <GradientBackground>
-      <MetaPagina titulo="Acepta los términos" />
       <ScrollView
         contentContainerStyle={[
           tarjeta && styles.centrado,
