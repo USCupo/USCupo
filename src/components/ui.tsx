@@ -19,6 +19,7 @@ import { useBreakpoint } from '../theme/useBreakpoint';
 import { useTheme } from '../theme/useTheme';
 import { Button } from './Button';
 import { GradientBackground } from './GradientBackground';
+import { FooterWeb } from './FooterWeb';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -69,6 +70,7 @@ export function Pantalla({ titulo, prefijoTitulo, subtitulo, acciones, children,
             {acciones}
           </View>
           {children}
+          <FooterWeb style={{ marginTop: spacing.xxl }} />
         </View>
       </ScrollView>
     </GradientBackground>

@@ -1,13 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
-import type { ComponentProps } from 'react';
+import { useState, type ComponentProps } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { cerrarSesion } from '../controllers/auth';
 import { useAuth } from '../lib/AuthContext';
-import { cristalClaro, cristalOscuro, glass } from '../theme/glass';
+import { conAlfa, cristalClaro, cristalOscuro, glass } from '../theme/glass';
 import { useBreakpoint } from '../theme/useBreakpoint';
 import { useTheme } from '../theme/useTheme';
 import { Logo } from './Logo';
+import { MenuFlotante } from './MenuFlotante';
 import { ThemeToggle } from './ThemeToggle';
+import { DialogoConfirmar } from './ui';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -122,27 +125,64 @@ function Superior({ rutas, activa, ir, pendientes }: VistaProps) {
         <View style={styles.extremo}>
           <ThemeToggle />
           {perfilRuta ? (
-            <Pressable
-              accessibilityRole="tab"
-              accessibilityState={{ selected: activa === 'perfil' }}
-              accessibilityLabel={`Perfil de ${perfil?.nombre_completo ?? 'estudiante'}`}
-              onPress={() => ir(perfilRuta, activa === 'perfil')}
-              style={({ hovered }: { hovered?: boolean; pressed: boolean }) => [
-                styles.avatar,
-                {
-                  backgroundColor: colors.accent,
-                  opacity: hovered ? 0.88 : 1,
-                  // Aro de "pestaña activa" ahora que Perfil no tiene enlace propio.
-                  borderColor: activa === 'perfil' ? colors.onBackground : 'transparent',
-                },
-              ]}
-            >
-              <Text style={{ color: '#0A2959', fontFamily: 'Inter_700Bold', fontSize: 15 }}>{inicial}</Text>
-            </Pressable>
+            <MenuCuenta nombre={perfil?.nombre_completo ?? 'estudiante'} inicial={inicial} enPerfil={activa === 'perfil'} irAPerfil={() => ir(perfilRuta, activa === 'perfil')} />
           ) : null}
         </View>
       </View>
     </View>
+  );
+}
+
+/**
+ * Avatar de la navbar de computador: abre un menú con Perfil y Cerrar sesión (que pide
+ * confirmación). El aro marca que se está en Perfil, que no tiene enlace propio.
+ */
+function MenuCuenta({ nombre, inicial, enPerfil, irAPerfil }: { nombre: string; inicial: string; enPerfil: boolean; irAPerfil: () => void }) {
+  const { colors } = useTheme();
+  const [confirmar, setConfirmar] = useState(false);
+  const [saliendo, setSaliendo] = useState(false);
+  const salir = async () => {
+    if (saliendo) return;
+    setSaliendo(true);
+    try {
+      await cerrarSesion();
+    } finally {
+      setSaliendo(false);
+      setConfirmar(false);
+    }
+  };
+  return (
+    <>
+      <MenuFlotante
+        etiquetaBoton={`Abrir menú de cuenta (${nombre})`}
+        etiquetaMenu="Menú de cuenta"
+        actual={enPerfil}
+        opciones={[
+          { texto: 'Perfil', icono: 'person-outline', color: colors.link, fondo: colors.primaryTint, onPress: irAPerfil },
+          { texto: 'Cerrar sesión', icono: 'log-out-outline', color: colors.danger, fondo: conAlfa(colors.danger, 0.14), onPress: () => setConfirmar(true) },
+        ]}
+        estiloBoton={({ hovered, abierto }) => [
+          styles.avatar,
+          {
+            backgroundColor: colors.accent,
+            opacity: hovered ? 0.88 : 1,
+            borderColor: enPerfil || abierto ? colors.onBackground : 'transparent',
+          },
+        ]}
+      >
+        <Text style={{ color: '#0A2959', fontFamily: 'Inter_700Bold', fontSize: 15 }}>{inicial}</Text>
+      </MenuFlotante>
+      <DialogoConfirmar
+        visible={confirmar}
+        titulo="¿Cerrar sesión?"
+        mensaje="Tendrás que ingresar de nuevo con tu correo institucional."
+        confirmar="Cerrar sesión"
+        peligroso
+        cargando={saliendo}
+        onConfirmar={salir}
+        onCancelar={() => setConfirmar(false)}
+      />
+    </>
   );
 }
 

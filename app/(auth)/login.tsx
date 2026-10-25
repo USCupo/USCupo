@@ -18,6 +18,7 @@ import { GradientBackground } from '../../src/components/GradientBackground';
 import { InfoNotice } from '../../src/components/InfoNotice';
 import { Logo } from '../../src/components/Logo';
 import { MicrosoftButton } from '../../src/components/MicrosoftButton';
+import { PieLegal } from '../../src/components/PieLegal';
 import { SegmentedControl } from '../../src/components/SegmentedControl';
 import { TextField } from '../../src/components/TextField';
 import { ThemeToggle } from '../../src/components/ThemeToggle';
@@ -29,6 +30,7 @@ import { animarResorte, resorte, useReducedMotion } from '../../src/theme/motion
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../../src/theme/glass';
 import { useTheme } from '../../src/theme/useTheme';
+import { FooterWeb } from '../../src/components/FooterWeb';
 
 export default function LoginScreen() {
   const { colors, spacing } = useTheme();
@@ -40,7 +42,8 @@ export default function LoginScreen() {
 
   if (breakpoint === 'amplio') {
     return (
-      <GradientBackground style={styles.split}>
+      <GradientBackground>
+        <View style={styles.split}>
         <View style={styles.splitMarca}>
           <BrandPanel />
         </View>
@@ -57,6 +60,8 @@ export default function LoginScreen() {
             </Tarjeta>
           </ScrollView>
         </View>
+        </View>
+        <FooterWeb fijo conContacto={false} style={{ width: 'auto', marginHorizontal: spacing.lg, marginBottom: spacing.lg }} />
       </GradientBackground>
     );
   }
@@ -86,6 +91,7 @@ export default function LoginScreen() {
                 <Formulario c={c} />
               </Tarjeta>
             </View>
+            <FooterWeb conContacto={false} style={{ marginTop: spacing.xl }} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -133,6 +139,7 @@ function Encabezado() {
 
 function Formulario({ c }: { c: LoginController }) {
   const { colors, spacing, type } = useTheme();
+  const { breakpoint } = useBreakpoint();
   const reducir = useReducedMotion();
   const registro = c.modo === 'registro';
   const ocupado = c.enviando || c.microsoftCargando;
@@ -305,6 +312,13 @@ function Formulario({ c }: { c: LoginController }) {
             {`USCupo solo conecta estudiantes. La gestión del cambio de horario se hace directamente en los canales oficiales de la USC. ${AVISO_NO_OFICIAL}`}
           </InfoNotice>
         </View>
+
+        {/* En tablet y computador los enlaces legales van en el FooterWeb. */}
+        {breakpoint === 'compacto' ? (
+          <View style={{ marginTop: spacing.sm }}>
+            <PieLegal />
+          </View>
+        ) : null}
       </View>
     </Animated.View>
   );
@@ -329,6 +343,7 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
   },
   split: {
+    flex: 1,
     flexDirection: 'row',
   },
   splitMarca: {

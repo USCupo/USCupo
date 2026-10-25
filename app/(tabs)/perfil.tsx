@@ -1,14 +1,14 @@
-import { Link } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { Interruptor } from '../../src/components/Contacto';
 import { InfoNotice } from '../../src/components/InfoNotice';
 import { OfertaCard } from '../../src/components/OfertaCard';
+import { PieLegal } from '../../src/components/PieLegal';
 import { TextField } from '../../src/components/TextField';
 import { ThemeToggle } from '../../src/components/ThemeToggle';
 import { Aviso, DialogoConfirmar, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
 import { PALABRA_ELIMINAR, usePerfilController } from '../../src/controllers/usePerfilController';
-import { AVISO_NO_OFICIAL, RESPONSABLE } from '../../src/models/legal';
+import { AVISO_NO_OFICIAL } from '../../src/models/legal';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
 
@@ -17,6 +17,18 @@ export default function PerfilScreen() {
   const { colors, spacing, type } = useTheme();
   const { breakpoint } = useBreakpoint();
   const amplio = breakpoint === 'amplio';
+  // En computador el tema y Cerrar sesión están en la navbar; desde tablet el aviso y los
+  // enlaces legales están en el FooterWeb.
+  const conFooter = breakpoint !== 'compacto';
+  const eliminarCuenta = (
+    <Pressable
+      accessibilityRole="button"
+      onPress={c.pedirEliminar}
+      style={{ marginTop: spacing.xs, alignItems: 'center', paddingVertical: spacing.sm, minHeight: 44, justifyContent: 'center' }}
+    >
+      <Text style={[type.body, { color: colors.danger, fontFamily: 'Inter_700Bold' }]}>Eliminar cuenta</Text>
+    </Pressable>
+  );
   const d = c.datos;
 
   return (
@@ -71,16 +83,19 @@ export default function PerfilScreen() {
                 <Button label="Guardar cambios" loadingLabel="Guardando…" onPress={c.guardar} loading={c.guardando} disabled={!c.hayCambios} />
               </View>
             </Tarjeta>
+            {amplio ? eliminarCuenta : null}
           </View>
 
           <View style={[amplio && { flex: 1 }, { gap: spacing.lg }]}>
-            <Tarjeta>
-              <TituloSeccion>Apariencia</TituloSeccion>
-              <View style={[styles.entre, { padding: spacing.md, borderRadius: 14, backgroundColor: colors.background }]}>
-                <Text style={[type.body, { color: colors.onBackground }]}>Tema claro u oscuro</Text>
-                <ThemeToggle />
-              </View>
-            </Tarjeta>
+            {amplio ? null : (
+              <Tarjeta>
+                <TituloSeccion>Apariencia</TituloSeccion>
+                <View style={[styles.entre, { padding: spacing.md, borderRadius: 14, backgroundColor: colors.background }]}>
+                  <Text style={[type.body, { color: colors.onBackground }]}>Tema claro u oscuro</Text>
+                  <ThemeToggle />
+                </View>
+              </Tarjeta>
+            )}
 
             <Tarjeta>
               <TituloSeccion>Historial</TituloSeccion>
@@ -122,33 +137,23 @@ export default function PerfilScreen() {
               </Tarjeta>
             ) : null}
 
-            <Tarjeta>
-              <TituloSeccion>Acerca de USCupo</TituloSeccion>
-              <Text style={[type.bodyMuted, { color: colors.textMuted }]}>{AVISO_NO_OFICIAL}</Text>
-              <View style={[styles.enlaces, { marginTop: spacing.sm }]}>
-                <Link href="/terminos" style={[type.bodyMuted, styles.enlace, { color: colors.link }]}>
-                  Términos de uso
-                </Link>
-                <Link href="/privacidad" style={[type.bodyMuted, styles.enlace, { color: colors.link }]}>
-                  Política de privacidad
-                </Link>
-                <Link href={`mailto:${RESPONSABLE.correo}`} style={[type.bodyMuted, styles.enlace, { color: colors.link }]}>
-                  Escríbenos: {RESPONSABLE.correo}
-                </Link>
-              </View>
-            </Tarjeta>
+            {conFooter ? null : (
+              <Tarjeta>
+                <TituloSeccion>Acerca de USCupo</TituloSeccion>
+                <Text style={[type.bodyMuted, { color: colors.textMuted }]}>{AVISO_NO_OFICIAL}</Text>
+                <View style={{ marginTop: spacing.sm }}>
+                  <PieLegal />
+                </View>
+              </Tarjeta>
+            )}
 
-            <Tarjeta>
-              <TituloSeccion>Sesión</TituloSeccion>
-              <Button label="Cerrar sesión" variant="secondary" onPress={c.pedirSalida} style={{ borderWidth: 1, borderColor: colors.danger }} />
-              <Pressable
-                accessibilityRole="button"
-                onPress={c.pedirEliminar}
-                style={{ marginTop: spacing.xs, alignItems: 'center', paddingVertical: spacing.sm, minHeight: 44, justifyContent: 'center' }}
-              >
-                <Text style={[type.body, { color: colors.danger, fontFamily: 'Inter_700Bold' }]}>Eliminar cuenta</Text>
-              </Pressable>
-            </Tarjeta>
+            {amplio ? null : (
+              <Tarjeta>
+                <TituloSeccion>Sesión</TituloSeccion>
+                <Button label="Cerrar sesión" variant="secondary" onPress={c.pedirSalida} style={{ borderWidth: 1, borderColor: colors.danger }} />
+                {eliminarCuenta}
+              </Tarjeta>
+            )}
           </View>
         </View>
       </Pantalla>
@@ -192,8 +197,6 @@ export default function PerfilScreen() {
 const styles = StyleSheet.create({
   columnas: { flexDirection: 'row', alignItems: 'flex-start' },
   dato: {},
-  enlaces: { gap: 4 },
-  enlace: { textDecorationLine: 'underline', paddingVertical: 8, fontFamily: 'Inter_700Bold' },
   entre: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   bloqueado: { borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 8 },
 });

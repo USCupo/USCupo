@@ -27,6 +27,14 @@ AdSense no funciona dentro de apps.
 
   Para un espacio nuevo: crea otro bloque en AdSense, añade `EXPO_PUBLIC_ADSENSE_SLOT_<PANTALLA>`
   y usa `<EspacioAnuncio slot={process.env.EXPO_PUBLIC_ADSENSE_SLOT_<PANTALLA>} />`.
+- Aviso de cookies (`src/components/AvisoCookies.tsx`, modelo en
+  `src/models/consentimientoAnuncios.ts`): panel de cristal que no bloquea el uso, con
+  "No personalizados" / "Personalizados" y enlace a la política. Hasta que se elija,
+  `EspacioAnuncio` pide anuncios no personalizados (`requestNonPersonalizedAds = 1`). La
+  elección se guarda en el navegador (`uscupo.anuncios`) y se cambia con "Opciones de
+  privacidad de anuncios": en el teléfono, en Perfil → Acerca de USCupo y en el pie del Login;
+  en tablet y computador, en el FooterWeb. Cerrar el aviso sin elegir lo oculta en esa visita
+  (sigue en no personalizados). Un cambio aplica a los anuncios al recargar; el aviso lo dice.
 
 ## Paso a paso: activar AdSense en la web
 
@@ -47,7 +55,10 @@ AdSense no funciona dentro de apps.
    adaptable. Copia el `data-ad-slot` en `EXPO_PUBLIC_ADSENSE_SLOT_INICIO` y redepliega.
 7. **Consentimiento (CMP).** Privacidad y mensajes → activa el mensaje de consentimiento
    de Google para usuarios de la UE/EEE, Reino Unido y Suiza. Es obligatorio para servir
-   anuncios personalizados allí.
+   anuncios personalizados allí. Elige un CMP certificado: el de Google (Privacidad y
+   mensajes → Normativas europeas → Crear mensaje), con el sitio de USCupo, idioma español y
+   el enlace a `https://<tu-dominio>/privacidad`. Para esos visitantes manda la elección del
+   CMP de Google; nuestro aviso sigue valiendo para el resto (Colombia incluida).
 8. **Pagos.** Configura datos fiscales, dirección (llega un PIN por correo postal) y forma
    de pago.
 9. **Verificar.** Abre el sitio en una ventana privada sin bloqueador de anuncios. Los

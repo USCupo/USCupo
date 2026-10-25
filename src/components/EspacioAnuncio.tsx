@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { consentimientoAnuncios } from '../models/consentimientoAnuncios';
 import { useTheme } from '../theme/useTheme';
 
 // Google AdSense en web. Se activa con dos variables de entorno:
@@ -12,7 +13,7 @@ const SCRIPT_ID = 'adsbygoogle-js';
 
 declare global {
   interface Window {
-    adsbygoogle?: unknown[];
+    adsbygoogle?: unknown[] & { requestNonPersonalizedAds?: 0 | 1 };
   }
 }
 
@@ -33,9 +34,14 @@ export function EspacioAnuncio({ slot, alto = 120 }: { slot?: string; alto?: num
 
   useEffect(() => {
     if (!activo || pedido.current) return;
-    cargarScript(CLIENTE!);
     try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      // Antes de cargar adsbygoogle.js: AdSense lee la preferencia al arrancar, así que un cambio
+      // en el aviso de cookies aplica al recargar la página (el aviso lo dice). Hasta que el
+      // visitante elija, no personalizados.
+      const cola = (window.adsbygoogle = window.adsbygoogle || []);
+      cola.requestNonPersonalizedAds = consentimientoAnuncios.estado().noPersonalizados ? 1 : 0;
+      cargarScript(CLIENTE!);
+      cola.push({});
       pedido.current = true;
     } catch {
       // Bloqueador de anuncios o script aún sin cargar: el hueco queda vacío.

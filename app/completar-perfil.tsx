@@ -13,6 +13,7 @@ import { legalVigente, perfilCompleto } from '../src/models/perfiles';
 import { useBreakpoint } from '../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../src/theme/glass';
 import { useTheme } from '../src/theme/useTheme';
+import { FooterWeb } from '../src/components/FooterWeb';
 
 export default function CompletarPerfilScreen() {
   const { session, perfil, loading } = useAuth();
@@ -111,6 +112,7 @@ function Contenido() {
                 </Text>
               </Pressable>
             </View>
+            <FooterWeb style={{ marginTop: spacing.xl }} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
