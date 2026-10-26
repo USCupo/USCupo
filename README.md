@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/uscupo-kit/horizontal/uscupo-horizontal-negativo.svg">
-    <img src="assets/uscupo-kit/horizontal/uscupo-horizontal-color.svg" alt="USCupo" width="320">
-  </picture>
+  <img src="public/og-uscupo.png" alt="USCupo: cambios de horario entre estudiantes USC" width="720">
 </p>
 
 <p align="center">
@@ -16,9 +13,6 @@
   <a href="https://www.uscupo.com/acerca">Acerca de</a>
 </p>
 
-<p align="center">
-  <img src="public/og-uscupo.png" alt="USCupo: cambios de horario entre estudiantes USC" width="720">
-</p>
 
 ---
 
@@ -90,6 +84,12 @@ La web está publicada en [www.uscupo.com](https://www.uscupo.com). Lo próximo:
 [contacto](https://www.uscupo.com/contacto).
 
 Creado y mantenido por **Gustavo Andrés Cerón Galeano**, en Cali.
+
+## Licencia
+
+© 2026 Gustavo Andrés Cerón Galeano. Todos los derechos reservados. El código es público solo
+para consulta; copiarlo, modificarlo o usarlo requiere autorización por escrito. Ver
+[LICENSE](LICENSE).
 
 ---
 
