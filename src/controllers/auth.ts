@@ -1,4 +1,4 @@
-import { proveedorHabilitado, supabase, USC_EMAIL_DOMAIN } from '../lib/supabase';
+import { proveedorHabilitado, recordarSesion, supabase, USC_EMAIL_DOMAIN } from '../lib/supabase';
 import { cacheCatalogo } from '../models/catalogo';
 
 // Acceso exclusivo con cuentas institucionales @usc.edu.co: cuenta Microsoft 365 de la USC
@@ -71,6 +71,8 @@ export async function registrarse({ nombreCompleto, correo, contrasena, carreraI
     throw new Error(`Usa tu correo institucional, terminado en @${USC_EMAIL_DOMAIN}`);
   }
 
+  // Si la confirmación por correo está apagada, signUp ya abre sesión: solo en esta pestaña.
+  recordarSesion(false);
   const { data, error } = await supabase.auth.signUp({
     email: correo.trim().toLowerCase(),
     password: contrasena,
@@ -90,11 +92,12 @@ export async function registrarse({ nombreCompleto, correo, contrasena, carreraI
   return data;
 }
 
-export async function iniciarSesion(correo: string, contrasena: string) {
+export async function iniciarSesion(correo: string, contrasena: string, recordar: boolean) {
   if (!esCorreoInstitucional(correo)) {
     throw new Error(`Usa tu correo institucional, terminado en @${USC_EMAIL_DOMAIN}`);
   }
 
+  recordarSesion(recordar);
   const { data, error } = await supabase.auth.signInWithPassword({
     email: correo.trim().toLowerCase(),
     password: contrasena,
@@ -111,9 +114,11 @@ export async function iniciarSesion(correo: string, contrasena: string) {
 const RUTA_CALLBACK = 'auth/callback';
 
 /** La página navega a Microsoft; al volver, Supabase canjea el ?code= en /auth/callback. */
-export async function iniciarSesionConMicrosoft(correoSugerido?: string): Promise<void> {
+export async function iniciarSesionConMicrosoft(recordar: boolean, correoSugerido?: string): Promise<void> {
   if ((await proveedorHabilitado('azure')) === false) throw new Error('provider is not enabled');
 
+  // Antes de salir hacia Microsoft: el ?code= se canjea al volver y la sesión se guarda donde diga la casilla.
+  recordarSesion(recordar);
   const redirectTo = `${window.location.origin}/${RUTA_CALLBACK}`;
   const queryParams: Record<string, string> = { domain_hint: USC_EMAIL_DOMAIN };
   if (correoSugerido && esCorreoInstitucional(correoSugerido)) {
@@ -132,4 +137,5 @@ export async function cerrarSesion() {
   const { error } = await supabase.auth.signOut();
   // Si el servidor no responde (sin red, o la cuenta ya se borró) igual se cierra en este equipo.
   if (error) await supabase.auth.signOut({ scope: 'local' });
+  recordarSesion(false);
 }

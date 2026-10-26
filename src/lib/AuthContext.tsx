@@ -2,7 +2,7 @@ import type { Session } from '@supabase/supabase-js';
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 import { obtenerPerfilPropio } from '../models/perfiles';
 import type { Profile } from '../models/types';
-import { supabase } from './supabase';
+import { sesionGuardadaAqui, sesionVencida, supabase } from './supabase';
 
 interface AuthState {
   session: Session | null;
@@ -32,11 +32,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      if (newSession && !sesionGuardadaAqui()) return;
       setSession(newSession);
       setSessionLista(true);
     });
 
     return () => subscription.subscription.unsubscribe();
+  }, []);
+
+  // Una pestaña abierta varios días: al volver a ella se revisa si la sesión recordada ya venció.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const revisar = () => {
+      if (document.visibilityState === 'visible' && sesionVencida()) supabase.auth.signOut({ scope: 'local' });
+    };
+    document.addEventListener('visibilitychange', revisar);
+    return () => document.removeEventListener('visibilitychange', revisar);
   }, []);
 
   const userId = session?.user.id ?? null;

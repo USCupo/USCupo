@@ -2,6 +2,7 @@ import { Redirect, router, Tabs } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import type { ComponentProps } from 'react';
 import { BarraNavegacion } from '../../src/components/BarraNavegacion';
+import { GradientBackground } from '../../src/components/GradientBackground';
 import { useAuth } from '../../src/lib/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import { legalVigente, perfilCompleto } from '../../src/models/perfiles';
@@ -50,8 +51,10 @@ export default function TabsLayout() {
   const pendientes = usePendientes(session?.user.id, rutaActiva);
   usePrecargarPestanas(!loading && !!session && legalVigente(perfil) && perfilCompleto(perfil));
 
+  // Sin sesión todavía no se pintan las pestañas: cada pantalla pediría sus datos con un usuario
+  // vacío (400) antes de redirigir. Con sesión se pintan ya, mientras llega el perfil.
+  if (!session) return loading ? <GradientBackground>{null}</GradientBackground> : <Redirect href="/(auth)/login" />;
   // "/" resuelve a (tabs)/index: redirigir ahí volvería a este layout en bucle.
-  if (!loading && !session) return <Redirect href="/(auth)/login" />;
   if (!loading && !legalVigente(perfil)) return <Redirect href="/aceptar-legal" />;
   if (!loading && !perfilCompleto(perfil)) return <Redirect href="/completar-perfil" />;
 

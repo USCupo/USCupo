@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BrandPanel } from '../../src/components/BrandPanel';
 import { Button } from '../../src/components/Button';
 import { CarreraPicker } from '../../src/components/CarreraPicker';
+import { Casilla } from '../../src/components/Casilla';
 import { CasillaLegal } from '../../src/components/CasillaLegal';
 import { GradientBackground } from '../../src/components/GradientBackground';
 import { InfoNotice } from '../../src/components/InfoNotice';
@@ -22,6 +23,7 @@ import { TextField } from '../../src/components/TextField';
 import { ThemeToggle } from '../../src/components/ThemeToggle';
 import { MIN_CONTRASENA } from '../../src/controllers/auth';
 import { useLoginController, type LoginController } from '../../src/controllers/useLoginController';
+import { DIAS_RECORDAR } from '../../src/lib/sesion';
 import { USC_EMAIL_DOMAIN } from '../../src/lib/supabase';
 import { AVISO_NO_OFICIAL } from '../../src/models/legal';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
@@ -253,6 +255,24 @@ function Formulario({ c }: { c: LoginController }) {
           editable={!ocupado}
         />
 
+        {!registro && (
+          <View style={{ marginBottom: spacing.md }}>
+            <Casilla
+              marcada={c.campos.recordar}
+              onCambiar={c.setRecordar}
+              etiqueta={`Mantener sesión iniciada por ${DIAS_RECORDAR} días`}
+              disabled={ocupado}
+            >
+              <View style={styles.textoCasilla}>
+                <Text style={[type.body, { color: colors.text }]}>Mantener sesión iniciada</Text>
+                <Text style={[type.bodyMuted, { color: colors.textMuted }]}>
+                  {`${DIAS_RECORDAR} días en este equipo. Si no la marcas, la sesión se cierra al cerrar la pestaña.`}
+                </Text>
+              </View>
+            </Casilla>
+          </View>
+        )}
+
         {registro && (
           <CasillaLegal
             aceptado={c.campos.aceptaLegal}
@@ -339,6 +359,11 @@ const styles = StyleSheet.create({
   divisor: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  textoCasilla: {
+    flex: 1,
+    paddingTop: 10,
+    gap: 2,
   },
   lineaDivisor: {
     flex: 1,

@@ -33,6 +33,8 @@ export function useLoginController() {
   const [carrera, setCarrera] = useState<Carrera | null>(null);
   // Casilla de términos y política (Ley 1581): solo al crear cuenta y nunca marcada de entrada.
   const [aceptaLegal, setAceptaLegalState] = useState(false);
+  // "Mantener sesión iniciada": desmarcada, la sesión se cierra con la pestaña.
+  const [recordar, setRecordar] = useState(false);
 
   const [carreras, setCarreras] = useState<EstadoCarreras>({ lista: [], cargando: true, origen: null });
   const [errores, setErrores] = useState<Errores>({});
@@ -113,14 +115,14 @@ export function useLoginController() {
           setContrasena('');
         }
       } else {
-        await iniciarSesion(correo, contrasena);
+        await iniciarSesion(correo, contrasena, recordar);
       }
     } catch (e) {
       setErrorFormulario(mensajeDeError(e));
     } finally {
       setEnviando(false);
     }
-  }, [modo, nombreCompleto, correo, contrasena, carrera, aceptaLegal]);
+  }, [modo, nombreCompleto, correo, contrasena, carrera, aceptaLegal, recordar]);
 
   const setAceptaLegal = useCallback((v: boolean) => {
     setAceptaLegalState(v);
@@ -134,19 +136,20 @@ export function useLoginController() {
     setMicrosoftCargando(true);
     try {
       // La página navega a Microsoft: el indicador sigue hasta salir.
-      await iniciarSesionConMicrosoft(correo);
+      await iniciarSesionConMicrosoft(recordar, correo);
     } catch (e) {
       setErrorFormulario(mensajeDeError(e));
       setMicrosoftCargando(false);
     }
-  }, [correo]);
+  }, [correo, recordar]);
 
   return {
     modo,
     setModo,
     alternarModo,
-    campos: { nombreCompleto, correo, contrasena, carrera, aceptaLegal },
+    campos: { nombreCompleto, correo, contrasena, carrera, aceptaLegal, recordar },
     setAceptaLegal,
+    setRecordar,
     setNombreCompleto,
     setCorreo,
     setContrasena,
