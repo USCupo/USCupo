@@ -50,5 +50,10 @@ supabase/.temp/
 # Vercel
 .vercel
 
-# Documentación interna (guías, prompts de las apps nativas): solo en la máquina del autor
+# Privado, solo en la máquina del autor: documentación interna, instrucciones de despliegue y
+# configuración, e instrucciones para asistentes de IA.
 docs/
+AGENTS.md
+CLAUDE.md
+.claude/
+.env.example
