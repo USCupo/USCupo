@@ -43,7 +43,7 @@ test('una ruta inexistente da 404 con cuerpo Markdown y enlaces a sitemap y llms
 
 test('HEAD responde sin cuerpo y cada página pública tiene su Markdown', async () => {
   assert.equal(await pedir('/acerca', 'text/markdown', 'HEAD')!.text(), '');
-  for (const ruta of ['/', '/login', '/acerca', '/contacto', '/terminos', '/privacidad', '/eliminar-cuenta', '/acerca/']) {
+  for (const ruta of ['/', '/login', '/acerca', '/contacto', '/terminos', '/privacidad', '/eliminar-cuenta', '/acerca/', '/recuperar', '/restablecer']) {
     assert.equal(markdownDe(ruta).estado, 200, ruta);
   }
   assert.equal(markdownDe('/perfil').estado, 200, 'las de sesión explican que requieren sesión');
