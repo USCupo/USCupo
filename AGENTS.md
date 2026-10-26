@@ -13,5 +13,6 @@ de `src/theme/colors.ts`; solo usa variantes con transparencia de esos mismos co
 - Receta: radio 999 (píldora) o 28 (panel), fondo del color de la paleta con alfa ~0.72–0.85,
   `backdrop-filter: blur(14px)`, borde 1 px de baja opacidad, sombra `0 18px 40px -24px rgba(0,0,0,.8)`.
 - Este repo es solo la web. Las apps nativas (Kotlin / Swift) siguen los mismos tokens: prompts en
-  `docs/prompts/` (Haze en Android, `.ultraThinMaterial` en iOS para el cristal).
+  `docs/prompts/` (privados: git los ignora y solo existen en la máquina del autor; Haze en
+  Android, `.ultraThinMaterial` en iOS para el cristal).
 - Anuncios: `EspacioAnuncio` (AdSense). Paso a paso y AdMob para las apps: `docs/google-ads.md`.
