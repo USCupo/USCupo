@@ -35,5 +35,6 @@
     "test": "node --test \"tests/*.test.ts\"",
     "iconos": "node scripts/generar-iconos.mjs"
   },
-  "private": true
+  "private": true,
+  "license": "UNLICENSED"
 }

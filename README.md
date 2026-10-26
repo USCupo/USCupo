@@ -91,6 +91,12 @@ La web está publicada en [www.uscupo.com](https://www.uscupo.com). Lo próximo:
 
 Creado y mantenido por **Gustavo Andrés Cerón Galeano**, en Cali.
 
+## Licencia
+
+© 2026 Gustavo Andrés Cerón Galeano. Todos los derechos reservados. El código es público solo
+para consulta; copiarlo, modificarlo o usarlo requiere autorización por escrito. Ver
+[LICENSE](LICENSE).
+
 ---
 
 <sub>USCupo es un proyecto independiente de estudiantes y no es una app oficial de la
