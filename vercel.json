@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "npm ci",
-  "buildCommand": "npx expo export -p web && cp \"dist/+not-found.html\" dist/404.html && node scripts/verificar-csp.mjs",
+  "buildCommand": "npx expo export -p web && cp dist/+not-found.html dist/404.html && node scripts/verificar-csp.mjs",
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,

@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { markdownDe, pideMarkdown, responderMarkdown } from '../src/lib/markdown.ts';
 import { DATOS_ESTRUCTURADOS, URL_SITIO } from '../src/models/informacion.ts';
+import { config } from '../middleware.ts';
 
 const pedir = (ruta: string, accept: string, method = 'GET') => responderMarkdown(new Request(`${URL_SITIO}${ruta}`, { method, headers: { accept } }));
 
@@ -73,4 +74,10 @@ test('llms.txt sigue el formato (H1, resumen, cuándo usar) y el sitemap lista p
     const archivo = ruta === '' ? 'app/index.tsx' : ruta === 'login' ? 'app/(auth)/login.tsx' : `app/${ruta}.tsx`;
     assert.ok(existsSync(archivo), `sitemap: /${ruta} sin página`);
   }
+});
+
+test('el matcher del middleware cubre las páginas y deja fuera bundles, assets y archivos', () => {
+  const ruta = new RegExp(`^${config.matcher[0]}$`);
+  for (const u of ['/', '/login', '/acerca', '/__no-existe', '/auth/callback']) assert.ok(ruta.test(u), u);
+  for (const u of ['/llms.txt', '/sitemap.xml', '/_expo/static/js/web/entry.js', '/assets/fonts/x.woff2']) assert.ok(!ruta.test(u), u);
 });

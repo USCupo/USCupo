@@ -4,14 +4,9 @@ import { responderMarkdown } from './src/lib/markdown.ts';
 
 export const config = {
   runtime: 'nodejs',
-  // Solo páginas (fuera bundles, assets y archivos con extensión) y solo si piden Markdown: a un
-  // navegador normal no le cuesta una invocación. El 404 en Markdown sale de la misma regla.
-  matcher: [
-    {
-      source: '/((?!_expo/|assets/|.*\\.[a-zA-Z0-9]+$).*)',
-      has: [{ type: 'header', key: 'accept', value: '.*text/markdown.*' }],
-    },
-  ],
+  // Solo páginas: fuera los bundles, los assets y cualquier archivo con extensión. (Vercel solo
+  // acepta rutas aquí, no condiciones por cabecera: la de Accept la decide responderMarkdown.)
+  matcher: ['/((?!_expo/|assets/|.*\\.[a-zA-Z0-9]+$).*)'],
 };
 
 export default function middleware(request: Request): Response | undefined {
