@@ -10,7 +10,9 @@ import {
   iniciarSesionConMicrosoft,
   mensajeDeError,
   registrarse,
+  reenviarConfirmacion,
 } from './auth';
+import { ESPERA_REENVIO_S } from './useRecuperarController';
 
 export type ModoLogin = 'registro' | 'ingreso';
 
@@ -43,6 +45,19 @@ export function useLoginController() {
   const [microsoftCargando, setMicrosoftCargando] = useState(false);
   // Correo al que se envió el enlace de confirmación (false = sin aviso).
   const [avisoConfirmacion, setAvisoConfirmacion] = useState<string | false>(false);
+  // Cuenta sin confirmar (recién creada o al intentar entrar): se puede pedir otro enlace.
+  const [porConfirmar, setPorConfirmar] = useState<string | null>(null);
+  const [reenvio, setReenvio] = useState<{ enviando: boolean; espera: number; hecho: boolean }>({
+    enviando: false,
+    espera: 0,
+    hecho: false,
+  });
+
+  useEffect(() => {
+    if (reenvio.espera <= 0) return;
+    const t = setTimeout(() => setReenvio((r) => ({ ...r, espera: r.espera - 1 })), 1000);
+    return () => clearTimeout(t);
+  }, [reenvio.espera]);
 
   const cargarCarreras = useCallback(async () => {
     setCarreras((c) => ({ ...c, cargando: true }));
@@ -59,6 +74,7 @@ export function useLoginController() {
     setErrores({});
     setErrorFormulario(undefined);
     setAvisoConfirmacion(false);
+    setPorConfirmar(null);
   }, []);
 
   const alternarModo = useCallback(() => setModo(modo === 'registro' ? 'ingreso' : 'registro'), [modo, setModo]);
@@ -93,6 +109,7 @@ export function useLoginController() {
   const enviar = useCallback(async () => {
     setErrorFormulario(undefined);
     setAvisoConfirmacion(false);
+    setPorConfirmar(null);
 
     const nuevos: Errores = {
       correo: errorCorreo(correo),
@@ -112,6 +129,8 @@ export function useLoginController() {
         const { session } = await registrarse({ nombreCompleto, correo, contrasena, carreraId: carrera!.id, legalVersion: VERSION_LEGAL });
         if (!session) {
           setAvisoConfirmacion(correo.trim().toLowerCase());
+          setPorConfirmar(correo.trim().toLowerCase());
+          setReenvio({ enviando: false, espera: ESPERA_REENVIO_S, hecho: false });
           setContrasena('');
         }
       } else {
@@ -119,10 +138,26 @@ export function useLoginController() {
       }
     } catch (e) {
       setErrorFormulario(mensajeDeError(e));
+      if (String((e as Error)?.message).toLowerCase().includes('email not confirmed')) {
+        setPorConfirmar(correo.trim().toLowerCase());
+      }
     } finally {
       setEnviando(false);
     }
   }, [modo, nombreCompleto, correo, contrasena, carrera, aceptaLegal, recordar]);
+
+  const reenviar = useCallback(async () => {
+    if (!porConfirmar || reenvio.espera > 0) return;
+    setReenvio((r) => ({ ...r, enviando: true, hecho: false }));
+    setErrorFormulario(undefined);
+    try {
+      await reenviarConfirmacion(porConfirmar);
+      setReenvio({ enviando: false, espera: ESPERA_REENVIO_S, hecho: true });
+    } catch (e) {
+      setErrorFormulario(mensajeDeError(e));
+      setReenvio((r) => ({ ...r, enviando: false }));
+    }
+  }, [porConfirmar, reenvio.espera]);
 
   const setAceptaLegal = useCallback((v: boolean) => {
     setAceptaLegalState(v);
@@ -161,6 +196,9 @@ export function useLoginController() {
     limpiarError,
     errorFormulario,
     avisoConfirmacion,
+    porConfirmar,
+    reenvio,
+    reenviar,
     enviando,
     enviar,
     microsoftCargando,

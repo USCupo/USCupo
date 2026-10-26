@@ -209,6 +209,24 @@ function Formulario({ c }: { c: LoginController }) {
           </View>
         )}
 
+        {c.porConfirmar && (
+          <View style={{ marginBottom: spacing.md }}>
+            <Button
+              variant="secondary"
+              label={c.reenvio.espera > 0 ? `Reenviar confirmación en ${c.reenvio.espera} s` : 'Reenviar correo de confirmación'}
+              loadingLabel="Enviando…"
+              onPress={c.reenviar}
+              loading={c.reenvio.enviando}
+              disabled={c.reenvio.espera > 0}
+            />
+            {c.reenvio.hecho ? (
+              <Text accessibilityLiveRegion="polite" style={[type.bodyMuted, { color: colors.textMuted, marginTop: spacing.xs, textAlign: 'center' }]}>
+                {`Enviamos otro enlace a ${c.porConfirmar}. Revisa también el correo no deseado.`}
+              </Text>
+            ) : null}
+          </View>
+        )}
+
         <Button
           label={registro ? 'Crear cuenta' : 'Iniciar sesión'}
           loadingLabel={registro ? 'Creando cuenta…' : 'Iniciando sesión…'}

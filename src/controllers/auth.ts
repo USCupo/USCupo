@@ -108,6 +108,12 @@ export async function registrarse({ nombreCompleto, correo, contrasena, carreraI
   return data;
 }
 
+/** Con "Confirm email" activo: otro enlace para quien no recibió o perdió el primero. */
+export async function reenviarConfirmacion(correo: string) {
+  const { error } = await supabase.auth.resend({ type: 'signup', email: correo.trim().toLowerCase() });
+  if (error) throw error;
+}
+
 export async function iniciarSesion(correo: string, contrasena: string, recordar: boolean) {
   if (!esCorreoInstitucional(correo)) {
     throw new Error(`Usa tu correo institucional, terminado en @${USC_EMAIL_DOMAIN}`);
