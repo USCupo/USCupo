@@ -5,9 +5,12 @@
 export const DIAS_RECORDAR = 30;
 export const CLAVE_RECORDAR = 'uscupo.recordar-hasta';
 const PREFIJO_SUPABASE = 'sb-';
+// Verificador PKCE de un enlace por correo (confirmar cuenta, recuperar contraseña): el enlace se
+// abre en otra pestaña, así que siempre va a localStorage. Es de un solo uso y Supabase lo borra.
+const SUFIJO_VERIFICADOR = '-code-verifier';
 const DIA_MS = 86_400_000;
 
-export type Almacen = Pick<Storage, 'getItem' | 'setItem' | 'removeItem' | 'key' | 'length'>;
+export type Almacen = Pick<Storage, 'getItem' | 'setItem' | 'removeItem' | 'length'> & { key(indice: number): string | null };
 
 function clavesSupabase(almacen: Almacen): string[] {
   const claves: string[] = [];
@@ -23,7 +26,7 @@ export function crearAlmacenSesion(local: Almacen, pestana: Almacen, ahora: () =
 
   // Sesiones abiertas antes de la casilla (estaban en localStorage sin marca): se respetan
   // DIAS_RECORDAR días más en vez de cerrarlas de golpe.
-  if (!hasta() && clavesSupabase(local).length > 0) {
+  if (!hasta() && clavesSupabase(local).some((clave) => !clave.endsWith(SUFIJO_VERIFICADOR))) {
     local.setItem(CLAVE_RECORDAR, String(ahora() + DIAS_RECORDAR * DIA_MS));
   }
 
@@ -36,15 +39,15 @@ export function crearAlmacenSesion(local: Almacen, pestana: Almacen, ahora: () =
     return true;
   }
 
-  const destino = () => {
+  const destino = (clave: string) => {
     vencida();
-    return hasta() ? local : pestana;
+    return hasta() || clave.endsWith(SUFIJO_VERIFICADOR) ? local : pestana;
   };
 
   return {
-    getItem: (clave: string) => destino().getItem(clave),
+    getItem: (clave: string) => destino(clave).getItem(clave),
     setItem: (clave: string, valor: string) => {
-      const d = destino();
+      const d = destino(clave);
       d.setItem(clave, valor);
       (d === local ? pestana : local).removeItem(clave);
     },

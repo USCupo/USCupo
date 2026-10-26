@@ -79,3 +79,21 @@ test('removeItem borra en los dos almacenes', () => {
   assert.equal(local.getItem(TOKEN), null);
   assert.equal(pestana.getItem(TOKEN), null);
 });
+
+test('el verificador PKCE va siempre a localStorage: el enlace del correo abre otra pestaña', () => {
+  const { local, pestana, sesion } = montar();
+  sesion.recordar(false);
+  const verificador = 'sb-proyecto-auth-token-code-verifier';
+  sesion.setItem(verificador, 'v');
+  assert.equal(local.getItem(verificador), 'v');
+  assert.equal(pestana.getItem(verificador), null);
+  // Otra pestaña (otro sessionStorage, mismo localStorage) lo encuentra.
+  assert.equal(crearAlmacenSesion(local, almacen()).getItem(verificador), 'v');
+});
+
+test('un verificador pendiente no cuenta como sesión antigua', () => {
+  const local = almacen();
+  local.setItem('sb-proyecto-auth-token-code-verifier', 'v');
+  crearAlmacenSesion(local, almacen(), () => 0);
+  assert.equal(local.getItem(CLAVE_RECORDAR), null);
+});

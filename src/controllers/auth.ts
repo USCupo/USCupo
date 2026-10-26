@@ -44,7 +44,23 @@ export function mensajeDeError(e: unknown): string {
   if (msg.includes('already registered') || msg.includes('already been registered')) {
     return 'Ya existe una cuenta con ese correo. Inicia sesión.';
   }
+  if (msg.includes('email address not authorized')) {
+    return 'Por ahora no podemos enviar correos a esa dirección. Escríbenos desde Contacto y te ayudamos.';
+  }
+  if (msg.includes('email rate limit')) {
+    return 'Ya enviamos varios correos en la última hora. Espera un rato antes de pedir otro enlace.';
+  }
   if (msg.includes('rate limit')) return 'Demasiados intentos. Espera un momento e intenta de nuevo.';
+  if (msg.includes('for security purposes')) return 'Espera un minuto antes de pedir otro enlace.';
+  if (msg.includes('should be different from the old password')) {
+    return 'La nueva contraseña debe ser distinta de la anterior.';
+  }
+  if (msg.includes('weak') || msg.includes('password should')) {
+    return 'Esa contraseña es muy fácil de adivinar. Usa una más larga o mezcla letras, números y símbolos.';
+  }
+  if (msg.includes('auth session missing') || msg.includes('otp_expired') || msg.includes('invalid or has expired')) {
+    return 'El enlace ya venció o ya se usó. Pide uno nuevo.';
+  }
   if (msg.includes('database error saving new user') || msg.includes('solo para correos institucionales')) {
     return `Esa cuenta de Microsoft no es institucional. Entra con tu cuenta @${USC_EMAIL_DOMAIN}.`;
   }
@@ -130,6 +146,36 @@ export async function iniciarSesionConMicrosoft(recordar: boolean, correoSugerid
     options: { scopes: 'email', redirectTo, queryParams },
   });
   if (error) throw error;
+}
+
+// ── Recuperar la contraseña ────────────────────────────────────────────────────────
+// Supabase envía un enlace a /restablecer. Allí se canjea (?code= o ?token_hash=) por una sesión
+// de recuperación y se elige la contraseña nueva. Por seguridad la respuesta es la misma exista o
+// no la cuenta. Las cuentas que entran con Microsoft no tienen contraseña en USCupo.
+
+export const RUTA_RESTABLECER = '/restablecer';
+
+export async function enviarRecuperacion(correo: string) {
+  if (!esCorreoInstitucional(correo)) {
+    throw new Error(`Usa tu correo institucional, terminado en @${USC_EMAIL_DOMAIN}`);
+  }
+  const { error } = await supabase.auth.resetPasswordForEmail(correo.trim().toLowerCase(), {
+    redirectTo: `${window.location.origin}${RUTA_RESTABLECER}`,
+  });
+  if (error) throw error;
+}
+
+/** Canje del enlace con la plantilla de correo de token_hash (sirve aunque se abra en otro navegador). */
+export async function verificarEnlaceRecuperacion(tokenHash: string) {
+  const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
+  if (error) throw error;
+}
+
+export async function cambiarContrasena(nueva: string) {
+  const { error } = await supabase.auth.updateUser({ password: nueva });
+  if (error) throw error;
+  // Quien conociera la contraseña anterior pierde las sesiones abiertas en otros equipos.
+  await supabase.auth.signOut({ scope: 'others' });
 }
 
 export async function cerrarSesion() {
