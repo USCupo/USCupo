@@ -1,33 +1,23 @@
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BrandPanel } from '../../src/components/BrandPanel';
+import { useRouter } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { CarreraPicker } from '../../src/components/CarreraPicker';
+import { Casilla } from '../../src/components/Casilla';
 import { CasillaLegal } from '../../src/components/CasillaLegal';
-import { GradientBackground } from '../../src/components/GradientBackground';
 import { InfoNotice } from '../../src/components/InfoNotice';
-import { Logo } from '../../src/components/Logo';
+import { MarcoAcceso } from '../../src/components/MarcoAcceso';
 import { MicrosoftButton } from '../../src/components/MicrosoftButton';
 import { PieLegal } from '../../src/components/PieLegal';
 import { SegmentedControl } from '../../src/components/SegmentedControl';
 import { TextField } from '../../src/components/TextField';
-import { ThemeToggle } from '../../src/components/ThemeToggle';
 import { MIN_CONTRASENA } from '../../src/controllers/auth';
 import { useLoginController, type LoginController } from '../../src/controllers/useLoginController';
+import { llevarCorreoARecuperar } from '../../src/controllers/useRecuperarController';
+import { DIAS_RECORDAR } from '../../src/lib/sesion';
 import { USC_EMAIL_DOMAIN } from '../../src/lib/supabase';
 import { AVISO_NO_OFICIAL } from '../../src/models/legal';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
-import { cristalClaro, glass } from '../../src/theme/glass';
 import { useTheme } from '../../src/theme/useTheme';
-import { FooterWeb } from '../../src/components/FooterWeb';
 import { MetaPagina } from '../../src/components/MetaPagina';
 import { fonts } from '../../src/theme/typography';
 
@@ -38,120 +28,20 @@ const DESCRIPCION_LOGIN =
   'Ingresa o crea tu cuenta de USCupo con tu correo @usc.edu.co para cambiar de horario con otros estudiantes de la Universidad Santiago de Cali.';
 
 export default function LoginScreen() {
-  const { colors, spacing } = useTheme();
-  const { breakpoint, height } = useBreakpoint();
-  const insets = useSafeAreaInsets();
   // El controlador vive aquí y no dentro del formulario: si la ventana cruza un
   // breakpoint, el layout cambia pero lo escrito se conserva.
   const c = useLoginController();
-  const meta = <MetaPagina titulo="Ingresar" ruta="/login" descripcion={DESCRIPCION_LOGIN} />;
-
-  if (breakpoint === 'amplio') {
-    return (
-      <GradientBackground>
-        {meta}
-        {/* Un solo scroll para toda la página: el split llena al menos la ventana y el pie va al
-            final, en el flujo; en portátiles bajos nada se monta sobre nada. */}
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-          <View style={styles.split}>
-            <View style={styles.splitMarca}>
-              {/* Sticky y con el alto de la ventana: el panel queda centrado en pantalla mientras se
-                  baja por el formulario; si no cabe, crece en vez de montarse. */}
-              <View style={[styles.marcaFija, { minHeight: height }]}>
-                <BrandPanel bajo={height < 760} />
-              </View>
-            </View>
-            <View style={[styles.splitForm, styles.centrado, { padding: spacing.xxl }]}>
-              <Tarjeta ancho={460}>
-                <Formulario c={c} />
-              </Tarjeta>
-            </View>
-            <View style={[styles.toggleFlotante, { top: spacing.lg, right: spacing.lg }]}>
-              <ThemeToggle />
-            </View>
-          </View>
-          <FooterWeb conContacto={false} style={{ width: 'auto', marginHorizontal: spacing.lg, marginBottom: spacing.lg }} />
-        </ScrollView>
-      </GradientBackground>
-    );
-  }
-
-  const medio = breakpoint === 'medio';
-
   return (
-    <GradientBackground>
-      {meta}
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView
-          contentContainerStyle={[
-            medio && styles.centrado,
-            {
-              padding: medio ? spacing.xl : spacing.md,
-              paddingTop: insets.top + (medio ? spacing.xl : spacing.lg),
-              paddingBottom: insets.bottom + spacing.lg,
-            },
-          ]}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View style={medio ? { width: '100%', maxWidth: 480 } : undefined}>
-            <View style={{ paddingHorizontal: medio ? 0 : spacing.sm }}>
-              <Encabezado />
-            </View>
-            <View style={{ marginTop: spacing.lg }}>
-              <Tarjeta>
-                <Formulario c={c} />
-              </Tarjeta>
-            </View>
-            <FooterWeb conContacto={false} style={{ marginTop: spacing.xl }} />
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </GradientBackground>
-  );
-}
-
-function Tarjeta({ children, ancho }: { children: React.ReactNode; ancho?: number }) {
-  const { colors, spacing } = useTheme();
-  const { breakpoint } = useBreakpoint();
-  return (
-    <View
-      style={[
-        styles.tarjeta,
-        cristalClaro(colors),
-        {
-          padding: breakpoint === 'compacto' ? spacing.lg : spacing.xl,
-        },
-        ancho ? { width: '100%', maxWidth: ancho } : null,
-      ]}
-    >
-      {children}
-    </View>
-  );
-}
-
-function Encabezado() {
-  const { colors, spacing, type } = useTheme();
-  return (
-    <View style={styles.header}>
-      <View style={styles.toggleEncabezado}>
-        <ThemeToggle />
-      </View>
-      {/* Logo centrado, más grande y justo encima del eslogan. */}
-      <Logo size={72} sobre="azul" />
-      {/* H1 de la pantalla en teléfono y tablet; en computador lo es el lema del BrandPanel. */}
-      <Text role="heading" aria-level={1} style={[type.sectionTitle, { color: colors.onBackground, marginTop: spacing.sm, textAlign: 'center' }]}>
-        USC<Text style={{ color: colors.accent }}>upo</Text>
-      </Text>
-      <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted, textAlign: 'center' }]}>
-        Cambios de horario entre estudiantes USC
-      </Text>
-    </View>
+    <MarcoAcceso meta={<MetaPagina titulo="Ingresar" ruta="/login" descripcion={DESCRIPCION_LOGIN} />}>
+      <Formulario c={c} />
+    </MarcoAcceso>
   );
 }
 
 function Formulario({ c }: { c: LoginController }) {
   const { colors, spacing, type } = useTheme();
   const { breakpoint } = useBreakpoint();
+  const router = useRouter();
   const registro = c.modo === 'registro';
   const ocupado = c.enviando || c.microsoftCargando;
 
@@ -253,6 +143,38 @@ function Formulario({ c }: { c: LoginController }) {
           editable={!ocupado}
         />
 
+        {!registro && (
+          <Pressable
+            accessibilityRole="link"
+            onPress={() => {
+              llevarCorreoARecuperar(c.campos.correo);
+              router.push('/recuperar');
+            }}
+            disabled={ocupado}
+            style={[styles.olvide, { marginTop: -spacing.sm, marginBottom: spacing.sm }]}
+          >
+            <Text style={[type.bodyMuted, { color: colors.link, fontFamily: fonts.bodyBold }]}>¿Olvidaste tu contraseña?</Text>
+          </Pressable>
+        )}
+
+        {!registro && (
+          <View style={{ marginBottom: spacing.md }}>
+            <Casilla
+              marcada={c.campos.recordar}
+              onCambiar={c.setRecordar}
+              etiqueta={`Mantener sesión iniciada por ${DIAS_RECORDAR} días`}
+              disabled={ocupado}
+            >
+              <View style={styles.textoCasilla}>
+                <Text style={[type.body, { color: colors.text }]}>Mantener sesión iniciada</Text>
+                <Text style={[type.bodyMuted, { color: colors.textMuted }]}>
+                  {`${DIAS_RECORDAR} días en este equipo. Si no la marcas, la sesión se cierra al cerrar la pestaña.`}
+                </Text>
+              </View>
+            </Casilla>
+          </View>
+        )}
+
         {registro && (
           <CasillaLegal
             aceptado={c.campos.aceptaLegal}
@@ -284,6 +206,24 @@ function Formulario({ c }: { c: LoginController }) {
             <InfoNotice>
               {`Cuenta creada. Abre el enlace que enviamos a ${c.avisoConfirmacion} para confirmarla y luego inicia sesión.`}
             </InfoNotice>
+          </View>
+        )}
+
+        {c.porConfirmar && (
+          <View style={{ marginBottom: spacing.md }}>
+            <Button
+              variant="secondary"
+              label={c.reenvio.espera > 0 ? `Reenviar confirmación en ${c.reenvio.espera} s` : 'Reenviar correo de confirmación'}
+              loadingLabel="Enviando…"
+              onPress={c.reenviar}
+              loading={c.reenvio.enviando}
+              disabled={c.reenvio.espera > 0}
+            />
+            {c.reenvio.hecho ? (
+              <Text accessibilityLiveRegion="polite" style={[type.bodyMuted, { color: colors.textMuted, marginTop: spacing.xs, textAlign: 'center' }]}>
+                {`Enviamos otro enlace a ${c.porConfirmar}. Revisa también el correo no deseado.`}
+              </Text>
+            ) : null}
           </View>
         )}
 
@@ -327,47 +267,21 @@ function Formulario({ c }: { c: LoginController }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    alignItems: 'center',
-  },
-  toggleEncabezado: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    zIndex: 10,
-  },
   divisor: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  olvide: {
+    alignSelf: 'flex-end',
+    paddingVertical: 8,
+  },
+  textoCasilla: {
+    flex: 1,
+    paddingTop: 10,
+    gap: 2,
+  },
   lineaDivisor: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
-  },
-  split: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  splitMarca: {
-    flex: 1.1,
-  },
-  marcaFija: {
-    position: 'sticky' as 'relative',
-    top: 0,
-  },
-  splitForm: {
-    flex: 1,
-  },
-  toggleFlotante: {
-    position: 'absolute',
-    zIndex: 10,
-  },
-  centrado: {
-    flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tarjeta: {
-    borderRadius: glass.panel,
   },
 });

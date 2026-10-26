@@ -47,6 +47,12 @@ Esta parte de USCupo solo la ven estudiantes con sesión iniciada. Para entrar, 
 
 ${ENLACES}`;
 
+const RECUPERAR = `# Recuperar la contraseña
+
+Si olvidaste tu contraseña de USCupo, abre [recuperar la contraseña](${URL_SITIO}/recuperar) en un navegador y escribe tu correo @usc.edu.co: te llega un enlace para crear una nueva. Las cuentas que entran con Microsoft usan la contraseña de la USC.
+
+${ENLACES}`;
+
 export const MARKDOWN_404 = `# Página no encontrada
 
 La dirección que pediste no existe en USCupo. Revisa el [sitemap](${URL_SITIO}/sitemap.xml), el [llms.txt](${URL_SITIO}/llms.txt) o vuelve al [inicio](${URL_SITIO}/).
@@ -61,6 +67,8 @@ const PAGINAS: Record<string, string> = {
   '/terminos': documento(TERMINOS, true),
   '/privacidad': documento(PRIVACIDAD, true),
   '/eliminar-cuenta': documento(ELIMINAR_CUENTA, true),
+  '/recuperar': RECUPERAR,
+  '/restablecer': RECUPERAR,
 };
 
 const RUTAS_CON_SESION = ['/buscar', '/publicar', '/mis-cambios', '/perfil', '/aceptar-legal', '/completar-perfil', '/auth/callback'];

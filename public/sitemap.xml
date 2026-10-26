@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://uscupo.vercel.app/</loc></url>
-  <url><loc>https://uscupo.vercel.app/login</loc></url>
-  <url><loc>https://uscupo.vercel.app/acerca</loc></url>
-  <url><loc>https://uscupo.vercel.app/contacto</loc></url>
-  <url><loc>https://uscupo.vercel.app/privacidad</loc></url>
-  <url><loc>https://uscupo.vercel.app/terminos</loc></url>
-  <url><loc>https://uscupo.vercel.app/eliminar-cuenta</loc></url>
+  <url><loc>https://www.uscupo.com/</loc></url>
+  <url><loc>https://www.uscupo.com/login</loc></url>
+  <url><loc>https://www.uscupo.com/acerca</loc></url>
+  <url><loc>https://www.uscupo.com/contacto</loc></url>
+  <url><loc>https://www.uscupo.com/privacidad</loc></url>
+  <url><loc>https://www.uscupo.com/terminos</loc></url>
+  <url><loc>https://www.uscupo.com/eliminar-cuenta</loc></url>
 </urlset>

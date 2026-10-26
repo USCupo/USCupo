@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { markdownDe, pideMarkdown, responderMarkdown } from '../src/lib/markdown.ts';
 import { DATOS_ESTRUCTURADOS, URL_SITIO } from '../src/models/informacion.ts';
+import { config } from '../middleware.ts';
 
 const pedir = (ruta: string, accept: string, method = 'GET') => responderMarkdown(new Request(`${URL_SITIO}${ruta}`, { method, headers: { accept } }));
 
@@ -42,7 +43,7 @@ test('una ruta inexistente da 404 con cuerpo Markdown y enlaces a sitemap y llms
 
 test('HEAD responde sin cuerpo y cada página pública tiene su Markdown', async () => {
   assert.equal(await pedir('/acerca', 'text/markdown', 'HEAD')!.text(), '');
-  for (const ruta of ['/', '/login', '/acerca', '/contacto', '/terminos', '/privacidad', '/eliminar-cuenta', '/acerca/']) {
+  for (const ruta of ['/', '/login', '/acerca', '/contacto', '/terminos', '/privacidad', '/eliminar-cuenta', '/acerca/', '/recuperar', '/restablecer']) {
     assert.equal(markdownDe(ruta).estado, 200, ruta);
   }
   assert.equal(markdownDe('/perfil').estado, 200, 'las de sesión explican que requieren sesión');
@@ -65,12 +66,19 @@ test('JSON-LD: Organization con contactPoint y PostalAddress, y WebApplication g
 });
 
 test('llms.txt sigue el formato (H1, resumen, cuándo usar) y el sitemap lista páginas que existen', () => {
-  const llms = readFileSync('public/llms.txt', 'utf8');
+  // Sin CR: en Windows git puede dejar el archivo con CRLF.
+  const llms = readFileSync('public/llms.txt', 'utf8').replaceAll('\r', '');
   assert.match(llms, /^# USCupo\n\n> /);
-  assert.match(llms, /^## Cuándo usar USCupo?$/m);
+  assert.match(llms, /^## Cuándo usar USCupo$/m);
   const sitemap = readFileSync('public/sitemap.xml', 'utf8');
   for (const [, ruta] of sitemap.matchAll(/<loc>https:\/\/uscupo\.vercel\.app\/([^<]*)<\/loc>/g)) {
     const archivo = ruta === '' ? 'app/index.tsx' : ruta === 'login' ? 'app/(auth)/login.tsx' : `app/${ruta}.tsx`;
     assert.ok(existsSync(archivo), `sitemap: /${ruta} sin página`);
   }
+});
+
+test('el matcher del middleware cubre las páginas y deja fuera bundles, assets y archivos', () => {
+  const ruta = new RegExp(`^${config.matcher[0]}$`);
+  for (const u of ['/', '/login', '/acerca', '/__no-existe', '/auth/callback']) assert.ok(ruta.test(u), u);
+  for (const u of ['/llms.txt', '/sitemap.xml', '/_expo/static/js/web/entry.js', '/assets/fonts/x.woff2']) assert.ok(!ruta.test(u), u);
 });

@@ -1,7 +1,8 @@
-import { Redirect, Tabs } from 'expo-router';
+import { Redirect, router, Tabs } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import type { ComponentProps } from 'react';
 import { BarraNavegacion } from '../../src/components/BarraNavegacion';
+import { GradientBackground } from '../../src/components/GradientBackground';
 import { useAuth } from '../../src/lib/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import { legalVigente, perfilCompleto } from '../../src/models/perfiles';
@@ -26,13 +27,34 @@ function usePendientes(userId: string | undefined, rutaActiva: number) {
   return n;
 }
 
+const PESTANAS = ['/(tabs)', '/(tabs)/buscar', '/(tabs)/publicar', '/(tabs)/mis-cambios', '/(tabs)/perfil'] as const;
+
+// Con asyncRoutes, el código de cada pestaña llega la primera vez que se abre. Cuando el navegador
+// queda libre se precargan todas: el cambio de pestaña ya no espera la red. Las pantallas piden
+// sus datos al ganar foco (useCargaEnFoco), así que precargar no consulta Supabase.
+function usePrecargarPestanas(listo: boolean) {
+  useEffect(() => {
+    if (!listo || typeof window === 'undefined') return;
+    const precargar = () => PESTANAS.forEach((ruta) => router.prefetch(ruta));
+    if ('requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(precargar, { timeout: 3000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = setTimeout(precargar, 1500);
+    return () => clearTimeout(id);
+  }, [listo]);
+}
+
 export default function TabsLayout() {
   const { session, perfil, loading } = useAuth();
   const [rutaActiva, setRutaActiva] = useState(0);
   const pendientes = usePendientes(session?.user.id, rutaActiva);
+  usePrecargarPestanas(!loading && !!session && legalVigente(perfil) && perfilCompleto(perfil));
 
+  // Sin sesión todavía no se pintan las pestañas: cada pantalla pediría sus datos con un usuario
+  // vacío (400) antes de redirigir. Con sesión se pintan ya, mientras llega el perfil.
+  if (!session) return loading ? <GradientBackground>{null}</GradientBackground> : <Redirect href="/(auth)/login" />;
   // "/" resuelve a (tabs)/index: redirigir ahí volvería a este layout en bucle.
-  if (!loading && !session) return <Redirect href="/(auth)/login" />;
   if (!loading && !legalVigente(perfil)) return <Redirect href="/aceptar-legal" />;
   if (!loading && !perfilCompleto(perfil)) return <Redirect href="/completar-perfil" />;
 

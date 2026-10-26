@@ -3,7 +3,7 @@
 // Solo datos: middleware.ts también lo importa.
 import { AVISO_NO_OFICIAL, RESPONSABLE, type Documento } from './legal.ts';
 
-export const URL_SITIO = 'https://uscupo.vercel.app';
+export const URL_SITIO = 'https://www.uscupo.com';
 export const DOMINIO_USC = 'usc.edu.co';
 
 export const LEMA = 'Encuentra a alguien que quiera tu horario y te dé el suyo.';
