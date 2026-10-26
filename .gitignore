@@ -50,10 +50,17 @@ supabase/.temp/
 # Vercel
 .vercel
 
-# Privado, solo en la máquina del autor: documentación interna, instrucciones de despliegue y
-# configuración, e instrucciones para asistentes de IA.
+# Al repo solo sube lo necesario para que la web funcione. Lo demás es privado y vive solo en la
+# máquina del autor: documentación, instrucciones de despliegue y configuración, instrucciones para
+# asistentes de IA, tests, backend (Supabase), herramientas y el kit de marca.
 docs/
 AGENTS.md
 CLAUDE.md
 .claude/
 .env.example
+tests/
+supabase/
+scripts/generar-iconos.mjs
+assets/uscupo-kit/
+assets/uscupo_icono.svg
+assets/uscupo_logo.svg

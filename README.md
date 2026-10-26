@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/uscupo-kit/horizontal/uscupo-horizontal-negativo.svg">
-    <img src="assets/uscupo-kit/horizontal/uscupo-horizontal-color.svg" alt="USCupo" width="320">
-  </picture>
+  <img src="public/og-uscupo.png" alt="USCupo: cambios de horario entre estudiantes USC" width="720">
 </p>
 
 <p align="center">
@@ -16,9 +13,6 @@
   <a href="https://www.uscupo.com/acerca">Acerca de</a>
 </p>
 
-<p align="center">
-  <img src="public/og-uscupo.png" alt="USCupo: cambios de horario entre estudiantes USC" width="720">
-</p>
 
 ---
 
