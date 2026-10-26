@@ -21,6 +21,87 @@ export const PASOS = [
   'Hacen el cambio por los canales oficiales de la USC.',
 ];
 
+/** Lo que distingue a USCupo; la portada pública lo muestra en tarjetas. */
+export const VENTAJAS = [
+  {
+    titulo: 'Solo estudiantes de la USC',
+    texto: `Para entrar hace falta un correo @${DOMINIO_USC} confirmado, así que del otro lado siempre hay un compañero de la Universidad.`,
+  },
+  {
+    titulo: 'Cambios exactos, no listas eternas',
+    texto: 'Te mostramos primero a quien tiene el horario que buscas y, además, busca el tuyo. Si no hay uno exacto, puedes revisar todas las ofertas de tu carrera.',
+  },
+  {
+    titulo: 'Tu contacto, solo cuando hace falta',
+    texto: 'Tu correo o tu WhatsApp aparecen únicamente para el estudiante que marcó interés en tu oferta, y tú decides cuál de los dos mostrar.',
+  },
+  {
+    titulo: 'Gratis y sin intermediarios',
+    texto: 'No cobramos por publicar ni por contactar. USCupo se sostiene con anuncios y no participa en el cambio: lo hacen ustedes dos.',
+  },
+];
+
+/** Recomendaciones para que el cambio salga bien; van en la portada y en Preguntas frecuentes. */
+export const CONSEJOS = [
+  'Antes de publicar, revisa en el calendario académico de la USC las fechas en que se permiten los cambios de grupo.',
+  'Pon el grupo exacto y todos los horarios que te sirven: así aparecen más coincidencias.',
+  'Cuando alguien marque interés, escríbele pronto: la oferta queda reservada solo 7 días.',
+  'Acuerden el cambio y háganlo por los canales oficiales de la USC; nadie debe pedirte dinero ni tus contraseñas.',
+  'Si una oferta o un estudiante no se comporta bien, repórtalo o bloquéalo desde la misma oferta.',
+];
+
+export const PREGUNTAS: { pregunta: string; respuesta: string }[] = [
+  {
+    pregunta: '¿USCupo es de la Universidad Santiago de Cali?',
+    respuesta: `No. ${AVISO_NO_OFICIAL} Lo hace un estudiante para estudiantes.`,
+  },
+  {
+    pregunta: '¿Cuánto cuesta?',
+    respuesta: 'Nada. Publicar, buscar y contactar es gratis. El proyecto se financia con anuncios de Google AdSense.',
+  },
+  {
+    pregunta: '¿Quién puede usarlo?',
+    respuesta: `Cualquier estudiante de la USC con correo institucional @${DOMINIO_USC}, de cualquier carrera. Puedes entrar con tu cuenta de Microsoft de la USC o con tu correo y una contraseña.`,
+  },
+  {
+    pregunta: '¿USCupo me cambia el grupo en el sistema de la Universidad?',
+    respuesta: 'No. USCupo pone en contacto a dos estudiantes que quieren intercambiar grupos. El cambio lo hacen después ustedes por los canales oficiales de la USC.',
+  },
+  {
+    pregunta: '¿Cómo funciona un cambio?',
+    respuesta: 'Publicas la materia, el grupo que tienes y los horarios que buscas. Cuando otro estudiante marca interés, la oferta queda en proceso y ambos ven el contacto del otro. Si en 7 días nadie confirma el cambio, la oferta vence y te avisamos.',
+  },
+  {
+    pregunta: '¿Quién ve mis datos de contacto?',
+    respuesta: 'Solo el estudiante que marca interés en tu oferta, o aquel en cuya oferta marcas interés tú. En tu perfil eliges si mostrar tu correo, tu WhatsApp o los dos.',
+  },
+  {
+    pregunta: '¿Qué hago cuando ya hicimos el cambio?',
+    respuesta: 'Confírmalo en Mis cambios. La oferta deja de aparecer en las búsquedas y queda en tu historial.',
+  },
+  {
+    pregunta: '¿Puedo reportar o bloquear a alguien?',
+    respuesta: 'Sí. Cada oferta tiene la opción de reportarla o de bloquear a quien la publicó. Los reportes los revisa el equipo de USCupo.',
+  },
+  {
+    pregunta: 'Olvidé mi contraseña, ¿qué hago?',
+    respuesta: 'En la pantalla de inicio de sesión toca "¿Olvidaste tu contraseña?" y te enviamos un enlace para crear una nueva. Si entras con Microsoft, tu contraseña es la de la USC.',
+  },
+  {
+    pregunta: '¿Cómo elimino mi cuenta?',
+    respuesta: 'Desde Perfil → Eliminar cuenta, o siguiendo los pasos de la página Eliminar cuenta. Se borran tu perfil, tus ofertas y tus datos de contacto.',
+  },
+];
+
+export const PREGUNTAS_FRECUENTES: Documento = {
+  titulo: 'Preguntas frecuentes',
+  resumen: 'Respuestas sobre cómo funciona USCupo, quién puede usarlo y cómo cuidamos tus datos.',
+  secciones: [
+    ...PREGUNTAS.map((p) => ({ titulo: p.pregunta, bloques: [p.respuesta] })),
+    { titulo: 'Consejos para un cambio seguro', bloques: [{ lista: CONSEJOS }] },
+  ],
+};
+
 export const ACERCA: Documento = {
   titulo: 'Acerca de USCupo',
   resumen: 'Qué es USCupo, para quién es y quién lo hace.',
