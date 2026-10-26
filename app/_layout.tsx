@@ -1,6 +1,6 @@
 import { FontDisplay, useFonts } from 'expo-font';
-import { Slot } from 'expo-router';
-import { useEffect } from 'react';
+import { DarkTheme, DefaultTheme, Slot, ThemeProvider as TemaNavegacion } from 'expo-router';
+import { useEffect, useMemo, type ReactNode } from 'react';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AvisoCookies } from '../src/components/AvisoCookies';
@@ -8,6 +8,21 @@ import { FAMILIA_ICONOS } from '../src/components/Iconos';
 import { AuthProvider } from '../src/lib/AuthContext';
 import { useHidratado } from '../src/lib/useHidratado';
 import { ThemeProvider } from '../src/theme/ThemeProvider';
+import { useTheme } from '../src/theme/useTheme';
+
+// El tema de React Navigation pinta el fondo de cada pantalla. El suyo por defecto es gris claro y
+// se veía en blanco mientras llegaba el código de una vista la primera vez (asyncRoutes).
+function NavegacionConTema({ children }: { children: ReactNode }) {
+  const { colors, scheme: esquema } = useTheme();
+  const tema = useMemo(() => {
+    const base = esquema === 'dark' ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: { ...base.colors, background: colors.background, card: colors.surface, text: colors.text, border: colors.border, primary: colors.primary },
+    };
+  }, [esquema, colors]);
+  return <TemaNavegacion value={tema}>{children}</TemaNavegacion>;
+}
 
 // En web se pinta con la fuente del sistema y se cambia al cargar (swap); esperar las fuentes
 // retrasaba el primer render varios segundos. En nativo se espera para evitar el salto.
@@ -36,10 +51,12 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <AuthProvider>
-          <Slot />
-          <AvisoCookies />
-        </AuthProvider>
+        <NavegacionConTema>
+          <AuthProvider>
+            <Slot />
+            <AvisoCookies />
+          </AuthProvider>
+        </NavegacionConTema>
       </ThemeProvider>
     </SafeAreaProvider>
   );
