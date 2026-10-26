@@ -1,6 +1,7 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, ViewStyle } from 'react-native';
 import { cristalBoton } from '../theme/glass';
 import { useTheme } from '../theme/useTheme';
+import { fonts } from '../theme/typography';
 
 type Variant = 'primary' | 'secondary' | 'ghost';
 
@@ -46,12 +47,12 @@ export function Button({ label, onPress, variant = 'primary', loading, disabled,
       {loading ? (
         <>
           <ActivityIndicator color={textColor} style={styles.spinner} />
-          <Text style={[type.body, { color: textColor, fontFamily: 'Inter_700Bold' }]}>
+          <Text style={[type.body, { color: textColor, fontFamily: fonts.bodyBold }]}>
             {loadingLabel ?? 'Cargando…'}
           </Text>
         </>
       ) : (
-        <Text style={[type.body, { color: textColor, fontFamily: 'Inter_700Bold' }]}>{label}</Text>
+        <Text style={[type.body, { color: textColor, fontFamily: fonts.bodyBold }]}>{label}</Text>
       )}
     </Pressable>
   );

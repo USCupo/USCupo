@@ -1,23 +1,23 @@
 import { useSyncExternalStore } from 'react';
 
-// Alto del FooterWeb fijo (Login de computador), para que el aviso de cookies flote encima
-// aunque el pie se parta en dos filas. 0 = no hay pie fijo en pantalla.
+// Alto del aviso de cookies flotante (0 = no está en pantalla). FooterWeb deja ese espacio debajo
+// para que, al bajar hasta el final, el aviso no tape el pie.
 let alto = 0;
 const oyentes = new Set<() => void>();
 
-export function avisarAltoFooterFijo(h: number) {
+export function avisarAltoAviso(h: number) {
   if (h === alto) return;
   alto = h;
   oyentes.forEach((f) => f());
 }
 
-export function useAltoFooterFijo(): number {
+export function useAltoAviso(): number {
   return useSyncExternalStore(
     (f) => {
       oyentes.add(f);
       return () => void oyentes.delete(f);
     },
     () => alto,
-    () => alto
+    () => 0
   );
 }

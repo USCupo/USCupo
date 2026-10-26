@@ -1,6 +1,7 @@
 import { Link } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../theme/useTheme';
+import { fonts } from '../theme/typography';
 
 // Autorización de tratamiento de datos (Ley 1581): previa, expresa e informada. Nunca viene marcada
 // y los dos documentos se pueden abrir antes de aceptar (en otra pestaña, sin perder el formulario).
@@ -70,5 +71,5 @@ const styles = StyleSheet.create({
   caja: { width: 22, height: 22, borderRadius: 6, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   check: { fontSize: 14, fontWeight: '700', lineHeight: 16 },
   texto: { flex: 1, paddingTop: 12 },
-  enlace: { fontFamily: 'Inter_700Bold', textDecorationLine: 'underline' },
+  enlace: { fontFamily: fonts.bodyBold, textDecorationLine: 'underline' },
 });

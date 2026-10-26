@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { useEffect, useRef } from 'react';
 import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
@@ -35,7 +35,7 @@ export function ThemeToggle() {
     <Pressable
       accessibilityRole="switch"
       accessibilityLabel="Tema oscuro"
-      accessibilityState={{ checked: oscuro }}
+      aria-checked={oscuro}
       onPress={alternarTema}
       onPressIn={() => !reducir && animarResorte(presion, 0.92, resorte.suave).start()}
       onPressOut={() => !reducir && animarResorte(presion, 1, resorte.suave).start()}

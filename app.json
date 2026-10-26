@@ -7,10 +7,10 @@
     "userInterfaceStyle": "automatic",
     "web": {
       "favicon": "./assets/favicon.png",
-      "output": "single"
+      "output": "static"
     },
     "plugins": [
-      "expo-router",
+      ["expo-router", { "asyncRoutes": { "web": true } }],
       "expo-font"
     ]
   }

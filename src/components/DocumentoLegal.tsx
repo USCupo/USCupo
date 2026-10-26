@@ -10,7 +10,8 @@ import { Logo } from './Logo';
 import { MetaPagina } from './MetaPagina';
 
 // Página pública (sin sesión) para documentos legales. Google Play y quien no tenga la app la enlazan.
-export function DocumentoLegal({ doc, ruta }: { doc: Documento; ruta: string }) {
+// `vigencia`: la fecha de vigencia solo va en los documentos legales (no en Acerca ni Contacto).
+export function DocumentoLegal({ doc, ruta, vigencia = true }: { doc: Documento; ruta: string; vigencia?: boolean }) {
   const { colors, spacing, radius, type } = useTheme();
   const insets = useSafeAreaInsets();
   const conFooter = useBreakpoint().breakpoint !== 'compacto';
@@ -55,15 +56,16 @@ export function DocumentoLegal({ doc, ruta }: { doc: Documento; ruta: string }) 
               { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radius.card, padding: spacing.lg },
             ]}
           >
-            <Text accessibilityRole="header" style={[type.screenTitle, { color: colors.text }]}>
+            <Text role="heading" aria-level={1} style={[type.screenTitle, { color: colors.text }]}>
               {doc.titulo}
             </Text>
             <Text style={[type.bodyMuted, { color: colors.textMuted, marginTop: spacing.xs }]}>
-              {doc.resumen} Vigente desde el {VIGENTE_DESDE}.
+              {doc.resumen}
+              {vigencia ? ` Vigente desde el ${VIGENTE_DESDE}.` : null}
             </Text>
             {doc.secciones.map((s) => (
               <View key={s.titulo} style={{ marginTop: spacing.lg }}>
-                <Text accessibilityRole="header" style={[type.cardTitle, { color: colors.text, marginBottom: spacing.xs }]}>
+                <Text role="heading" aria-level={2} style={[type.cardTitle, { color: colors.text, marginBottom: spacing.xs }]}>
                   {s.titulo}
                 </Text>
                 {s.bloques.map(parrafo)}

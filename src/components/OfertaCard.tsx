@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { diasCortos, rangoHoras } from '../models/catalogo';
@@ -7,6 +7,7 @@ import type { BloqueHorario } from '../models/types';
 import { cristalClaro } from '../theme/glass';
 import { useTheme } from '../theme/useTheme';
 import { Insignia } from './ui';
+import { fonts } from '../theme/typography';
 
 interface Props {
   oferta: OfertaDetalle;
@@ -38,7 +39,7 @@ function Franja({ bloque, resaltada }: { bloque: BloqueHorario; resaltada?: bool
         },
       ]}
     >
-      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: 'Inter_700Bold', textAlign: 'center' }]}>{diasCortos(bloque.dias)}</Text>
+      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: fonts.bodyBold, textAlign: 'center' }]}>{diasCortos(bloque.dias)}</Text>
       <Text style={[type.bodyMuted, { color: colors.textMuted, textAlign: 'center' }]}>{sinPartirHoras(rangoHoras(bloque))}</Text>
     </View>
   );

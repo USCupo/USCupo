@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Modal, Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,6 +7,7 @@ import { useBreakpoint } from '../theme/useBreakpoint';
 import { cristalClaro } from '../theme/glass';
 import { useTheme } from '../theme/useTheme';
 import { TextField } from './TextField';
+import { fonts } from '../theme/typography';
 
 export interface ItemLista {
   id: number;
@@ -81,7 +82,7 @@ export function SelectorLista(p: Props) {
   return (
     <View style={{ marginBottom: spacing.md }}>
       {p.label ? (
-        <Text style={[type.bodyMuted, { color: colors.text, fontFamily: 'Inter_700Bold', marginBottom: spacing.xs }]}>{p.label}</Text>
+        <Text style={[type.bodyMuted, { color: colors.text, fontFamily: fonts.bodyBold, marginBottom: spacing.xs }]}>{p.label}</Text>
       ) : null}
       <Pressable
         accessibilityRole="button"
@@ -179,7 +180,7 @@ export function SelectorLista(p: Props) {
                   accessibilityRole="header"
                   style={[
                     type.bodyMuted,
-                    { color: colors.textMuted, fontFamily: 'Inter_700Bold', backgroundColor: colors.surface, paddingTop: spacing.md, paddingBottom: spacing.sm },
+                    { color: colors.textMuted, fontFamily: fonts.bodyBold, backgroundColor: colors.surface, paddingTop: spacing.md, paddingBottom: spacing.sm },
                   ]}
                 >
                   {section.title}

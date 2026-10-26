@@ -10,11 +10,14 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
+// El build de la web pinta cada ruta en Node (output "static"): ahí no hay window ni sesión.
+const enServidor = typeof window === 'undefined';
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    storage: AsyncStorage,
-    autoRefreshToken: true,
-    persistSession: true,
+    storage: enServidor ? undefined : AsyncStorage,
+    autoRefreshToken: !enServidor,
+    persistSession: !enServidor,
     // PKCE: el proveedor devuelve un ?code= de un solo uso en vez de tokens en la URL;
     // Supabase lo canjea al cargar /auth/callback.
     flowType: 'pkce',
@@ -22,7 +25,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-export const USC_EMAIL_DOMAIN = 'usc.edu.co';
+export { DOMINIO_USC as USC_EMAIL_DOMAIN } from '../models/informacion';
 
 // Proveedores externos activos en el proyecto (Authentication → Providers).
 export async function proveedorHabilitado(proveedor: string): Promise<boolean | null> {

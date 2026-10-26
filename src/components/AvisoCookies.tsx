@@ -1,15 +1,16 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { Link, useSegments } from 'expo-router';
-import { useEffect, useRef } from 'react';
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect } from 'react';
+import { Pressable, StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useConsentimientoAnuncios } from '../controllers/useConsentimientoAnuncios';
-import { useAltoFooterFijo } from '../lib/footerFijo';
+import { avisarAltoAviso } from '../lib/altoAviso';
+import { useHidratado } from '../lib/useHidratado';
 import type { PreferenciaAnuncios } from '../models/consentimientoAnuncios';
 import { cristalOscuro, glass } from '../theme/glass';
-import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
 import { useBreakpoint } from '../theme/useBreakpoint';
 import { useTheme } from '../theme/useTheme';
+import { fonts } from '../theme/typography';
 
 /**
  * Aviso de cookies y publicidad: panel de cristal flotante que no bloquea el uso. Hasta que el
@@ -20,24 +21,23 @@ export function AvisoCookies() {
   const { breakpoint } = useBreakpoint();
   const insets = useSafeAreaInsets();
   const segmentos = useSegments();
-  const reducir = useReducedMotion();
   const { bannerVisible, preferencia, elegir, cerrar } = useConsentimientoAnuncios();
-  const altoFooter = useAltoFooterFijo();
-  const entrada = useRef(new Animated.Value(0)).current;
+  // Entrada en CSS (data-entrada, app/+html.tsx): corre con el HTML del build sin esperar a JS.
+  // "ssr" mientras viene del build: si ya había decisión, el CSS lo oculta hasta que se quite.
+  const datos = { dataSet: { entrada: '', avisoCookies: useHidratado() ? 'cliente' : 'ssr' } } as object;
 
+  // Al cerrarse, FooterWeb deja de reservarle espacio.
   useEffect(() => {
     if (!bannerVisible) return;
-    entrada.setValue(reducir ? 1 : 0);
-    if (!reducir) animarResorte(entrada, 1, resorte.suave).start();
-  }, [bannerVisible, reducir, entrada]);
+    return () => avisarAltoAviso(0);
+  }, [bannerVisible]);
 
   if (!bannerVisible) return null;
 
   const amplio = breakpoint === 'amplio';
-  // En el teléfono, dentro de las pestañas, va por encima del dock; en el Login de computador,
-  // por encima del FooterWeb fijo (su alto medido + su margen inferior).
+  // En el teléfono, dentro de las pestañas, va por encima del dock.
   const conDock = !amplio && segmentos[0] === '(tabs)';
-  const abajo = insets.bottom + (conDock ? glass.altoBarraInferior + glass.margen * 2 : altoFooter > 0 ? altoFooter + spacing.lg + spacing.sm : spacing.md);
+  const abajo = insets.bottom + (conDock ? glass.altoBarraInferior + glass.margen * 2 : spacing.md);
 
   // Píldoras sobre el cristal oscuro, como los enlaces de la navbar; la elegida lleva aro amarillo.
   const opcion = (p: PreferenciaAnuncios, texto: string) => {
@@ -58,14 +58,18 @@ export function AvisoCookies() {
         ]}
       >
         {sel ? <Ionicons name="checkmark" size={18} color={colors.accent} /> : null}
-        <Text style={[type.body, { color: colors.onBackground, fontFamily: 'Inter_700Bold' }]}>{texto}</Text>
+        <Text style={[type.body, { color: colors.onBackground, fontFamily: fonts.bodyBold }]}>{texto}</Text>
       </Pressable>
     );
   };
 
   return (
-    <View pointerEvents="box-none" style={[styles.capa, { bottom: abajo, paddingHorizontal: amplio ? spacing.lg : spacing.md, alignItems: amplio ? 'flex-start' : 'stretch' }]}>
-      <Animated.View
+    <View
+      pointerEvents="box-none"
+      onLayout={(e: LayoutChangeEvent) => avisarAltoAviso(e.nativeEvent.layout.height + abajo)}
+      style={[styles.capa, { bottom: abajo, paddingHorizontal: amplio ? spacing.lg : spacing.md, alignItems: amplio ? 'flex-start' : 'stretch' }]}>
+      <View
+        {...datos}
         role="region"
         aria-label="Aviso de cookies y publicidad"
         style={[
@@ -76,14 +80,12 @@ export function AvisoCookies() {
             padding: spacing.md,
             gap: spacing.sm,
             maxWidth: amplio ? 440 : undefined,
-            opacity: entrada,
-            transform: [{ translateY: entrada.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
           },
         ]}
       >
         <View style={styles.titulo}>
           <Ionicons name="shield-checkmark-outline" size={20} color={colors.accent} />
-          <Text accessibilityRole="header" style={[type.body, { color: colors.accent, fontFamily: 'Inter_700Bold', flex: 1 }]}>
+          <Text role="heading" aria-level={2} style={[type.body, { color: colors.accent, fontFamily: fonts.bodyBold, flex: 1 }]}>
             Cookies y publicidad
           </Text>
           <Pressable
@@ -101,7 +103,7 @@ export function AvisoCookies() {
         <Text style={[type.bodyMuted, { color: colors.onBackground }]}>
           USCupo se financia con anuncios de Google AdSense, que usa cookies. Elige si pueden ser personalizados; mientras no
           elijas, son no personalizados.{' '}
-          <Link href="/privacidad" style={{ color: colors.accent, fontFamily: 'Inter_700Bold', textDecorationLine: 'underline' }}>
+          <Link href="/privacidad" style={{ color: colors.accent, fontFamily: fonts.bodyBold, textDecorationLine: 'underline' }}>
             Política de privacidad
           </Link>
         </Text>
@@ -112,7 +114,7 @@ export function AvisoCookies() {
           {opcion('no_personalizados', 'No personalizados')}
           {opcion('personalizados', 'Personalizados')}
         </View>
-      </Animated.View>
+      </View>
     </View>
   );
 }

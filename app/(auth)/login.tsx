@@ -1,6 +1,4 @@
-import { useEffect, useRef } from 'react';
 import {
-  Animated,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -26,19 +24,22 @@ import { MIN_CONTRASENA } from '../../src/controllers/auth';
 import { useLoginController, type LoginController } from '../../src/controllers/useLoginController';
 import { USC_EMAIL_DOMAIN } from '../../src/lib/supabase';
 import { AVISO_NO_OFICIAL } from '../../src/models/legal';
-import { animarResorte, resorte, useReducedMotion } from '../../src/theme/motion';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../../src/theme/glass';
 import { useTheme } from '../../src/theme/useTheme';
 import { FooterWeb } from '../../src/components/FooterWeb';
 import { MetaPagina } from '../../src/components/MetaPagina';
+import { fonts } from '../../src/theme/typography';
+
+// react-native-web pasa dataSet como atributos data-*; los tipos de React Native no lo declaran.
+const ENTRADA = { dataSet: { entrada: '' } } as object;
 
 const DESCRIPCION_LOGIN =
   'Ingresa o crea tu cuenta de USCupo con tu correo @usc.edu.co para cambiar de horario con otros estudiantes de la Universidad Santiago de Cali.';
 
 export default function LoginScreen() {
   const { colors, spacing } = useTheme();
-  const { breakpoint } = useBreakpoint();
+  const { breakpoint, height } = useBreakpoint();
   const insets = useSafeAreaInsets();
   // El controlador vive aquí y no dentro del formulario: si la ventana cruza un
   // breakpoint, el layout cambia pero lo escrito se conserva.
@@ -49,25 +50,28 @@ export default function LoginScreen() {
     return (
       <GradientBackground>
         {meta}
-        <View style={styles.split}>
-        <View style={styles.splitMarca}>
-          <BrandPanel />
-        </View>
-        <View style={styles.splitForm}>
-          <View style={[styles.toggleFlotante, { top: spacing.lg, right: spacing.lg }]}>
-            <ThemeToggle />
+        {/* Un solo scroll para toda la página: el split llena al menos la ventana y el pie va al
+            final, en el flujo; en portátiles bajos nada se monta sobre nada. */}
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+          <View style={styles.split}>
+            <View style={styles.splitMarca}>
+              {/* Sticky y con el alto de la ventana: el panel queda centrado en pantalla mientras se
+                  baja por el formulario; si no cabe, crece en vez de montarse. */}
+              <View style={[styles.marcaFija, { minHeight: height }]}>
+                <BrandPanel bajo={height < 760} />
+              </View>
+            </View>
+            <View style={[styles.splitForm, styles.centrado, { padding: spacing.xxl }]}>
+              <Tarjeta ancho={460}>
+                <Formulario c={c} />
+              </Tarjeta>
+            </View>
+            <View style={[styles.toggleFlotante, { top: spacing.lg, right: spacing.lg }]}>
+              <ThemeToggle />
+            </View>
           </View>
-          <ScrollView
-            contentContainerStyle={[styles.centrado, { padding: spacing.xxl }]}
-            keyboardShouldPersistTaps="handled"
-          >
-            <Tarjeta ancho={460}>
-              <Formulario c={c} />
-            </Tarjeta>
-          </ScrollView>
-        </View>
-        </View>
-        <FooterWeb fijo conContacto={false} style={{ width: 'auto', marginHorizontal: spacing.lg, marginBottom: spacing.lg }} />
+          <FooterWeb conContacto={false} style={{ width: 'auto', marginHorizontal: spacing.lg, marginBottom: spacing.lg }} />
+        </ScrollView>
       </GradientBackground>
     );
   }
@@ -134,7 +138,8 @@ function Encabezado() {
       </View>
       {/* Logo centrado, más grande y justo encima del eslogan. */}
       <Logo size={72} sobre="azul" />
-      <Text style={[type.sectionTitle, { color: colors.onBackground, marginTop: spacing.sm, textAlign: 'center' }]}>
+      {/* H1 de la pantalla en teléfono y tablet; en computador lo es el lema del BrandPanel. */}
+      <Text role="heading" aria-level={1} style={[type.sectionTitle, { color: colors.onBackground, marginTop: spacing.sm, textAlign: 'center' }]}>
         USC<Text style={{ color: colors.accent }}>upo</Text>
       </Text>
       <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted, textAlign: 'center' }]}>
@@ -147,23 +152,13 @@ function Encabezado() {
 function Formulario({ c }: { c: LoginController }) {
   const { colors, spacing, type } = useTheme();
   const { breakpoint } = useBreakpoint();
-  const reducir = useReducedMotion();
   const registro = c.modo === 'registro';
   const ocupado = c.enviando || c.microsoftCargando;
 
-  // Un solo momento de entrada: el formulario sube y aparece al cargar la pantalla.
-  const entrada = useRef(new Animated.Value(reducir ? 1 : 0)).current;
-  useEffect(() => {
-    if (!reducir) animarResorte(entrada, 1, resorte.suave).start();
-  }, [entrada, reducir]);
-
   return (
-    <Animated.View
-      style={{
-        opacity: entrada,
-        transform: [{ translateY: entrada.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
-      }}
-    >
+    // Un solo momento de entrada: el formulario sube y aparece al pintar. Es CSS (data-entrada en
+    // app/+html.tsx) para que corra con el HTML del build sin esperar a JS.
+    <View {...ENTRADA}>
       <SegmentedControl
         options={['Crear cuenta', 'Iniciar sesión']}
         selectedIndex={registro ? 0 : 1}
@@ -171,12 +166,12 @@ function Formulario({ c }: { c: LoginController }) {
       />
 
       <View style={{ marginTop: spacing.lg }}>
-        <Text accessibilityRole="header" style={[type.screenTitle, { color: colors.text, fontSize: 24, lineHeight: 30 }]}>
+        <Text role="heading" aria-level={2} style={[type.screenTitle, { color: colors.text, fontSize: 24, lineHeight: 30 }]}>
           {registro ? 'Crea tu cuenta' : 'Inicia sesión'}
         </Text>
         <Text style={[type.bodyMuted, { color: colors.textMuted, marginTop: spacing.xs, marginBottom: spacing.lg }]}>
           Solo estudiantes con correo institucional{' '}
-          <Text style={{ color: colors.accentText, fontFamily: 'Inter_700Bold' }}>@{USC_EMAIL_DOMAIN}</Text>
+          <Text style={{ color: colors.accentText, fontFamily: fonts.bodyBold }}>@{USC_EMAIL_DOMAIN}</Text>
         </Text>
 
         <MicrosoftButton onPress={c.entrarConMicrosoft} loading={c.microsoftCargando} disabled={c.enviando} />
@@ -308,7 +303,7 @@ function Formulario({ c }: { c: LoginController }) {
         >
           <Text style={[type.bodyMuted, { color: colors.textMuted }]}>
             {registro ? '¿Ya tienes cuenta? ' : '¿No tienes cuenta? '}
-            <Text style={{ color: colors.link, fontFamily: 'Inter_700Bold' }}>
+            <Text style={{ color: colors.link, fontFamily: fonts.bodyBold }}>
               {registro ? 'Inicia sesión' : 'Crear cuenta'}
             </Text>
           </Text>
@@ -327,7 +322,7 @@ function Formulario({ c }: { c: LoginController }) {
           </View>
         ) : null}
       </View>
-    </Animated.View>
+    </View>
   );
 }
 
@@ -355,6 +350,10 @@ const styles = StyleSheet.create({
   },
   splitMarca: {
     flex: 1.1,
+  },
+  marcaFija: {
+    position: 'sticky' as 'relative',
+    top: 0,
   },
   splitForm: {
     flex: 1,

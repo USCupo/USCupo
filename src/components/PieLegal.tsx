@@ -3,9 +3,10 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useConsentimientoAnuncios } from '../controllers/useConsentimientoAnuncios';
 import { RESPONSABLE } from '../models/legal';
 import { useTheme } from '../theme/useTheme';
+import { fonts } from '../theme/typography';
 
 /**
- * Enlaces legales (Ley 1581: el contacto es el canal para ejercer derechos): Términos,
+ * Enlaces legales (Ley 1581: el contacto es el canal para ejercer derechos): Acerca de, Términos,
  * Privacidad, opciones de anuncios y, salvo que se pida lo contrario, contacto. Una sola lista
  * para el Login del teléfono, Perfil y el FooterWeb; `sobreOscuro` es para el cristal oscuro.
  */
@@ -16,6 +17,9 @@ export function PieLegal({ sobreOscuro, conContacto = true }: { sobreOscuro?: bo
 
   return (
     <View role="navigation" aria-label="Información legal" style={styles.enlaces}>
+      <Link href="/acerca" style={estilo}>
+        Acerca de
+      </Link>
       <Link href="/terminos" style={estilo}>
         Términos de uso
       </Link>
@@ -23,18 +27,26 @@ export function PieLegal({ sobreOscuro, conContacto = true }: { sobreOscuro?: bo
         Política de privacidad
       </Link>
       <Pressable accessibilityRole="button" onPress={abrirOpciones}>
-        <Text style={estilo}>Opciones de privacidad de anuncios</Text>
+        {/* Mismo nombre que el aviso que abre. */}
+        <Text style={estilo}>Cookies y publicidad</Text>
       </Pressable>
       {conContacto ? (
-        <Link href={`mailto:${RESPONSABLE.correo}`} style={estilo}>
-          {sobreOscuro ? 'Contacto' : `Escríbenos: ${RESPONSABLE.correo}`}
-        </Link>
+        sobreOscuro ? (
+          <Link href="/contacto" style={estilo}>
+            Contacto
+          </Link>
+        ) : (
+          <Link href={`mailto:${RESPONSABLE.correo}`} style={estilo}>
+            {`Escríbenos: ${RESPONSABLE.correo}`}
+          </Link>
+        )
       ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  enlaces: { flexDirection: 'row', flexWrap: 'wrap', columnGap: 16 },
-  enlace: { textDecorationLine: 'underline', paddingVertical: 8, fontFamily: 'Inter_700Bold' },
+  // flexShrink + maxWidth: dentro del FooterWeb, si no caben en una fila pasan a la siguiente.
+  enlaces: { flexDirection: 'row', flexWrap: 'wrap', columnGap: 16, flexShrink: 1, maxWidth: '100%' },
+  enlace: { textDecorationLine: 'underline', paddingVertical: 8, fontFamily: fonts.bodyBold },
 });

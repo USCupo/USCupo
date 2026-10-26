@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -18,6 +18,7 @@ import { useBreakpoint } from '../theme/useBreakpoint';
 import { cristalClaro } from '../theme/glass';
 import { useTheme } from '../theme/useTheme';
 import { TextField } from './TextField';
+import { fonts } from '../theme/typography';
 
 interface Props {
   label: string;
@@ -68,12 +69,12 @@ export function CarreraPicker({ label, carreras, cargando, selectedId, onSelect,
 
   return (
     <View style={{ marginBottom: spacing.md }}>
-      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: 'Inter_700Bold', marginBottom: spacing.xs }]}>
+      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: fonts.bodyBold, marginBottom: spacing.xs }]}>
         {label}
       </Text>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`${label}: ${seleccionada ? seleccionada.nombre : 'sin elegir'}`}
+        accessibilityLabel={`${label}: ${seleccionada ? seleccionada.nombre : 'Elige tu carrera'}`}
         accessibilityHint="Abre la lista de carreras"
         onPress={() => setOpen(true)}
         style={({ pressed }) => [
@@ -185,7 +186,7 @@ export function CarreraPicker({ label, carreras, cargando, selectedId, onSelect,
                       type.bodyMuted,
                       {
                         color: colors.textMuted,
-                        fontFamily: 'Inter_700Bold',
+                        fontFamily: fonts.bodyBold,
                         backgroundColor: colors.surface,
                         paddingTop: spacing.md,
                         paddingBottom: spacing.sm,

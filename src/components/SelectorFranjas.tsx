@@ -5,6 +5,7 @@ import { useTheme } from '../theme/useTheme';
 import { Button } from './Button';
 import { RangoHoras } from './SelectorHora';
 import { Chip } from './ui';
+import { fonts } from '../theme/typography';
 
 interface Props {
   label: string;
@@ -46,7 +47,7 @@ export function SelectorFranjas({ label, ayuda, seleccionadas, onAgregar, onQuit
 
   return (
     <View style={{ marginBottom: spacing.lg }}>
-      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: 'Inter_700Bold' }]}>{label}</Text>
+      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: fonts.bodyBold }]}>{label}</Text>
       {ayuda ? <Text style={[type.bodyMuted, { color: colors.textMuted, marginTop: 2 }]}>{ayuda}</Text> : null}
 
       <View

@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { useState, type ComponentProps } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,6 +11,7 @@ import { Logo } from './Logo';
 import { MenuFlotante } from './MenuFlotante';
 import { ThemeToggle } from './ThemeToggle';
 import { DialogoConfirmar } from './ui';
+import { fonts } from '../theme/typography';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -56,7 +57,7 @@ function Contador({ n }: { n: number }) {
   if (n <= 0) return null;
   return (
     <View style={[styles.contador, { backgroundColor: colors.accent }]} accessibilityLabel={`${n} pendientes`}>
-      <Text style={{ color: '#0A2959', fontFamily: 'Inter_700Bold', fontSize: 11 }}>{n > 9 ? '9+' : n}</Text>
+      <Text style={{ color: '#0A2959', fontFamily: fonts.bodyBold, fontSize: 11 }}>{n > 9 ? '9+' : n}</Text>
     </View>
   );
 }
@@ -113,7 +114,7 @@ function Superior({ rutas, activa, ir, pendientes }: VistaProps) {
                 ]}
               >
                 <Ionicons name={sel ? item.iconoActivo : item.icono} size={18} color={sel ? colors.accent : colors.onBackgroundMuted} />
-                <Text style={[type.bodyMuted, { color: sel ? colors.onBackground : colors.onBackgroundMuted, fontFamily: sel ? 'Inter_700Bold' : 'Inter_400Regular' }]}>
+                <Text style={[type.bodyMuted, { color: sel ? colors.onBackground : colors.onBackgroundMuted, fontFamily: sel ? fonts.bodyBold : fonts.body }]}>
                   {item.label}
                 </Text>
                 {r.name === 'mis-cambios' ? <Contador n={pendientes} /> : null}
@@ -170,7 +171,7 @@ function MenuCuenta({ nombre, inicial, enPerfil, irAPerfil }: { nombre: string; 
           },
         ]}
       >
-        <Text style={{ color: '#0A2959', fontFamily: 'Inter_700Bold', fontSize: 15 }}>{inicial}</Text>
+        <Text style={{ color: '#0A2959', fontFamily: fonts.bodyBold, fontSize: 15 }}>{inicial}</Text>
       </MenuFlotante>
       <DialogoConfirmar
         visible={confirmar}
@@ -222,7 +223,7 @@ function Inferior({ rutas, activa, ir, pendientes }: VistaProps) {
               )}
               <Text
                 numberOfLines={1}
-                style={[type.bodyMuted, { fontSize: 11, lineHeight: 14, marginTop: 2, color: sel ? colors.link : colors.textMuted, fontFamily: sel ? 'Inter_700Bold' : 'Inter_400Regular' }]}
+                style={[type.bodyMuted, { fontSize: 11, lineHeight: 14, marginTop: 2, color: sel ? colors.link : colors.textMuted, fontFamily: sel ? fonts.bodyBold : fonts.body }]}
               >
                 {item.label}
               </Text>

@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { StyleSheet, View } from 'react-native';
 import type { ModeracionController } from '../controllers/useModeracionController';
 import { MAX_DETALLE, MOTIVOS_REPORTE } from '../controllers/estadoModeracion';
