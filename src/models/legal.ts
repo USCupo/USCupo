@@ -215,7 +215,7 @@ export const TERMINOS: Documento = {
     {
       titulo: '8. Cancelar tu cuenta',
       bloques: [
-        'Puedes eliminar tu cuenta cuando quieras desde Perfil → Eliminar cuenta, en la app o en la web, o siguiendo los pasos en uscupo.vercel.app/eliminar-cuenta.',
+        'Puedes eliminar tu cuenta cuando quieras desde Perfil → Eliminar cuenta, en la app o en la web, o siguiendo los pasos en uscupo.com/eliminar-cuenta.',
       ],
     },
     {
@@ -242,7 +242,7 @@ export const ELIMINAR_CUENTA: Documento = {
       bloques: [
         {
           lista: [
-            'Inicia sesión en la app o en uscupo.vercel.app.',
+            'Inicia sesión en la app o en uscupo.com.',
             'Ve a Perfil.',
             'Toca "Eliminar cuenta", escribe ELIMINAR y confirma.',
           ],

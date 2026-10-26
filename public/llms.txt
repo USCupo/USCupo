@@ -2,7 +2,7 @@
 
 > USCupo es una bolsa gratuita de intercambio de cupos (cambios de horario) entre estudiantes de la Universidad Santiago de Cali (USC), en Cali, Colombia. Un estudiante publica el grupo de una materia que tiene y el horario que busca; otro que quiera ese grupo le da el suyo. Solo entran estudiantes con correo institucional @usc.edu.co. Es un proyecto independiente de estudiantes, no una app oficial de la USC.
 
-Cada página pública también se puede pedir en Markdown con la cabecera `Accept: text/markdown` (por ejemplo `curl -H 'Accept: text/markdown' https://uscupo.vercel.app/`).
+Cada página pública también se puede pedir en Markdown con la cabecera `Accept: text/markdown` (por ejemplo `curl -H 'Accept: text/markdown' https://www.uscupo.com/`).
 
 ## Cuándo usar USCupo
 
@@ -17,21 +17,21 @@ Cada página pública también se puede pedir en Markdown con la cabecera `Accep
 
 ## Cómo debe usarlo un agente
 
-USCupo no tiene API pública ni servidor MCP: las ofertas y los perfiles solo los ven estudiantes con sesión iniciada. Un agente puede explicar cómo funciona con estas páginas y enviar al estudiante a https://uscupo.vercel.app/login para que entre con su correo @usc.edu.co (cuenta Microsoft 365 de la USC o correo y contraseña).
+USCupo no tiene API pública ni servidor MCP: las ofertas y los perfiles solo los ven estudiantes con sesión iniciada. Un agente puede explicar cómo funciona con estas páginas y enviar al estudiante a https://www.uscupo.com/login para que entre con su correo @usc.edu.co (cuenta Microsoft 365 de la USC o correo y contraseña).
 
 ## Páginas
 
-- [Inicio](https://uscupo.vercel.app/): qué es USCupo y cómo funciona en tres pasos.
-- [Ingresar o crear cuenta](https://uscupo.vercel.app/login): registro e inicio de sesión con correo @usc.edu.co.
-- [Acerca de USCupo](https://uscupo.vercel.app/acerca): para quién es, qué hace y qué no, y quién lo mantiene.
-- [Contacto](https://uscupo.vercel.app/contacto): correo y teléfono del responsable, reportes y derechos sobre los datos.
+- [Inicio](https://www.uscupo.com/): qué es USCupo y cómo funciona en tres pasos.
+- [Ingresar o crear cuenta](https://www.uscupo.com/login): registro e inicio de sesión con correo @usc.edu.co.
+- [Acerca de USCupo](https://www.uscupo.com/acerca): para quién es, qué hace y qué no, y quién lo mantiene.
+- [Contacto](https://www.uscupo.com/contacto): correo y teléfono del responsable, reportes y derechos sobre los datos.
 
 ## Legal
 
-- [Términos de uso](https://uscupo.vercel.app/terminos)
-- [Política de privacidad](https://uscupo.vercel.app/privacidad): tratamiento de datos conforme a la Ley 1581 de 2012.
-- [Eliminar cuenta](https://uscupo.vercel.app/eliminar-cuenta)
+- [Términos de uso](https://www.uscupo.com/terminos)
+- [Política de privacidad](https://www.uscupo.com/privacidad): tratamiento de datos conforme a la Ley 1581 de 2012.
+- [Eliminar cuenta](https://www.uscupo.com/eliminar-cuenta)
 
 ## Optional
 
-- [Sitemap](https://uscupo.vercel.app/sitemap.xml)
+- [Sitemap](https://www.uscupo.com/sitemap.xml)

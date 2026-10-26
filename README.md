@@ -118,10 +118,10 @@ de todas las rutas a `index.html` porque es una SPA).
    `service_role` key.
 3. **Deploy.**
 4. En Supabase → Authentication → URL Configuration:
-   - **Site URL**: el dominio de producción, p. ej. `https://uscupo.vercel.app`
+   - **Site URL**: el dominio de producción, `https://www.uscupo.com`
      (los enlaces de confirmación de correo apuntan aquí).
-   - **Redirect URLs**: agrega `https://uscupo.vercel.app/**` y, para los previews,
-     `https://*-<equipo>.vercel.app/**`.
+   - **Redirect URLs**: agrega `https://www.uscupo.com/**`, `http://localhost:8081/**` y, para
+     los previews, `https://*-<equipo>.vercel.app/**`.
 
 ## Estado actual
 
