@@ -1,134 +1,98 @@
-# USCupo
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/uscupo-kit/horizontal/uscupo-horizontal-negativo.svg">
+    <img src="assets/uscupo-kit/horizontal/uscupo-horizontal-color.svg" alt="USCupo" width="320">
+  </picture>
+</p>
 
-Aplicación web (Expo Router + React Native Web, desplegada en Vercel) para que estudiantes
-de la Universidad Santiago de Cali intercambien horarios/cupos de materias entre sí.
-Las apps nativas se construirán aparte (Kotlin y Swift) sobre el mismo backend: ver
-`docs/prompts/`.
-USCupo solo conecta estudiantes: el trámite del cambio se hace directamente en la
-universidad.
+<p align="center">
+  <strong>Encuentra a alguien que quiera tu horario y te dé el suyo.</strong><br>
+  Intercambio de cupos entre estudiantes de la Universidad Santiago de Cali.
+</p>
 
-## Stack
+<p align="center">
+  <a href="https://www.uscupo.com"><strong>www.uscupo.com</strong></a> ·
+  <a href="https://www.uscupo.com/preguntas">Preguntas frecuentes</a> ·
+  <a href="https://www.uscupo.com/acerca">Acerca de</a>
+</p>
 
-- **Frontend:** Expo Router (SDK 57) + React Native Web, exportado como SPA estática
-- **Backend/BD:** Supabase (Postgres, Auth, Row Level Security, Edge Functions)
-- **Auth:** correo institucional `@usc.edu.co` + contraseña, o Microsoft 365 (Entra ID) restringido al
-  mismo dominio
+<p align="center">
+  <img src="public/og-uscupo.png" alt="USCupo: cambios de horario entre estudiantes USC" width="720">
+</p>
 
-## Estructura
+---
 
-```
-app/                   Vistas (Expo Router)
-  (auth)/login.tsx      Registro / inicio de sesión
-  (tabs)/               Inicio, Buscar, Publicar, Mis cambios, Perfil
-src/
-  models/               Tipos + queries a Supabase por tabla
-  controllers/           Lógica de negocio (auth.ts; matching/notificaciones/expiración llegan
-                          con sus pantallas)
-  components/            Componentes del design system (Button, TextField, CarreraPicker…)
-  theme/                 Tokens de color/tipografía/espaciado y material "cristal" (glass.ts)
-  lib/                   Cliente de Supabase + contexto de sesión
-docs/
-  google-ads.md          Paso a paso de AdSense (web) y AdMob (apps)
-  prompts/               Prompts para construir las apps Android (Android Studio) e iOS (Swift)
-supabase/
-  migrations/            Esquema, RLS, funciones de dominio y datos semilla
-  functions/expirar-ofertas/  Edge Function que vence ofertas sin confirmar a los 7 días
-```
+## El problema
 
-## Puesta en marcha
+Cada semestre a muchos estudiantes les queda una materia en un horario que no les sirve: choca
+con el trabajo, con otra clase o con el transporte. Muchas veces alguien de la misma carrera tiene
+justo el grupo que necesitan y quiere el suyo, pero no hay una forma sencilla de encontrarse.
 
-### 1. Crear el proyecto en Supabase
+## Qué hace USCupo
 
-1. Crea un proyecto en [supabase.com](https://supabase.com).
-2. Copia `.env.example` a `.env` y completa `EXPO_PUBLIC_SUPABASE_URL` y
-   `EXPO_PUBLIC_SUPABASE_ANON_KEY` (Project Settings → API).
+USCupo junta a esos dos estudiantes. Publicas el grupo que tienes y los horarios que te sirven, y
+la app te muestra a quien tiene lo que buscas y, además, busca lo que tú tienes.
 
-### 2. Aplicar el esquema
+1. **Publicas tu cupo**: materia, grupo, el horario que tienes y los que buscas.
+2. **Encuentras tu cambio**: primero ves las coincidencias exactas; si no hay, todas las ofertas
+   de tu carrera, filtradas por materia y por día.
+3. **Se contactan**: cuando alguien marca interés, los dos ven el contacto del otro durante
+   7 días.
+4. **Hacen el cambio** por los canales oficiales de la USC y lo confirman en la app.
 
-Con la [Supabase CLI](https://supabase.com/docs/guides/cli) enlazada al proyecto:
+## Lo que lo hace confiable
 
-```bash
-supabase link --project-ref <tu-project-ref>
-supabase db push
-```
+- **Solo estudiantes de la USC.** Para entrar hace falta un correo `@usc.edu.co` confirmado, con
+  tu cuenta de Microsoft de la Universidad o con contraseña.
+- **Tu contacto, solo cuando hace falta.** Tu correo o tu WhatsApp aparecen únicamente para el
+  estudiante con quien vas a cambiar, y tú eliges cuál mostrar.
+- **Moderación.** Cualquier oferta se puede reportar y cualquier estudiante se puede bloquear;
+  el bloqueo es mutuo e invisible.
+- **Tus datos, bajo tu control.** Política de privacidad conforme a la Ley 1581 de 2012 de
+  Colombia, autorización expresa al registrarte y eliminación de la cuenta en cualquier momento.
+- **Gratis.** No se cobra por publicar ni por contactar. El proyecto se sostiene con anuncios.
 
-O, si prefieres no instalar la CLI todavía, pega el contenido de cada archivo en
-`supabase/migrations/` (en orden) en el SQL Editor del dashboard de Supabase.
+## Plataformas
 
-Esto crea las tablas, las políticas de RLS, las funciones (`expresar_interes`,
-`contacto_revelado`, `confirmar_cambio`, `buscar_matches`) y los datos semilla: el
-catálogo completo de carreras de la USC (pregrado/técnico/posgrado, tomado de
-usc.edu.co) y el pénsum completo de Ingeniería de Sistemas. Las demás carreras quedan
-sin materias hasta que se carguen sus pénsums (ver nota en
-`20260921000005_seed_materias_ingenieria_sistemas.sql`).
+| | Estado |
+| --- | --- |
+| **Web** | Disponible en [www.uscupo.com](https://www.uscupo.com), en el computador y el celular |
+| **Android** | En desarrollo, nativa (Kotlin y Jetpack Compose) |
+| **iOS** | En diseño, nativa (Swift y SwiftUI) |
 
-### 3. Configurar autenticación
+Las tres comparten el mismo backend, las mismas reglas y la misma identidad visual: el azul y el
+amarillo de la USC sobre superficies de cristal translúcidas.
 
-- **Email:** Authentication → Providers → Email. Se recomienda dejar la confirmación de
-  correo activada (el trigger de base de datos ya rechaza cualquier dominio distinto a
-  `@usc.edu.co`, así que solo estudiantes reales llegan a confirmar).
-- **Microsoft 365 (cuentas USC):** la USC usa Microsoft Entra ID
-  (tenant `47e962fd-bc3b-4eed-b1b8-d70eee9acd65`).
-  1. En portal.azure.com → Microsoft Entra ID → App registrations → New registration.
-     Redirect URI tipo *Web*: `https://<project-ref>.supabase.co/auth/v1/callback`.
-  2. Crea un client secret (copia el *Value*) y anota su vencimiento.
-  3. En Supabase → Authentication → Providers → Azure: Client ID, Secret y
-     *Azure Tenant URL* = `https://login.microsoftonline.com/47e962fd-bc3b-4eed-b1b8-d70eee9acd65`.
-  4. Recomendado: en el Manifest de la app agrega los optional claims `email` y `xms_edov`.
-  La app pide `domain_hint=usc.edu.co`, así que entra directo a la cuenta institucional;
-  el trigger `handle_new_user` sigue rechazando cualquier otro dominio.
-- **Redirect URLs** (Authentication → URL Configuration):
-  `http://localhost:8081/auth/callback` (desarrollo) y el dominio de producción (paso 6).
-  Las apps nativas añadirán `uscupo://auth/callback`.
+## Cómo está hecho
 
-### 4. Programar la expiración automática
+- **Web**: Expo Router y React Native Web, con páginas prerenderizadas para que carguen rápido y
+  las lean buscadores y asistentes de IA (cada página pública también responde en Markdown).
+- **Backend**: Supabase, con Postgres, autenticación y reglas de acceso por fila (RLS). Las
+  acciones sensibles (marcar interés, revelar el contacto, confirmar o liberar un cambio,
+  reportar, bloquear) pasan por funciones del servidor; el cliente nunca decide el estado de una
+  oferta.
+- **Hosting**: Vercel, con cabeceras de seguridad estrictas (CSP, HSTS) y caché de un año para
+  los recursos estáticos.
+- **Diseño**: modo claro y oscuro, etiquetas para lectores de pantalla y una interfaz adaptada a
+  teléfono, tableta y computador.
 
-```bash
-supabase functions deploy expirar-ofertas
-```
+## Estado
 
-Luego crea un cron job (Database → Cron Jobs en el dashboard, o `pg_cron` + `pg_net`) que
-llame a la función una vez al día.
+La web está publicada en [www.uscupo.com](https://www.uscupo.com). Lo próximo:
 
-### 5. Correr en local
+- Publicar la app de Android en Google Play.
+- Activar el ingreso con Microsoft 365 cuando la Universidad apruebe la aplicación.
+- Construir la app de iOS.
 
-```bash
-npm install
-npm start          # http://localhost:8081
-npm run typecheck
-npm run build      # export estático a dist/, igual que en Vercel
-```
+## Contacto
 
-Si el proyecto está dentro de OneDrive y Metro no detecta cambios, reinicia con
-`npx expo start --web --clear`.
+¿Dudas, ideas o un reporte? Escribe a **uscupo.app@outlook.com** o usa la página de
+[contacto](https://www.uscupo.com/contacto).
 
-### 6. Deploy web en Vercel
+Creado y mantenido por **Gustavo Andrés Cerón Galeano**, en Cali.
 
-El repo ya trae `vercel.json` (build `npx expo export -p web`, salida `dist/`, y rewrite
-de todas las rutas a `index.html` porque es una SPA).
+---
 
-1. En Vercel: **Add New → Project** → importar este repositorio de GitHub. Framework
-   preset: **Other** (lo demás lo toma de `vercel.json`).
-2. **Environment Variables** (Production y Preview), con los mismos valores del `.env`:
-   - `EXPO_PUBLIC_SUPABASE_URL`
-   - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
-
-   Se incrustan en el bundle al compilar: si se cambian, hay que volver a desplegar.
-   Son públicas por diseño (la seguridad la da RLS); **nunca** pongas aquí la
-   `service_role` key.
-3. **Deploy.**
-4. En Supabase → Authentication → URL Configuration:
-   - **Site URL**: el dominio de producción, `https://www.uscupo.com`
-     (los enlaces de confirmación de correo apuntan aquí).
-   - **Redirect URLs**: agrega `https://www.uscupo.com/**`, `http://localhost:8081/**` y, para
-     los previews, `https://*-<equipo>.vercel.app/**`.
-
-## Estado actual
-
-Web funcional: registro/login con correo institucional, completar perfil, Inicio
-(coincidencias, todas las ofertas de la carrera, avisos, espacio de anuncio), Buscar
-(filtros, "me interesa"), Publicar (horario con hora libre en ruedas), Mis cambios
-(contacto, confirmar/liberar/retirar) y Perfil (contacto visible, historial, tema
-claro/oscuro). Pénsums cargados para las 89 carreras del catálogo.
-Pendiente: Microsoft 365 (código listo, falta configurar Azure) y activar AdSense
-(`docs/google-ads.md`).
+<sub>USCupo es un proyecto independiente de estudiantes y no es una app oficial de la
+Universidad Santiago de Cali. Las inscripciones y los cambios de grupo se hacen por los canales
+oficiales de la Universidad.</sub>
