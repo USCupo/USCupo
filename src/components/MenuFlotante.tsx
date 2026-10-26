@@ -1,9 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { useEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 import { Animated, Modal, Pressable, StyleSheet, Text, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import { conAlfa, cristalClaro } from '../theme/glass';
 import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
 import { useTheme } from '../theme/useTheme';
+import { fonts } from '../theme/typography';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -131,7 +132,7 @@ function OpcionMenu({ texto, icono, color, fondo, enfocar, onPress }: OpcionMenu
       <View style={[styles.circulo, { backgroundColor: fondo }]}>
         <Ionicons name={icono} size={20} color={color} />
       </View>
-      <Text style={[type.body, { color, fontFamily: 'Inter_700Bold', flex: 1 }]} numberOfLines={2}>
+      <Text style={[type.body, { color, fontFamily: fonts.bodyBold, flex: 1 }]} numberOfLines={2}>
         {texto}
       </Text>
     </Pressable>

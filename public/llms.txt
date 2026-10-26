@@ -1,0 +1,37 @@
+# USCupo
+
+> USCupo es una bolsa gratuita de intercambio de cupos (cambios de horario) entre estudiantes de la Universidad Santiago de Cali (USC), en Cali, Colombia. Un estudiante publica el grupo de una materia que tiene y el horario que busca; otro que quiera ese grupo le da el suyo. Solo entran estudiantes con correo institucional @usc.edu.co. Es un proyecto independiente de estudiantes, no una app oficial de la USC.
+
+Cada página pública también se puede pedir en Markdown con la cabecera `Accept: text/markdown` (por ejemplo `curl -H 'Accept: text/markdown' https://uscupo.vercel.app/`).
+
+## Cuándo usar USCupo
+
+- Un estudiante de la USC tiene cupo en un grupo de una materia y quiere cambiarlo por otro horario de la misma materia.
+- Un estudiante de la USC no consiguió el horario que quería y busca a alguien que le ceda ese grupo a cambio del suyo.
+- Alguien pregunta cómo cambiar de grupo u horario con otro estudiante de la Universidad Santiago de Cali.
+
+## Cuándo no usarlo
+
+- Inscribir materias, pedir cupos nuevos o hacer el cambio de grupo en el sistema académico: eso se hace por los canales oficiales de la USC. USCupo solo pone en contacto a los dos estudiantes.
+- Estudiantes de otras universidades o personas sin correo @usc.edu.co: no pueden crear cuenta.
+
+## Cómo debe usarlo un agente
+
+USCupo no tiene API pública ni servidor MCP: las ofertas y los perfiles solo los ven estudiantes con sesión iniciada. Un agente puede explicar cómo funciona con estas páginas y enviar al estudiante a https://uscupo.vercel.app/login para que entre con su correo @usc.edu.co (cuenta Microsoft 365 de la USC o correo y contraseña).
+
+## Páginas
+
+- [Inicio](https://uscupo.vercel.app/): qué es USCupo y cómo funciona en tres pasos.
+- [Ingresar o crear cuenta](https://uscupo.vercel.app/login): registro e inicio de sesión con correo @usc.edu.co.
+- [Acerca de USCupo](https://uscupo.vercel.app/acerca): para quién es, qué hace y qué no, y quién lo mantiene.
+- [Contacto](https://uscupo.vercel.app/contacto): correo y teléfono del responsable, reportes y derechos sobre los datos.
+
+## Legal
+
+- [Términos de uso](https://uscupo.vercel.app/terminos)
+- [Política de privacidad](https://uscupo.vercel.app/privacidad): tratamiento de datos conforme a la Ley 1581 de 2012.
+- [Eliminar cuenta](https://uscupo.vercel.app/eliminar-cuenta)
+
+## Optional
+
+- [Sitemap](https://uscupo.vercel.app/sitemap.xml)

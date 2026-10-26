@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
 import { useTheme } from '../theme/useTheme';
+import { fonts } from '../theme/typography';
 
 interface Props {
   options: [string, string];
@@ -56,7 +57,7 @@ export function SegmentedControl({ options, selectedIndex, onChange }: Props) {
           >
             <Text
               style={{
-                fontFamily: 'Inter_700Bold',
+                fontFamily: fonts.bodyBold,
                 fontSize: 15,
                 color: selected ? colors.link : colors.textMuted,
               }}

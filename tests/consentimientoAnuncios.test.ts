@@ -1,6 +1,13 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { CLAVE_CONSENTIMIENTO, crearConsentimiento } from '../src/models/consentimientoAnuncios.ts';
+import {
+  CLAVE_CONSENTIMIENTO,
+  crearConsentimiento,
+  ESTADO_SIN_DECISION,
+  SCRIPT_CONSENTIMIENTO,
+} from '../src/models/consentimientoAnuncios.ts';
 
 function almacen(inicial: Record<string, string> = {}) {
   const datos = new Map(Object.entries(inicial));
@@ -66,4 +73,40 @@ test('sin almacenamiento (modo privado) funciona en memoria', () => {
   c.elegir('no_personalizados');
   assert.equal(c.estado().preferencia, 'no_personalizados');
   assert.equal(c.estado().bannerVisible, false);
+});
+
+/** Corre el script del <head> con un localStorage y un <html> de mentira; devuelve si marcó. */
+function correrScript(guardado: string | null, falla = false): boolean {
+  const attrs = new Set<string>();
+  const localStorage = {
+    getItem: (k: string) => {
+      if (falla) throw new Error('bloqueado');
+      return k === CLAVE_CONSENTIMIENTO ? guardado : null;
+    },
+  };
+  const document = { documentElement: { setAttribute: (n: string) => void attrs.add(n) } };
+  new Function('localStorage', 'document', SCRIPT_CONSENTIMIENTO)(localStorage, document);
+  return attrs.has('data-consentimiento');
+}
+
+test('el script del <head> marca <html> solo si hay una decisión válida guardada', () => {
+  assert.equal(correrScript('personalizados'), true);
+  assert.equal(correrScript('no_personalizados'), true);
+  assert.equal(correrScript(null), false);
+  assert.equal(correrScript('otra-cosa'), false);
+  assert.equal(correrScript(null, true), false, 'almacenamiento bloqueado: no rompe ni marca');
+});
+
+test('la CSP de vercel.json permite el script del <head> por su sha256', () => {
+  const hash = createHash('sha256').update(SCRIPT_CONSENTIMIENTO).digest('base64');
+  const csp = JSON.parse(readFileSync('vercel.json', 'utf8'))
+    .headers.flatMap((h: { headers: { key: string; value: string }[] }) => h.headers)
+    .find((h: { key: string }) => h.key === 'Content-Security-Policy').value as string;
+  const scriptSrc = csp.split(';').find((d) => d.trim().startsWith('script-src'))!;
+  assert.ok(scriptSrc.includes(`'sha256-${hash}'`), `Falta 'sha256-${hash}' en script-src`);
+  assert.ok(!scriptSrc.includes("'unsafe-inline'"));
+});
+
+test('el estado del build es sin decisión, con el aviso visible', () => {
+  assert.deepEqual(ESTADO_SIN_DECISION, { preferencia: null, bannerVisible: true, noPersonalizados: true });
 });

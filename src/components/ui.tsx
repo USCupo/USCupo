@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { useEffect, useRef, type ComponentProps, type ReactNode } from 'react';
 import {
   ActivityIndicator,
@@ -21,6 +21,7 @@ import { Button } from './Button';
 import { GradientBackground } from './GradientBackground';
 import { FooterWeb } from './FooterWeb';
 import { MetaPagina } from './MetaPagina';
+import { fonts } from '../theme/typography';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -146,7 +147,7 @@ export function Chip({ texto, activo, onPress, icono, accessibilityLabel }: Chip
   const contenido = (
     <>
       {icono ? <Ionicons name={icono} size={14} color={activo ? colors.onPrimary : colors.link} /> : null}
-      <Text style={[type.bodyMuted, { color: activo ? colors.onPrimary : colors.text, fontFamily: 'Inter_700Bold' }]}>
+      <Text style={[type.bodyMuted, { color: activo ? colors.onPrimary : colors.text, fontFamily: fonts.bodyBold }]}>
         {texto}
       </Text>
     </>

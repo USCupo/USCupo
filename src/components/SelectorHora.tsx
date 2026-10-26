@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -15,6 +15,7 @@ import { hora12 } from '../models/catalogo';
 import { glass } from '../theme/glass';
 import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
 import { useTheme } from '../theme/useTheme';
+import { fonts } from '../theme/typography';
 
 // Rango de clase: dos píldoras (Desde / Hasta). Al tocar una se despliega un panel con tres
 // ruedas —hora, minutos, a.m./p.m.— que se deslizan y encajan como el selector de iOS.
@@ -115,7 +116,7 @@ export function RangoHoras({ inicio, fin, onInicio, onFin }: { inicio: string; f
               {abierto === 'inicio' ? 'Hora de inicio' : 'Hora de fin'}
             </Text>
             <Pressable accessibilityRole="button" onPress={() => setAbierto(null)} hitSlop={8} style={[styles.listo, { backgroundColor: colors.primary }]}>
-              <Text style={[type.bodyMuted, { color: colors.onPrimary, fontFamily: 'Inter_700Bold' }]}>Listo</Text>
+              <Text style={[type.bodyMuted, { color: colors.onPrimary, fontFamily: fonts.bodyBold }]}>Listo</Text>
             </Pressable>
           </View>
 

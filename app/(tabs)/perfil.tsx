@@ -11,6 +11,7 @@ import { PALABRA_ELIMINAR, usePerfilController } from '../../src/controllers/use
 import { AVISO_NO_OFICIAL } from '../../src/models/legal';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
+import { fonts } from '../../src/theme/typography';
 
 export default function PerfilScreen() {
   const c = usePerfilController();
@@ -26,7 +27,7 @@ export default function PerfilScreen() {
       onPress={c.pedirEliminar}
       style={{ marginTop: spacing.xs, alignItems: 'center', paddingVertical: spacing.sm, minHeight: 44, justifyContent: 'center' }}
     >
-      <Text style={[type.body, { color: colors.danger, fontFamily: 'Inter_700Bold' }]}>Eliminar cuenta</Text>
+      <Text style={[type.body, { color: colors.danger, fontFamily: fonts.bodyBold }]}>Eliminar cuenta</Text>
     </Pressable>
   );
   const d = c.datos;
@@ -45,7 +46,7 @@ export default function PerfilScreen() {
               <TituloSeccion>Tus datos</TituloSeccion>
               <TextField label="Nombre completo" value={c.campos.nombre} onChangeText={c.setNombre} error={c.errores.nombre} autoCapitalize="words" autoComplete="name" />
               <View style={[styles.dato, { marginBottom: spacing.md }]}>
-                <Text style={[type.bodyMuted, { color: colors.text, fontFamily: 'Inter_700Bold' }]}>Carrera</Text>
+                <Text style={[type.bodyMuted, { color: colors.text, fontFamily: fonts.bodyBold }]}>Carrera</Text>
                 <Text style={[type.body, { color: colors.text, marginTop: spacing.xs }]}>
                   {d?.carrera ? `${d.carrera.nombre} · ${d.carrera.sede}` : '—'}
                 </Text>

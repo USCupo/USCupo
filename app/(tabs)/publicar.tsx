@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '../../src/components/Iconos';
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
@@ -11,6 +11,7 @@ import { ErrorCarga, EstadoVacio, Pantalla, Tarjeta } from '../../src/components
 import { usePublicarController } from '../../src/controllers/usePublicarController';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
+import { fonts } from '../../src/theme/typography';
 
 export default function PublicarScreen() {
   const c = usePublicarController();
@@ -151,7 +152,7 @@ function Seccion({ n, titulo }: { n: number; titulo: string }) {
   return (
     <View style={[styles.seccion, { marginBottom: spacing.md, marginTop: n > 1 ? spacing.sm : 0 }]}>
       <View style={[styles.numero, { borderColor: colors.accentText }]}>
-        <Text style={{ color: colors.accentText, fontFamily: 'Inter_700Bold', fontSize: 13 }}>{n}</Text>
+        <Text style={{ color: colors.accentText, fontFamily: fonts.bodyBold, fontSize: 13 }}>{n}</Text>
       </View>
       <Text accessibilityRole="header" style={[type.cardTitle, { color: colors.text, fontSize: 17 }]}>
         {titulo}

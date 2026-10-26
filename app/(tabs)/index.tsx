@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '../../src/components/Iconos';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -14,6 +14,7 @@ import { textoNotificacion } from '../../src/models/notificaciones';
 import { diasRestantes, hace, type OfertaDetalle } from '../../src/models/ofertas';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
+import { fonts } from '../../src/theme/typography';
 
 export default function InicioScreen() {
   const c = useInicioController();
@@ -68,7 +69,7 @@ export default function InicioScreen() {
                     <View style={[styles.punto, { backgroundColor: colors.accent }]} />
                     <View style={{ flex: 1 }}>
                       <Text style={[type.body, { color: colors.text }]}>
-                        <Text style={{ fontFamily: 'Inter_700Bold' }}>{o.interesado?.nombre_completo ?? 'Un estudiante'}</Text> quiere tu
+                        <Text style={{ fontFamily: fonts.bodyBold }}>{o.interesado?.nombre_completo ?? 'Un estudiante'}</Text> quiere tu
                         cupo de {o.materia.nombre}
                       </Text>
                       <Text style={[type.bodyMuted, { color: colors.textMuted }]}>
@@ -152,7 +153,7 @@ export default function InicioScreen() {
                       color={a.leida ? colors.textMuted : colors.accentText}
                     />
                     <View style={{ flex: 1 }}>
-                      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: a.leida ? 'Inter_400Regular' : 'Inter_700Bold' }]}>
+                      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: a.leida ? fonts.body : fonts.bodyBold }]}>
                         {textoNotificacion(a)}
                       </Text>
                       <Text style={[type.bodyMuted, { color: colors.textMuted, fontSize: 12 }]}>{hace(a.created_at)}</Text>
@@ -170,7 +171,7 @@ export default function InicioScreen() {
                 'Hagan el cambio en los canales oficiales de la USC y confírmalo aquí.',
               ].map((paso, i) => (
                 <View key={paso} style={[styles.paso, { marginTop: i ? spacing.sm : 0 }]}>
-                  <Text style={[type.bodyMuted, { color: colors.accentText, fontFamily: 'Inter_700Bold', width: 16 }]}>{i + 1}</Text>
+                  <Text style={[type.bodyMuted, { color: colors.accentText, fontFamily: fonts.bodyBold, width: 16 }]}>{i + 1}</Text>
                   <Text style={[type.bodyMuted, { color: colors.textMuted, flex: 1 }]}>{paso}</Text>
                 </View>
               ))}
@@ -270,7 +271,7 @@ function Enlace({ texto, onPress }: { texto: string; onPress: () => void }) {
   const { colors, type } = useTheme();
   return (
     <Pressable accessibilityRole="link" onPress={onPress} hitSlop={8}>
-      <Text style={[type.bodyMuted, { color: colors.accent, fontFamily: 'Inter_700Bold' }]}>{texto}</Text>
+      <Text style={[type.bodyMuted, { color: colors.accent, fontFamily: fonts.bodyBold }]}>{texto}</Text>
     </Pressable>
   );
 }

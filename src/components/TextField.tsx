@@ -1,7 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 import { useTheme } from '../theme/useTheme';
+import { fonts } from '../theme/typography';
 
 interface Props extends TextInputProps {
   label: string;
@@ -19,7 +20,7 @@ export function TextField({ label, error, style, password, onFocus, onBlur, ...r
 
   return (
     <View style={{ marginBottom: spacing.md }}>
-      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: 'Inter_700Bold', marginBottom: spacing.xs }]}>
+      <Text style={[type.bodyMuted, { color: colors.text, fontFamily: fonts.bodyBold, marginBottom: spacing.xs }]}>
         {label}
       </Text>
       <View>

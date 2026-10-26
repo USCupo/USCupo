@@ -15,6 +15,7 @@ import { cristalClaro, glass } from '../src/theme/glass';
 import { useTheme } from '../src/theme/useTheme';
 import { FooterWeb } from '../src/components/FooterWeb';
 import { MetaPagina } from '../src/components/MetaPagina';
+import { fonts } from '../src/theme/typography';
 
 export default function CompletarPerfilScreen() {
   const { session, perfil, loading } = useAuth();
@@ -110,7 +111,7 @@ function Contenido() {
               >
                 <Text style={[type.bodyMuted, { color: colors.textMuted }]}>
                   ¿No es tu cuenta?{' '}
-                  <Text style={{ color: colors.link, fontFamily: 'Inter_700Bold' }}>Cerrar sesión</Text>
+                  <Text style={{ color: colors.link, fontFamily: fonts.bodyBold }}>Cerrar sesión</Text>
                 </Text>
               </Pressable>
             </View>

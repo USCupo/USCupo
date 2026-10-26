@@ -1,7 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from './Iconos';
 import { Linking, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import type { ContactoRevelado } from '../models/types';
 import { useTheme } from '../theme/useTheme';
+import { fonts } from '../theme/typography';
 
 // Datos de contacto del otro estudiante (solo llegan si hay interés activo entre ambos).
 export function Contacto({ contacto, materia }: { contacto: ContactoRevelado | null | undefined; materia: string }) {
@@ -16,7 +17,7 @@ export function Contacto({ contacto, materia }: { contacto: ContactoRevelado | n
 
   return (
     <View style={[styles.caja, { backgroundColor: colors.primaryTint, borderRadius: radius.card, padding: spacing.md, gap: spacing.sm }]}>
-      <Text style={[type.body, { color: colors.text, fontFamily: 'Inter_700Bold' }]}>{contacto.nombre_completo}</Text>
+      <Text style={[type.body, { color: colors.text, fontFamily: fonts.bodyBold }]}>{contacto.nombre_completo}</Text>
       {contacto.correo ? (
         <Enlace icono="mail-outline" texto={contacto.correo} url={`mailto:${contacto.correo}?subject=${encodeURIComponent('Cambio de horario · USCupo')}&body=${mensaje}`} />
       ) : null}
@@ -38,7 +39,7 @@ function Enlace({ icono, texto, url }: { icono: 'mail-outline' | 'logo-whatsapp'
       style={({ pressed, hovered }: { pressed: boolean; hovered?: boolean }) => [styles.enlace, { opacity: pressed ? 0.7 : 1 }, hovered ? { transform: [{ translateX: 2 }] } : null]}
     >
       <Ionicons name={icono} size={18} color={colors.link} />
-      <Text style={[type.body, { color: colors.link, fontFamily: 'Inter_700Bold', flexShrink: 1 }]} numberOfLines={1}>
+      <Text style={[type.body, { color: colors.link, fontFamily: fonts.bodyBold, flexShrink: 1 }]} numberOfLines={1}>
         {texto}
       </Text>
     </Pressable>

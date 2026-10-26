@@ -15,6 +15,7 @@ import { diasClave, diasCortos, PATRONES_DIAS } from '../../src/models/catalogo'
 import type { Materia } from '../../src/models/types';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
+import { fonts } from '../../src/theme/typography';
 
 const nombreSemestre = (m: Materia) => (m.semestre ? `Semestre ${m.semestre}` : 'Otras');
 
@@ -206,14 +207,14 @@ function ListaMaterias({ materias, conteo, seleccion, onElegir }: { materias: Ma
         ]}
       >
         <View style={{ flex: 1 }}>
-          <Text style={[type.bodyMuted, { color: colors.text, fontFamily: sel ? 'Inter_700Bold' : 'Inter_400Regular', fontSize: 14 }]} numberOfLines={2}>
+          <Text style={[type.bodyMuted, { color: colors.text, fontFamily: sel ? fonts.bodyBold : fonts.body, fontSize: 14 }]} numberOfLines={2}>
             {titulo}
           </Text>
           {sub ? <Text style={[type.bodyMuted, { color: colors.textMuted, fontSize: 12 }]}>{sub}</Text> : null}
         </View>
         {n ? (
           <View style={[styles.cuenta, { backgroundColor: sel ? colors.primary : colors.accentTint }]}>
-            <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 12, color: sel ? colors.onPrimary : colors.accentText }}>{n}</Text>
+            <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12, color: sel ? colors.onPrimary : colors.accentText }}>{n}</Text>
           </View>
         ) : null}
       </Pressable>

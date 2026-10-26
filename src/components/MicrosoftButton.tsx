@@ -2,6 +2,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 import Svg, { Rect } from 'react-native-svg';
 import { cristalClaro } from '../theme/glass';
 import { useTheme } from '../theme/useTheme';
+import { fonts } from '../theme/typography';
 
 // Logo oficial de Microsoft (cuatro cuadros) con sus colores de marca, sin modificar.
 function MicrosoftLogo({ size = 20 }: { size?: number }) {
@@ -49,7 +50,7 @@ export function MicrosoftButton({ onPress, loading, disabled }: Props) {
       <View style={styles.icono}>
         {loading ? <ActivityIndicator color={colors.link} /> : <MicrosoftLogo />}
       </View>
-      <Text style={[type.body, { color: colors.text, fontFamily: 'Inter_700Bold' }]}>
+      <Text style={[type.body, { color: colors.text, fontFamily: fonts.bodyBold }]}>
         {loading ? 'Conectando con Microsoft…' : 'Iniciar sesión con Microsoft'}
       </Text>
     </Pressable>

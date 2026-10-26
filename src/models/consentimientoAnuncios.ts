@@ -13,6 +13,16 @@ export interface EstadoConsentimiento {
   noPersonalizados: boolean;
 }
 
+/**
+ * Lo que pinta el build (sin localStorage) y el primer render del navegador: sin decisión, con el
+ * aviso. Si ya había una, el script de app/+html.tsx lo oculta antes de pintar y al hidratar se quita.
+ */
+export const ESTADO_SIN_DECISION: EstadoConsentimiento = { preferencia: null, bannerVisible: true, noPersonalizados: true };
+
+/** Script en línea del <head>: marca <html data-consentimiento> si ya hay decisión guardada. Su
+ * sha256 va en la CSP de vercel.json (tests/consentimientoAnuncios.test.ts lo comprueba). */
+export const SCRIPT_CONSENTIMIENTO = `try{var p=localStorage.getItem(${JSON.stringify(CLAVE_CONSENTIMIENTO)});if(p==='personalizados'||p==='no_personalizados')document.documentElement.setAttribute('data-consentimiento','')}catch(e){}`;
+
 interface Almacen {
   leer(clave: string): string | null;
   escribir(clave: string, valor: string): void;
@@ -59,7 +69,7 @@ export function crearConsentimiento(almacen: Almacen) {
       }
       publicar();
     },
-    /** "Opciones de privacidad de anuncios" en Perfil. */
+    /** "Cookies y publicidad" en Perfil y en el pie de la web. */
     abrirOpciones() {
       abiertoAMano = true;
       publicar();

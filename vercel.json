@@ -2,12 +2,20 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "npm ci",
-  "buildCommand": "npx expo export -p web && cp dist/index.html dist/404.html",
+  "buildCommand": "npx expo export -p web && cp \"dist/+not-found.html\" dist/404.html && node scripts/verificar-csp.mjs",
   "outputDirectory": "dist",
-  "rewrites": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
     {
-      "source": "/((?:login|buscar|publicar|mis-cambios|perfil|privacidad|terminos|eliminar-cuenta|aceptar-legal|completar-perfil|auth/callback)/?)",
-      "destination": "/index.html"
+      "source": "/about",
+      "destination": "/acerca",
+      "permanent": true
+    },
+    {
+      "source": "/contact",
+      "destination": "/contacto",
+      "permanent": true
     }
   ],
   "headers": [
@@ -16,7 +24,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://*.googlesyndication.com https://*.google.com https://*.gstatic.com https://*.doubleclick.net https://*.googleadservices.com https://*.googletagservices.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://kehvxxgroexwbrlktwbq.supabase.co wss://kehvxxgroexwbrlktwbq.supabase.co https://*.googlesyndication.com https://*.google.com https://*.gstatic.com https://*.doubleclick.net https://*.googleadservices.com https://*.googletagservices.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; frame-src https://*.googlesyndication.com https://*.google.com https://*.gstatic.com https://*.doubleclick.net https://*.googleadservices.com https://*.googletagservices.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; manifest-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' 'sha256-YfjKVQhUjCOqcFj+jvDGl2M5P+wwIWOgFjR7QCEeZjU=' 'sha256-67fhrP0+BkBqmgGGXTtgiVO/9EQs3QruYNU/7fnRkI8=' https://*.googlesyndication.com https://*.google.com https://*.gstatic.com https://*.doubleclick.net https://*.googleadservices.com https://*.googletagservices.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://kehvxxgroexwbrlktwbq.supabase.co wss://kehvxxgroexwbrlktwbq.supabase.co https://*.googlesyndication.com https://*.google.com https://*.gstatic.com https://*.doubleclick.net https://*.googleadservices.com https://*.googletagservices.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; frame-src https://*.googlesyndication.com https://*.google.com https://*.gstatic.com https://*.doubleclick.net https://*.googleadservices.com https://*.googletagservices.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; manifest-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
         },
         {
           "key": "Strict-Transport-Security",
@@ -59,6 +67,15 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/((?!_expo/|assets/).*)",
+      "headers": [
+        {
+          "key": "Vary",
+          "value": "Accept"
         }
       ]
     }
