@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { CarreraPicker } from '../../src/components/CarreraPicker';
@@ -30,7 +30,8 @@ const DESCRIPCION_LOGIN =
 export default function LoginScreen() {
   // El controlador vive aquí y no dentro del formulario: si la ventana cruza un
   // breakpoint, el layout cambia pero lo escrito se conserva.
-  const c = useLoginController();
+  const { modo } = useLocalSearchParams<{ modo?: string }>();
+  const c = useLoginController(modo === 'ingreso' ? 'ingreso' : 'registro');
   return (
     <MarcoAcceso meta={<MetaPagina titulo="Ingresar" ruta="/login" descripcion={DESCRIPCION_LOGIN} />}>
       <Formulario c={c} />

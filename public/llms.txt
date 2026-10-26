@@ -24,6 +24,7 @@ USCupo no tiene API pública ni servidor MCP: las ofertas y los perfiles solo lo
 - [Inicio](https://www.uscupo.com/): qué es USCupo y cómo funciona en tres pasos.
 - [Ingresar o crear cuenta](https://www.uscupo.com/login): registro e inicio de sesión con correo @usc.edu.co.
 - [Acerca de USCupo](https://www.uscupo.com/acerca): para quién es, qué hace y qué no, y quién lo mantiene.
+- [Preguntas frecuentes](https://www.uscupo.com/preguntas): costo, quién puede usarlo, contacto, reportes, contraseña y cuenta.
 - [Contacto](https://www.uscupo.com/contacto): correo y teléfono del responsable, reportes y derechos sobre los datos.
 
 ## Legal

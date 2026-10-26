@@ -24,6 +24,8 @@ export default function InicioScreen() {
   const { breakpoint } = useBreakpoint();
   const dosColumnas = breakpoint === 'amplio';
   const d = c.datos;
+  // AdSense no admite anuncios en pantallas sin contenido: solo con ofertas que mostrar.
+  const conContenido = !!d && (d.coincidencias.length > 0 || d.ofertasCarrera.length > 0);
 
   const irABuscar = (materiaId?: number) =>
     router.push(materiaId ? { pathname: '/buscar', params: { materia: String(materiaId) } } : '/buscar');
@@ -125,7 +127,7 @@ export default function InicioScreen() {
 
             <OfertasCarrera ofertas={d.ofertasCarrera} hayMaterias={d.hayMaterias} irABuscar={irABuscar} moderacion={moderacion} />
 
-            {!dosColumnas ? <EspacioAnuncio slot={process.env.EXPO_PUBLIC_ADSENSE_SLOT_INICIO} /> : null}
+            {!dosColumnas && conContenido ? <EspacioAnuncio slot={process.env.EXPO_PUBLIC_ADSENSE_SLOT_INICIO} /> : null}
           </View>
 
           {/* Lateral */}
@@ -177,7 +179,7 @@ export default function InicioScreen() {
               ))}
             </Tarjeta>
 
-            {dosColumnas ? <EspacioAnuncio slot={process.env.EXPO_PUBLIC_ADSENSE_SLOT_INICIO} alto={250} /> : null}
+            {dosColumnas && conContenido ? <EspacioAnuncio slot={process.env.EXPO_PUBLIC_ADSENSE_SLOT_INICIO} alto={250} /> : null}
           </View>
         </View>
       ) : null}

@@ -26,8 +26,8 @@ export interface EstadoCarreras {
 }
 
 // Controlador de la pantalla de acceso: estado del formulario, validación y envío.
-export function useLoginController() {
-  const [modo, setModoState] = useState<ModoLogin>('registro');
+export function useLoginController(modoInicial: ModoLogin = 'registro') {
+  const [modo, setModoState] = useState<ModoLogin>(modoInicial);
 
   const [nombreCompleto, setNombreCompleto] = useState('');
   const [correo, setCorreo] = useState('');

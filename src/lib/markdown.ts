@@ -1,6 +1,6 @@
 // Versión Markdown de las páginas públicas para agentes (negociación por Accept: text/markdown,
 // https://acceptmarkdown.com). La usa middleware.ts. Solo datos y texto: nada de React Native.
-import { ACERCA, CONTACTO, DESCRIPCION_PRODUCTO, LEMA, PASOS, URL_SITIO } from '../models/informacion.ts';
+import { ACERCA, CONSEJOS, CONTACTO, PREGUNTAS, PREGUNTAS_FRECUENTES, DESCRIPCION_PRODUCTO, LEMA, PASOS, URL_SITIO } from '../models/informacion.ts';
 import { AVISO_NO_OFICIAL, ELIMINAR_CUENTA, PRIVACIDAD, TERMINOS, VIGENTE_DESDE, type Documento } from '../models/legal.ts';
 
 const ENLACES = `## Enlaces
@@ -37,6 +37,14 @@ ${PASOS.map((p, i) => `${i + 1}. ${p}`).join('\n')}
 
 Para usarlo hay que [ingresar o crear una cuenta](${URL_SITIO}/login) con un correo @usc.edu.co.
 
+## Preguntas frecuentes
+
+${PREGUNTAS.map((p) => `**${p.pregunta}**\n${p.respuesta}`).join('\n\n')}
+
+## Consejos para un cambio seguro
+
+${CONSEJOS.map((c) => `- ${c}`).join('\n')}
+
 ${AVISO_NO_OFICIAL}
 
 ${ENLACES}`;
@@ -64,6 +72,7 @@ const PAGINAS: Record<string, string> = {
   '/login': INICIO,
   '/acerca': documento(ACERCA, false),
   '/contacto': documento(CONTACTO, false),
+  '/preguntas': documento(PREGUNTAS_FRECUENTES, false),
   '/terminos': documento(TERMINOS, true),
   '/privacidad': documento(PRIVACIDAD, true),
   '/eliminar-cuenta': documento(ELIMINAR_CUENTA, true),

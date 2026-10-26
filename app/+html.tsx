@@ -7,6 +7,8 @@ import { DATOS_ESTRUCTURADOS, LEMA, URL_SITIO } from '../src/models/informacion'
 const TITULO = 'USCupo · Cambios de horario entre estudiantes USC';
 const DESCRIPCION_OG = `${LEMA} Solo para estudiantes con correo @usc.edu.co.`;
 const OG_IMAGEN = `${URL_SITIO}/og-uscupo.png`;
+// Id de editor de AdSense (el mismo de public/ads.txt): verifica el sitio sin cargar anuncios aquí.
+const EDITOR_ADSENSE = 'ca-pub-7431369324109235';
 
 // Reset recomendado por react-native-web; el fondo evita el destello blanco antes del primer pintado.
 const RESET = `
@@ -40,6 +42,7 @@ export default function Root({ children }: PropsWithChildren) {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content="#0A2959" />
         <meta name="color-scheme" content="light dark" />
+        <meta name="google-adsense-account" content={EDITOR_ADSENSE} />
 
         <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
