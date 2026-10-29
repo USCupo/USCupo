@@ -88,12 +88,12 @@ export function PortadaPublica() {
               {PASOS.map((paso, i) => (
                 <View
                   key={paso}
-                  style={[styles.celda, amplio ? styles.tercio : compacto ? null : styles.mitad, cristalOscuro(colors), { padding: spacing.lg }]}
+                  style={[styles.celda, styles.centrada, amplio ? styles.tercio : compacto ? null : styles.mitad, cristalOscuro(colors), { padding: spacing.lg }]}
                 >
                   <View style={[styles.numero, { borderColor: colors.accent }]}>
-                    <Text style={{ color: colors.accent, fontFamily: fonts.bodyBold, fontSize: 14 }}>{i + 1}</Text>
+                    <Text style={[styles.cifra, { color: colors.accent }]}>{i + 1}</Text>
                   </View>
-                  <Text style={[type.body, { color: colors.onBackground, marginTop: spacing.md }]}>{paso}</Text>
+                  <Text style={[type.body, styles.textoCentrado, { color: colors.onBackground, marginTop: spacing.md }]}>{paso}</Text>
                 </View>
               ))}
             </View>
@@ -103,10 +103,10 @@ export function PortadaPublica() {
             <View style={[styles.rejilla, { gap: spacing.md }]}>
               {VENTAJAS.map((v) => (
                 <View key={v.titulo} style={[styles.celda, compacto ? null : styles.mitad, cristalClaro(colors), { padding: spacing.lg }]}>
-                  <Text role="heading" aria-level={3} style={[type.cardTitle, { color: colors.text }]}>
+                  <Text role="heading" aria-level={3} style={[type.cardTitle, styles.textoCentrado, { color: colors.text }]}>
                     {v.titulo}
                   </Text>
-                  <Text style={[type.body, { color: colors.textMuted, marginTop: spacing.xs }]}>{v.texto}</Text>
+                  <Text style={[type.body, styles.textoCentrado, { color: colors.textMuted, marginTop: spacing.xs }]}>{v.texto}</Text>
                 </View>
               ))}
             </View>
@@ -157,7 +157,7 @@ export function PortadaPublica() {
 
           {compacto ? (
             <View style={{ marginTop: spacing.xl, alignItems: 'center' }}>
-              <PieLegal sobreOscuro />
+              <PieLegal sobreOscuro centrado />
               <Text style={[type.bodyMuted, { color: colors.onBackgroundMuted, textAlign: 'center', marginTop: spacing.sm }]}>
                 {AVISO_NO_OFICIAL}
               </Text>
@@ -175,7 +175,7 @@ function Seccion({ titulo, children }: { titulo: string; children: ReactNode }) 
   const { colors, spacing, type } = useTheme();
   return (
     <View style={{ marginTop: spacing.xxl }}>
-      <Text role="heading" aria-level={2} style={[type.screenTitle, { color: colors.onBackground, marginBottom: spacing.lg }]}>
+      <Text role="heading" aria-level={2} style={[type.screenTitle, styles.textoCentrado, { color: colors.onBackground, marginBottom: spacing.lg }]}>
         {titulo}
       </Text>
       {children}
@@ -207,12 +207,15 @@ const styles = StyleSheet.create({
   titularCompacto: { fontSize: 32, lineHeight: 38, letterSpacing: -0.6 },
   bajada: { textAlign: 'center', maxWidth: 620 },
   acciones: { flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap' },
-  accionesCompacto: { flexDirection: 'column', alignSelf: 'stretch' },
+  // Sin wrap: con flexWrap cada botón ocupa su propia "línea" de 200 px pegada a la izquierda.
+  accionesCompacto: { flexDirection: 'column', flexWrap: 'nowrap', alignSelf: 'stretch' },
   boton: { minWidth: 200, paddingHorizontal: 24 },
   rejilla: { flexDirection: 'row', flexWrap: 'wrap' },
   celda: { borderRadius: glass.panel, flexGrow: 1, flexBasis: '100%' },
   mitad: { flexBasis: '45%' },
   tercio: { flexBasis: '30%' },
+  centrada: { alignItems: 'center' },
+  textoCentrado: { textAlign: 'center' },
   numero: {
     width: 32,
     height: 32,
@@ -221,9 +224,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  // lineHeight igual al tamaño: sin el interlineado extra de la fuente, la cifra queda en el centro óptico.
+  cifra: { fontFamily: fonts.bodyBold, fontSize: 14, lineHeight: 14, fontVariant: ['tabular-nums'] },
   panel: { borderRadius: glass.panel },
   consejo: { alignItems: 'flex-start' },
   punto: { width: 8, height: 8, borderRadius: 4, marginTop: 8 },
-  enlace: { textDecorationLine: 'underline', alignSelf: 'flex-start', paddingVertical: 8, fontFamily: fonts.bodyBold },
+  enlace: { textDecorationLine: 'underline', alignSelf: 'center', paddingVertical: 8, fontFamily: fonts.bodyBold },
   cierre: { alignItems: 'center' },
 });

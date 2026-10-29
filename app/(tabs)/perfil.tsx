@@ -4,6 +4,7 @@ import { Interruptor } from '../../src/components/Contacto';
 import { InfoNotice } from '../../src/components/InfoNotice';
 import { OfertaCard } from '../../src/components/OfertaCard';
 import { PieLegal } from '../../src/components/PieLegal';
+import { SegmentedControl } from '../../src/components/SegmentedControl';
 import { TextField } from '../../src/components/TextField';
 import { ThemeToggle } from '../../src/components/ThemeToggle';
 import { Aviso, DialogoConfirmar, Pantalla, Tarjeta, TituloSeccion } from '../../src/components/ui';
@@ -57,20 +58,41 @@ export default function PerfilScreen() {
               <Text style={[type.bodyMuted, { color: colors.textMuted, marginBottom: spacing.md }]}>
                 Solo lo ve el estudiante con quien tienes un cambio en curso.
               </Text>
-              <TextField
-                label="WhatsApp (opcional)"
-                placeholder="300 123 4567"
-                value={c.campos.whatsapp}
-                onChangeText={c.setWhatsapp}
-                error={c.errores.whatsapp}
-                keyboardType="phone-pad"
-                autoComplete="tel"
-                textContentType="telephoneNumber"
+              <Text style={[type.body, { color: colors.text, marginBottom: spacing.xs }]}>WhatsApp (opcional)</Text>
+              <SegmentedControl
+                options={['Número', 'Nombre de usuario']}
+                selectedIndex={c.campos.tipoWhatsapp === 'usuario' ? 1 : 0}
+                onChange={(i) => c.setTipoWhatsapp(i === 1 ? 'usuario' : 'numero')}
               />
+              <View style={{ marginTop: spacing.sm }}>
+                {c.campos.tipoWhatsapp === 'usuario' ? (
+                  <TextField
+                    label="Tu nombre de usuario de WhatsApp"
+                    placeholder="@tu.usuario"
+                    value={c.campos.whatsapp}
+                    onChangeText={c.setWhatsapp}
+                    error={c.errores.whatsapp}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    autoComplete="off"
+                  />
+                ) : (
+                  <TextField
+                    label="Tu número de WhatsApp"
+                    placeholder="300 123 4567"
+                    value={c.campos.whatsapp}
+                    onChangeText={c.setWhatsapp}
+                    error={c.errores.whatsapp}
+                    keyboardType="phone-pad"
+                    autoComplete="tel"
+                    textContentType="telephoneNumber"
+                  />
+                )}
+              </View>
               <Interruptor label="Mostrar mi correo institucional" descripcion={c.correo} valor={c.campos.mostrarCorreo} onCambiar={c.setMostrarCorreo} />
               <Interruptor
                 label="Mostrar mi WhatsApp"
-                descripcion={c.campos.whatsapp ? undefined : 'Agrega tu número arriba para mostrarlo'}
+                descripcion={c.campos.whatsapp ? undefined : c.campos.tipoWhatsapp === 'usuario' ? 'Agrega tu usuario arriba para mostrarlo' : 'Agrega tu número arriba para mostrarlo'}
                 valor={c.campos.mostrarWhatsapp}
                 onCambiar={c.setMostrarWhatsapp}
               />

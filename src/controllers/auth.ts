@@ -31,10 +31,20 @@ export function errorNombre(nombre: string): string | undefined {
 
 // Traduce los errores de red y de Supabase Auth a mensajes que dicen qué pasó y qué hacer.
 export function mensajeDeError(e: unknown): string {
-  const raw = e instanceof Error ? e.message : String(e ?? '');
+  // Supabase devuelve `error` como objeto plano ({ message, code, ... }), no como Error:
+  // String() lo convertiría en "[object Object]".
+  const raw =
+    e instanceof Error
+      ? e.message
+      : typeof e === 'object' && e !== null && typeof (e as { message?: unknown }).message === 'string'
+        ? (e as { message: string }).message
+        : typeof e === 'string'
+          ? e
+          : '';
   const msg = raw.toLowerCase();
 
-  if (msg.includes('failed to fetch') || msg.includes('network request failed') || msg.includes('fetch failed')) {
+  // Safari dice "Load failed" donde Chrome dice "Failed to fetch".
+  if (msg.includes('failed to fetch') || msg.includes('load failed') || msg.includes('network request failed') || msg.includes('fetch failed')) {
     return 'No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.';
   }
   if (msg.includes('invalid login credentials')) return 'Correo o contraseña incorrectos.';
