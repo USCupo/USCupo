@@ -2,7 +2,7 @@
 // Al cambiar cualquiera de los dos documentos se sube VERSION_LEGAL (aquí y en la app) y todos
 // vuelven a aceptar al entrar (Ley 1581: prueba de la autorización).
 
-export const VERSION_LEGAL = '2026-10-29.1';
+export const VERSION_LEGAL = '2026-10-29.2';
 export const VIGENTE_DESDE = '29 de octubre de 2026';
 
 export const RESPONSABLE = {
@@ -54,7 +54,7 @@ export const PRIVACIDAD: Documento = {
             'Datos de sesión (tokens de acceso) y preferencias guardadas en tu equipo, como el tema claro u oscuro.',
             'En la app: identificador de publicidad, dirección IP y datos del dispositivo que recoge Google AdMob para mostrar anuncios y medirlos.',
             'En la web: cookies de Google AdSense para el mismo fin.',
-            'En la web: estadísticas de visitas de Vercel Web Analytics (página visitada, país, navegador, sistema operativo y tipo de dispositivo). No usa cookies ni identifica a la persona: los datos se ven solo en conjunto.',
+            'En la web: estadísticas de visitas y de velocidad de carga de Vercel Web Analytics y Speed Insights (página visitada, tiempos de carga, país, navegador, sistema operativo y tipo de dispositivo). No usan cookies ni identifican a la persona: los datos se ven solo en conjunto.',
           ],
         },
         'No pedimos datos sensibles (salud, origen étnico, orientación, datos biométricos ni similares) ni datos financieros. No pidas ni compartas datos sensibles en los comentarios de las ofertas.',
@@ -70,7 +70,7 @@ export const PRIVACIDAD: Documento = {
             'Cuando alguien marca interés en tu oferta (o tú en la de otro), mostrar a ambos los datos de contacto que cada uno decidió dejar visibles, durante 7 días, para que coordinen el cambio.',
             'Enviarte avisos dentro del servicio sobre tus ofertas.',
             'Mostrar anuncios que financian el servicio.',
-            'Saber, en conjunto y sin identificar a nadie, qué páginas de la web se visitan, para mejorarla.',
+            'Saber, en conjunto y sin identificar a nadie, qué páginas de la web se visitan y qué tan rápido cargan, para mejorarla.',
             'Mantener la seguridad, prevenir abusos, revisar los reportes de contenido y aplicar los bloqueos entre estudiantes.',
           ],
         },
@@ -83,7 +83,7 @@ export const PRIVACIDAD: Documento = {
         {
           lista: [
             'Otros estudiantes: tu nombre, tu carrera y tus ofertas. Tu correo y tu WhatsApp solo los ve la persona con la que estás en conversación por una oferta, y solo los que tengas visibles en tu perfil.',
-            'Proveedores que nos prestan servicios y actúan como encargados: Supabase (base de datos y cuentas), Vercel (alojamiento de la web y estadísticas de visitas), Google (AdMob y AdSense) y Microsoft (solo si eliges entrar con tu cuenta de Microsoft).',
+            'Proveedores que nos prestan servicios y actúan como encargados: Supabase (base de datos y cuentas), Vercel (alojamiento de la web y estadísticas de visitas y velocidad), Google (AdMob y AdSense) y Microsoft (solo si eliges entrar con tu cuenta de Microsoft).',
             'Autoridades, cuando una ley o una orden judicial lo exija.',
           ],
         },
