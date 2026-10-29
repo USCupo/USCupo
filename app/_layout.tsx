@@ -1,4 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { FontDisplay, useFonts } from 'expo-font';
 import { DarkTheme, DefaultTheme, Slot, ThemeProvider as TemaNavegacion } from 'expo-router';
 import { useEffect, useMemo, type ReactNode } from 'react';
@@ -58,6 +59,8 @@ export default function RootLayout() {
             <AvisoCookies />
             {/* Vercel Web Analytics: visitas anónimas, sin cookies; el script sale del mismo dominio. */}
             <Analytics />
+            {/* Vercel Speed Insights: métricas de rendimiento web */}
+            <SpeedInsights />
           </AuthProvider>
         </NavegacionConTema>
       </ThemeProvider>
