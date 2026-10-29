@@ -168,7 +168,7 @@ export function SelectorLista(p: Props) {
                       cerrar();
                     }}
                   />
-                ) : null
+                ) : undefined
               }
               ListEmptyComponent={
                 <Text style={[type.body, { color: colors.textMuted, textAlign: 'center', paddingVertical: spacing.xl }]}>

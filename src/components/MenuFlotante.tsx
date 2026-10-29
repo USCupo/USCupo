@@ -1,6 +1,6 @@
 import Ionicons from './Iconos';
 import { useEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react';
-import { Animated, Modal, Pressable, StyleSheet, Text, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { Animated, Modal, Pressable, StyleSheet, Text, View, useWindowDimensions, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native';
 import { conAlfa, cristalClaro } from '../theme/glass';
 import { animarResorte, resorte, useReducedMotion } from '../theme/motion';
 import { useTheme } from '../theme/useTheme';
@@ -43,7 +43,7 @@ export function MenuFlotante({
   const { colors, minTouchSize } = useTheme();
   const { width, height } = useWindowDimensions();
   const reducir = useReducedMotion();
-  const boton = useRef<View>(null);
+  const boton = useRef<ViewInstance>(null);
   const entrada = useRef(new Animated.Value(0)).current;
   const [pos, setPos] = useState<{ top?: number; bottom?: number; right: number } | null>(null);
 
@@ -114,7 +114,7 @@ export function MenuFlotante({
 /** Fila del menú: ícono en círculo tintado (como el botón de cerrar de los paneles) y texto. */
 function OpcionMenu({ texto, icono, color, fondo, enfocar, onPress }: OpcionMenuFlotante & { enfocar?: boolean }) {
   const { colors, type, minTouchSize } = useTheme();
-  const ref = useRef<View>(null);
+  const ref = useRef<ViewInstance>(null);
   // Al abrir con teclado el foco entra en la primera opción.
   useEffect(() => {
     if (enfocar) (ref.current as unknown as HTMLElement | null)?.focus?.();

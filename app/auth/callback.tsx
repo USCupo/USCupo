@@ -7,10 +7,13 @@ import { mensajeDeError } from '../../src/controllers/auth';
 import { useAuth } from '../../src/lib/AuthContext';
 import { cristalClaro, glass } from '../../src/theme/glass';
 import { useTheme } from '../../src/theme/useTheme';
-import { MetaPagina } from '../../src/components/MetaPagina';
+import { MetaPagina, metadatos } from '../../src/components/MetaPagina';
 
 // Retorno de Microsoft. Supabase canjea el ?code= al cargar la página (detectSessionInUrl);
 // aquí solo se espera la sesión o se muestra el error que devolvió el proveedor.
+
+export const generateMetadata = () => metadatos({ titulo: 'Iniciando sesión' });
+
 export default function AuthCallback() {
   const { colors, spacing, type } = useTheme();
   const router = useRouter();

@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { EspacioAnuncio } from '../../src/components/EspacioAnuncio';
 import { EsqueletoInicio } from '../../src/components/Esqueleto';
+import { metadatos } from '../../src/components/MetaPagina';
 import { DialogosModeracion, MenuDeOferta } from '../../src/components/Moderacion';
 import { OfertaCard } from '../../src/components/OfertaCard';
 import { useModeracionController, type ModeracionController } from '../../src/controllers/useModeracionController';
@@ -15,6 +16,8 @@ import { diasRestantes, hace, type OfertaDetalle } from '../../src/models/oferta
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
 import { fonts } from '../../src/theme/typography';
+
+export const generateMetadata = () => metadatos({ titulo: 'Inicio' });
 
 export default function InicioScreen() {
   const c = useInicioController();

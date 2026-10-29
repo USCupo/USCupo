@@ -9,6 +9,7 @@ import {
   View,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
+  type ScrollViewInstance,
   type ViewStyle,
 } from 'react-native';
 import { hora12 } from '../models/catalogo';
@@ -172,7 +173,7 @@ function PildoraHora({ titulo, valor, activa, onPress }: { titulo: string; valor
 
 function Rueda({ opciones, valor, onCambiar, etiqueta, ancho }: { opciones: Opcion[]; valor: string; onCambiar: (v: string) => void; etiqueta: string; ancho: number }) {
   const { colors, type } = useTheme();
-  const ref = useRef<ScrollView>(null);
+  const ref = useRef<ScrollViewInstance>(null);
   const indice = Math.max(0, opciones.findIndex((o) => o.valor === valor));
   const y = useRef(new Animated.Value(indice * ALTO)).current;
   const actual = useRef(indice);
@@ -222,7 +223,7 @@ function Rueda({ opciones, valor, onCambiar, etiqueta, ancho }: { opciones: Opci
       e.preventDefault();
       ir(fijar(actual.current + (e.key === 'ArrowDown' ? 1 : -1)));
     },
-  };
+  } as object;
 
   return (
     <View

@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { InfoNotice } from '../../src/components/InfoNotice';
+import { metadatos } from '../../src/components/MetaPagina';
 import { SelectorFranjas } from '../../src/components/SelectorFranjas';
 import { SelectorLista, type ItemLista } from '../../src/components/SelectorLista';
 import { TextField } from '../../src/components/TextField';
@@ -12,6 +13,8 @@ import { usePublicarController } from '../../src/controllers/usePublicarControll
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
 import { fonts } from '../../src/theme/typography';
+
+export const generateMetadata = () => metadatos({ titulo: 'Publicar un cupo' });
 
 export default function PublicarScreen() {
   const c = usePublicarController();

@@ -1,9 +1,12 @@
+import { useServerDocumentContext } from 'expo-router/html';
 import type { PropsWithChildren } from 'react';
 import { SCRIPT_CONSENTIMIENTO } from '../src/models/consentimientoAnuncios';
 import { DATOS_ESTRUCTURADOS, LEMA, URL_SITIO } from '../src/models/informacion';
 
 // Plantilla de cada HTML que genera el build (output "static"). El título, la descripción y el
-// canonical de cada página los pone MetaPagina; aquí va lo común a todas.
+// canonical de cada página salen de su generateMetadata (headNodes); aquí va lo común a todas.
+// headNodes trae además los estilos de react-native-web, y bodyNodes los scripts para hidratar:
+// sin bodyNodes la página queda sin JavaScript.
 const TITULO = 'USCupo · Cambios de horario entre estudiantes USC';
 const DESCRIPCION_OG = `${LEMA} Solo para estudiantes con correo @usc.edu.co.`;
 const OG_IMAGEN = `${URL_SITIO}/og-uscupo.png`;
@@ -35,8 +38,9 @@ html[data-consentimiento] [data-aviso-cookies="ssr"] { display: none; }
 `;
 
 export default function Root({ children }: PropsWithChildren) {
+  const { headNodes, bodyNodes, htmlAttributes, bodyAttributes } = useServerDocumentContext();
   return (
-    <html lang="es-CO">
+    <html lang="es-CO" {...htmlAttributes}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -69,10 +73,12 @@ export default function Root({ children }: PropsWithChildren) {
         <noscript>
           <style dangerouslySetInnerHTML={{ __html: '#root { visibility: visible !important; }' }} />
         </noscript>
+        {headNodes}
       </head>
-      <body>
+      <body {...bodyAttributes}>
         <noscript>Para usar USCupo necesitas activar JavaScript.</noscript>
         {children}
+        {bodyNodes}
       </body>
     </html>
   );

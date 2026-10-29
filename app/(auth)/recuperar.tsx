@@ -3,7 +3,7 @@ import { Pressable, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { InfoNotice } from '../../src/components/InfoNotice';
 import { IconoAcceso, MarcoAcceso } from '../../src/components/MarcoAcceso';
-import { MetaPagina } from '../../src/components/MetaPagina';
+import { MetaPagina, metadatos } from '../../src/components/MetaPagina';
 import { TextField } from '../../src/components/TextField';
 import { useRecuperarController, type RecuperarController } from '../../src/controllers/useRecuperarController';
 import { USC_EMAIL_DOMAIN } from '../../src/lib/supabase';
@@ -12,6 +12,8 @@ import { useTheme } from '../../src/theme/useTheme';
 
 // react-native-web pasa dataSet como atributos data-*; los tipos de React Native no lo declaran.
 const ENTRADA = { dataSet: { entrada: '' } } as object;
+
+export const generateMetadata = () => metadatos({ titulo: 'Recuperar contraseña' });
 
 export default function RecuperarScreen() {
   const c = useRecuperarController();

@@ -1,12 +1,31 @@
 import Head from 'expo-router/head';
+import type { Metadata } from 'expo-router/server';
 import { URL_SITIO } from '../models/informacion';
 
+interface DatosPagina {
+  titulo: string;
+  descripcion?: string;
+  ruta?: string;
+}
+
 /**
- * Título de la pestaña y metadatos de la página; el build los escribe en el HTML de cada ruta.
+ * Metadatos del HTML del build (SDK 58: <Head> ya no se escribe en el HTML estático). Cada ruta
+ * exporta `generateMetadata = () => metadatos({...})` con los mismos datos que su <MetaPagina>.
+ */
+export function metadatos({ titulo, descripcion, ruta }: DatosPagina): Metadata {
+  return {
+    title: `${titulo} · USCupo`,
+    ...(descripcion ? { description: descripcion } : {}),
+    ...(ruta ? { alternates: { canonical: `${URL_SITIO}${ruta}` } } : { robots: 'noindex, nofollow' }),
+  };
+}
+
+/**
+ * Título de la pestaña y metadatos al navegar dentro de la app (después de hidratar).
  * Las públicas (`ruta`) llevan canonical y descripción; las de sesión o de paso, `noindex`
  * para quedar fuera de los buscadores.
  */
-export function MetaPagina({ titulo, descripcion, ruta }: { titulo: string; descripcion?: string; ruta?: string }) {
+export function MetaPagina({ titulo, descripcion, ruta }: DatosPagina) {
   return (
     <Head>
       <title>{`${titulo} · USCupo`}</title>
