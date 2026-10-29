@@ -1,5 +1,5 @@
-export type CarreraTipo = 'pregrado' | 'tecnico' | 'posgrado';
-export type OfertaEstado = 'disponible' | 'en_proceso' | 'resuelta' | 'expirada';
+type CarreraTipo = 'pregrado' | 'tecnico' | 'posgrado';
+type OfertaEstado = 'disponible' | 'en_proceso' | 'resuelta' | 'expirada';
 
 export interface Carrera {
   id: number;

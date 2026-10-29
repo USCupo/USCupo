@@ -10,7 +10,7 @@ import { useCargaEnFoco } from './useCargaEnFoco';
 export const PALABRA_ELIMINAR = 'ELIMINAR';
 
 // WhatsApp opcional: 10 dígitos colombianos (con o sin +57, espacios o guiones).
-export function normalizarWhatsapp(v: string): string | null {
+function normalizarWhatsapp(v: string): string | null {
   const digitos = v.replace(/\D/g, '');
   if (!digitos) return null;
   const local = digitos.startsWith('57') && digitos.length === 12 ? digitos.slice(2) : digitos;
@@ -18,15 +18,15 @@ export function normalizarWhatsapp(v: string): string | null {
 }
 
 /** Cómo te encuentran en WhatsApp: por número o por nombre de usuario (se guarda con @ delante). */
-export type TipoWhatsapp = 'numero' | 'usuario';
+type TipoWhatsapp = 'numero' | 'usuario';
 
-export function tipoWhatsapp(v: string | null | undefined): TipoWhatsapp {
+function tipoWhatsapp(v: string | null | undefined): TipoWhatsapp {
   return v?.trim().startsWith('@') ? 'usuario' : 'numero';
 }
 
 // Reglas de WhatsApp para usuarios: 3 a 35 caracteres, minúsculas, dígitos, punto y guion bajo,
 // al menos una letra, sin ".." y sin parecer una dirección web.
-export function normalizarUsuarioWhatsapp(v: string): string | null {
+function normalizarUsuarioWhatsapp(v: string): string | null {
   const u = v.trim().replace(/^@+/, '').toLowerCase();
   if (!u) return null;
   const valido =

@@ -5,7 +5,7 @@ import type { Carrera } from './types';
 
 export type OrigenCatalogo = 'remoto' | 'local';
 
-export interface CatalogoCarreras {
+interface CatalogoCarreras {
   carreras: Carrera[];
   origen: OrigenCatalogo;
 }
@@ -44,7 +44,7 @@ export async function listarCarreras(): Promise<CatalogoCarreras> {
   return { carreras: ordenar(CARRERAS_LOCALES), origen: 'local' };
 }
 
-export interface GrupoFacultad {
+interface GrupoFacultad {
   title: string;
   data: Carrera[];
 }

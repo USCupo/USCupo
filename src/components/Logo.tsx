@@ -13,7 +13,7 @@ import {
 
 // Sobre fondo blanco el logo va en azul nativo + amarillo; sobre azul, la parte azul pasa
 // a blanco para no perderse (versión "negativo" del kit; el amarillo se mantiene como acento).
-export type FondoLogo = 'blanco' | 'azul';
+type FondoLogo = 'blanco' | 'azul';
 
 function tintas(sobre: FondoLogo) {
   return { principal: sobre === 'azul' ? usc.blanco : usc.azulNativo, acento: usc.amarillo };

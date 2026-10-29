@@ -7,7 +7,7 @@ import { useCargaEnFoco } from './useCargaEnFoco';
 
 type Campo = 'materia' | 'grupo' | 'actual' | 'busco';
 
-export interface Publicada {
+interface Publicada {
   materiaId: number;
   materiaNombre: string;
   coincidencias: number;

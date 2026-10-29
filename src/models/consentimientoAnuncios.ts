@@ -7,7 +7,7 @@ export type PreferenciaAnuncios = 'personalizados' | 'no_personalizados';
 
 export const CLAVE_CONSENTIMIENTO = 'uscupo.anuncios';
 
-export interface EstadoConsentimiento {
+interface EstadoConsentimiento {
   preferencia: PreferenciaAnuncios | null;
   bannerVisible: boolean;
   noPersonalizados: boolean;
@@ -86,8 +86,6 @@ export function crearConsentimiento(almacen: Almacen) {
     },
   };
 }
-
-export type Consentimiento = ReturnType<typeof crearConsentimiento>;
 
 const local = (): Storage | null => (typeof localStorage === 'undefined' ? null : localStorage);
 

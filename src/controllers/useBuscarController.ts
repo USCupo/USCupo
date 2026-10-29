@@ -13,7 +13,7 @@ import type { Materia } from '../models/types';
 import { mensajeDeError } from './auth';
 import { useCargaEnFoco } from './useCargaEnFoco';
 
-export interface ResultadoBusqueda {
+interface ResultadoBusqueda {
   oferta: OfertaDetalle;
   esMatch: boolean;
   meSirve: boolean;

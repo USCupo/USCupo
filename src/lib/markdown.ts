@@ -61,7 +61,7 @@ Si olvidaste tu contraseña de USCupo, abre [recuperar la contraseña](${URL_SIT
 
 ${ENLACES}`;
 
-export const MARKDOWN_404 = `# Página no encontrada
+const MARKDOWN_404 = `# Página no encontrada
 
 La dirección que pediste no existe en USCupo. Revisa el [sitemap](${URL_SITIO}/sitemap.xml), el [llms.txt](${URL_SITIO}/llms.txt) o vuelve al [inicio](${URL_SITIO}/).
 

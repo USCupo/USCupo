@@ -63,5 +63,3 @@ export function crearAlmacenSesion(local: Almacen, pestana: Almacen, ahora: () =
     vencida,
   };
 }
-
-export type AlmacenSesion = ReturnType<typeof crearAlmacenSesion>;

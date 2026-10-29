@@ -18,7 +18,7 @@ export const AVISO_NO_OFICIAL =
   'USCupo es un proyecto independiente de estudiantes y no es una app oficial de la Universidad Santiago de Cali.';
 
 export type Bloque = string | { lista: string[] };
-export type Seccion = { titulo: string; bloques: Bloque[] };
+type Seccion = { titulo: string; bloques: Bloque[] };
 export type Documento = { titulo: string; resumen: string; secciones: Seccion[] };
 
 export const PRIVACIDAD: Documento = {
