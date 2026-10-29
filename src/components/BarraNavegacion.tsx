@@ -1,4 +1,5 @@
 import Ionicons from './Iconos';
+import type { Tabs } from 'expo-router';
 import { useState, type ComponentProps } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,21 +24,21 @@ const ITEMS: Record<string, { label: string; icono: IconName; iconoActivo: IconN
   perfil: { label: 'Perfil', icono: 'person-outline', iconoActivo: 'person' },
 };
 
-interface Props {
-  state: { index: number; routes: { key: string; name: string }[] };
-  navigation: { navigate: (name: string) => void; emit: (e: { type: 'tabPress'; target: string; canPreventDefault: true }) => { defaultPrevented: boolean } };
-  pendientes?: number;
-}
+// Props que Tabs le pasa a su tabBar. Desde expo-router 58 ya no incluyen `navigation`:
+// traen `emitter` y `navigateToTab(routeKey)`.
+type PropsTabBar = Parameters<NonNullable<ComponentProps<typeof Tabs>['tabBar']>>[0];
+
+type Props = Pick<PropsTabBar, 'state' | 'emitter' | 'navigateToTab'> & { pendientes?: number };
 
 // Navbar flotante de cristal: píldora superior en computador, dock inferior en teléfono y
 // tablet. Flota sobre el contenido (posición absoluta); Pantalla reserva su espacio.
-export function BarraNavegacion({ state, navigation, pendientes = 0 }: Props) {
+export function BarraNavegacion({ state, emitter, navigateToTab, pendientes = 0 }: Props) {
   const { breakpoint } = useBreakpoint();
   const rutas = state.routes.filter((r) => ITEMS[r.name]);
 
   const ir = (route: { key: string; name: string }, activa: boolean) => {
-    const evento = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-    if (!activa && !evento.defaultPrevented) navigation.navigate(route.name);
+    const evento = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+    if (!activa && !evento.defaultPrevented) navigateToTab(route.key);
   };
 
   const props = { rutas, activa: state.routes[state.index]?.name, ir, pendientes };
