@@ -1,13 +1,10 @@
 import { Redirect, router, Tabs } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import type { ComponentProps } from 'react';
 import { BarraNavegacion } from '../../src/components/BarraNavegacion';
 import { GradientBackground } from '../../src/components/GradientBackground';
 import { useAuth } from '../../src/lib/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import { legalVigente, perfilCompleto } from '../../src/models/perfiles';
-
-type BarraProps = ComponentProps<typeof BarraNavegacion>;
 
 // Avisos sin leer (interés recibido, cambio confirmado…) para el contador de "Mis cambios".
 function usePendientes(userId: string | undefined, rutaActiva: number) {
@@ -62,7 +59,7 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{ headerShown: false }}
       screenListeners={{ state: (e) => setRutaActiva((e.data as { state: { index: number } }).state.index) }}
-      tabBar={(props) => <BarraNavegacion {...(props as unknown as BarraProps)} pendientes={pendientes} />}
+      tabBar={(props) => <BarraNavegacion {...props} pendientes={pendientes} />}
     >
       <Tabs.Screen name="index" options={{ title: 'Inicio' }} />
       <Tabs.Screen name="buscar" options={{ title: 'Buscar' }} />
