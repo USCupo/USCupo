@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { Interruptor } from '../../src/components/Contacto';
 import { InfoNotice } from '../../src/components/InfoNotice';
+import { metadatos } from '../../src/components/MetaPagina';
 import { OfertaCard } from '../../src/components/OfertaCard';
 import { PieLegal } from '../../src/components/PieLegal';
 import { SegmentedControl } from '../../src/components/SegmentedControl';
@@ -13,6 +14,8 @@ import { AVISO_NO_OFICIAL } from '../../src/models/legal';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
 import { fonts } from '../../src/theme/typography';
+
+export const generateMetadata = () => metadatos({ titulo: 'Perfil' });
 
 export default function PerfilScreen() {
   const c = usePerfilController();

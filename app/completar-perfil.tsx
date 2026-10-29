@@ -14,8 +14,10 @@ import { useBreakpoint } from '../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../src/theme/glass';
 import { useTheme } from '../src/theme/useTheme';
 import { FooterWeb } from '../src/components/FooterWeb';
-import { MetaPagina } from '../src/components/MetaPagina';
+import { MetaPagina, metadatos } from '../src/components/MetaPagina';
 import { fonts } from '../src/theme/typography';
+
+export const generateMetadata = () => metadatos({ titulo: 'Completa tu perfil' });
 
 export default function CompletarPerfilScreen() {
   const { session, perfil, loading } = useAuth();

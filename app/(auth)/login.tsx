@@ -18,7 +18,7 @@ import { USC_EMAIL_DOMAIN } from '../../src/lib/supabase';
 import { AVISO_NO_OFICIAL } from '../../src/models/legal';
 import { useBreakpoint } from '../../src/theme/useBreakpoint';
 import { useTheme } from '../../src/theme/useTheme';
-import { MetaPagina } from '../../src/components/MetaPagina';
+import { MetaPagina, metadatos } from '../../src/components/MetaPagina';
 import { fonts } from '../../src/theme/typography';
 
 // react-native-web pasa dataSet como atributos data-*; los tipos de React Native no lo declaran.
@@ -26,6 +26,8 @@ const ENTRADA = { dataSet: { entrada: '' } } as object;
 
 const DESCRIPCION_LOGIN =
   'Ingresa o crea tu cuenta de USCupo con tu correo @usc.edu.co para cambiar de horario con otros estudiantes de la Universidad Santiago de Cali.';
+
+export const generateMetadata = () => metadatos({ titulo: 'Ingresar', ruta: '/login', descripcion: DESCRIPCION_LOGIN });
 
 export default function LoginScreen() {
   // El controlador vive aquí y no dentro del formulario: si la ventana cruza un

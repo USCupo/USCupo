@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
 import { Contacto } from '../../src/components/Contacto';
+import { metadatos } from '../../src/components/MetaPagina';
 import { DialogosModeracion, MenuDeOferta, MenuModeracion } from '../../src/components/Moderacion';
 import { OfertaCard } from '../../src/components/OfertaCard';
 import { useModeracionController } from '../../src/controllers/useModeracionController';
@@ -32,6 +33,8 @@ const DIALOGOS: Record<AccionPendiente['tipo'], { titulo: string; mensaje: (m: s
     peligroso: true,
   },
 };
+
+export const generateMetadata = () => metadatos({ titulo: 'Mis cambios' });
 
 export default function MisCambiosScreen() {
   const c = useMisCambiosController();

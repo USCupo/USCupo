@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '../../src/components/Button';
+import { metadatos } from '../../src/components/MetaPagina';
 import { OfertaCard } from '../../src/components/OfertaCard';
 import { SelectorLista, type ItemLista } from '../../src/components/SelectorLista';
 import { TextField } from '../../src/components/TextField';
@@ -18,6 +19,8 @@ import { useTheme } from '../../src/theme/useTheme';
 import { fonts } from '../../src/theme/typography';
 
 const nombreSemestre = (m: Materia) => (m.semestre ? `Semestre ${m.semestre}` : 'Otras');
+
+export const generateMetadata = () => metadatos({ titulo: 'Buscar' });
 
 export default function BuscarScreen() {
   const params = useLocalSearchParams<{ materia?: string }>();

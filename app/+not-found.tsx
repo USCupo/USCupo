@@ -4,11 +4,14 @@ import { Button } from '../src/components/Button';
 import { FooterWeb } from '../src/components/FooterWeb';
 import { GradientBackground } from '../src/components/GradientBackground';
 import { Logo } from '../src/components/Logo';
-import { MetaPagina } from '../src/components/MetaPagina';
+import { MetaPagina, metadatos } from '../src/components/MetaPagina';
 import { cristalClaro, glass } from '../src/theme/glass';
 import { useTheme } from '../src/theme/useTheme';
 
 // Ruta desconocida. En producción Vercel la sirve con estado 404 (404.html es la misma app).
+
+export const generateMetadata = () => metadatos({ titulo: 'Página no encontrada' });
+
 export default function NoEncontrada() {
   const { colors, spacing, type } = useTheme();
   const router = useRouter();

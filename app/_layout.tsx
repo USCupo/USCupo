@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { FontDisplay, useFonts } from 'expo-font';
 import { DarkTheme, DefaultTheme, Slot, ThemeProvider as TemaNavegacion } from 'expo-router';
 import { useEffect, useMemo, type ReactNode } from 'react';
@@ -55,6 +56,8 @@ export default function RootLayout() {
           <AuthProvider>
             <Slot />
             <AvisoCookies />
+            {/* Vercel Web Analytics: visitas anónimas, sin cookies; el script sale del mismo dominio. */}
+            <Analytics />
           </AuthProvider>
         </NavegacionConTema>
       </ThemeProvider>

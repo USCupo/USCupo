@@ -2,7 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Button } from '../src/components/Button';
 import { IconoAcceso, MarcoAcceso } from '../src/components/MarcoAcceso';
-import { MetaPagina } from '../src/components/MetaPagina';
+import { MetaPagina, metadatos } from '../src/components/MetaPagina';
 import { TextField } from '../src/components/TextField';
 import { MIN_CONTRASENA } from '../src/controllers/auth';
 import { useRestablecerController, type ParamsEnlace, type RestablecerController } from '../src/controllers/useRestablecerController';
@@ -13,6 +13,9 @@ const ENTRADA = { dataSet: { entrada: '' } } as object;
 
 // Destino del enlace de "¿Olvidaste tu contraseña?". Fuera del grupo (auth): al canjear el enlace
 // ya hay sesión y ese grupo redirigiría al inicio antes de elegir la contraseña.
+
+export const generateMetadata = () => metadatos({ titulo: 'Nueva contraseña' });
+
 export default function RestablecerScreen() {
   const params = useLocalSearchParams<ParamsEnlace & Record<string, string>>();
   const c = useRestablecerController(params);

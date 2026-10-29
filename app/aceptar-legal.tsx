@@ -15,9 +15,12 @@ import { useBreakpoint } from '../src/theme/useBreakpoint';
 import { cristalClaro, glass } from '../src/theme/glass';
 import { useTheme } from '../src/theme/useTheme';
 import { FooterWeb } from '../src/components/FooterWeb';
-import { MetaPagina } from '../src/components/MetaPagina';
+import { MetaPagina, metadatos } from '../src/components/MetaPagina';
 
 // Cuentas que aún no aceptan la versión vigente (Microsoft, anteriores a la casilla o texto nuevo).
+
+export const generateMetadata = () => metadatos({ titulo: 'Acepta los términos' });
+
 export default function AceptarLegalScreen() {
   const { session, perfil, loading } = useAuth();
   if (!loading && (!session || legalVigente(perfil))) return <Redirect href="/" />;
