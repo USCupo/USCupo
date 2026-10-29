@@ -17,12 +17,34 @@ export function normalizarWhatsapp(v: string): string | null {
   return local.length === 10 && local.startsWith('3') ? `+57 ${local.slice(0, 3)} ${local.slice(3, 6)} ${local.slice(6)}` : '';
 }
 
+/** Cómo te encuentran en WhatsApp: por número o por nombre de usuario (se guarda con @ delante). */
+export type TipoWhatsapp = 'numero' | 'usuario';
+
+export function tipoWhatsapp(v: string | null | undefined): TipoWhatsapp {
+  return v?.trim().startsWith('@') ? 'usuario' : 'numero';
+}
+
+// Reglas de WhatsApp para usuarios: 3 a 35 caracteres, minúsculas, dígitos, punto y guion bajo,
+// al menos una letra, sin ".." y sin parecer una dirección web.
+export function normalizarUsuarioWhatsapp(v: string): string | null {
+  const u = v.trim().replace(/^@+/, '').toLowerCase();
+  if (!u) return null;
+  const valido =
+    /^[a-z0-9._]{3,35}$/.test(u) &&
+    /[a-z]/.test(u) &&
+    !u.includes('..') &&
+    !u.startsWith('www.') &&
+    !/\.(com|net|org|co|in|io|me)$/.test(u);
+  return valido ? `@${u}` : '';
+}
+
 export function usePerfilController() {
   const { session, perfil, recargarPerfil } = useAuth();
   const userId = session?.user.id ?? '';
 
   const [nombre, setNombre] = useState(perfil?.nombre_completo ?? '');
   const [whatsapp, setWhatsapp] = useState(perfil?.whatsapp ?? '');
+  const [tipo, setTipo] = useState<TipoWhatsapp>(tipoWhatsapp(perfil?.whatsapp));
   const [mostrarCorreo, setMostrarCorreo] = useState(perfil?.mostrar_correo ?? true);
   const [mostrarWhatsapp, setMostrarWhatsapp] = useState(perfil?.mostrar_whatsapp ?? true);
   const [errores, setErrores] = useState<{ nombre?: string; whatsapp?: string }>({});
@@ -41,6 +63,7 @@ export function usePerfilController() {
     if (!perfil) return;
     setNombre(perfil.nombre_completo);
     setWhatsapp(perfil.whatsapp ?? '');
+    setTipo(tipoWhatsapp(perfil.whatsapp));
     setMostrarCorreo(perfil.mostrar_correo);
     setMostrarWhatsapp(perfil.mostrar_whatsapp);
   }, [perfil]);
@@ -69,10 +92,15 @@ export function usePerfilController() {
 
   const guardar = useCallback(async () => {
     setErrorGuardar(null);
-    const wa = normalizarWhatsapp(whatsapp);
+    const wa = tipo === 'usuario' ? normalizarUsuarioWhatsapp(whatsapp) : normalizarWhatsapp(whatsapp);
     const nuevos = {
       nombre: errorNombre(nombre),
-      whatsapp: wa === '' ? 'Escribe un celular colombiano de 10 dígitos, por ejemplo 300 123 4567' : undefined,
+      whatsapp:
+        wa !== ''
+          ? undefined
+          : tipo === 'usuario'
+            ? 'Usa de 3 a 35 caracteres: minúsculas, números, punto o guion bajo, con al menos una letra.'
+            : 'Escribe un celular colombiano de 10 dígitos, por ejemplo 300 123 4567',
     };
     setErrores(nuevos);
     if (nuevos.nombre || nuevos.whatsapp) return;
@@ -96,7 +124,7 @@ export function usePerfilController() {
     } finally {
       setGuardando(false);
     }
-  }, [nombre, whatsapp, mostrarCorreo, mostrarWhatsapp, userId, recargarPerfil]);
+  }, [nombre, whatsapp, tipo, mostrarCorreo, mostrarWhatsapp, userId, recargarPerfil]);
 
   const [desbloqueando, setDesbloqueando] = useState<string | null>(null);
   const desbloquear = useCallback(
@@ -135,7 +163,14 @@ export function usePerfilController() {
     correo: perfil?.correo ?? session?.user.email ?? '',
     /** Cuenta de revisión: solo ve el arenero de ofertas de prueba. */
     esAdmin: perfil?.rol === 'admin',
-    campos: { nombre, whatsapp, mostrarCorreo, mostrarWhatsapp },
+    campos: { nombre, whatsapp, tipoWhatsapp: tipo, mostrarCorreo, mostrarWhatsapp },
+    // Al cambiar de número a usuario (o al revés) el valor anterior ya no sirve; si se vuelve
+    // al tipo guardado, se recupera el guardado.
+    setTipoWhatsapp: (t: TipoWhatsapp) => {
+      setTipo(t);
+      setWhatsapp(tipoWhatsapp(perfil?.whatsapp) === t ? (perfil?.whatsapp ?? '') : '');
+      setErrores((e) => ({ ...e, whatsapp: undefined }));
+    },
     setNombre: (v: string) => {
       setNombre(v);
       setErrores((e) => ({ ...e, nombre: undefined }));

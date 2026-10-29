@@ -10,13 +10,13 @@ import { fonts } from '../theme/typography';
  * Privacidad, opciones de anuncios y, salvo que se pida lo contrario, contacto. Una sola lista
  * para el Login del teléfono, Perfil y el FooterWeb; `sobreOscuro` es para el cristal oscuro.
  */
-export function PieLegal({ sobreOscuro, conContacto = true }: { sobreOscuro?: boolean; conContacto?: boolean }) {
+export function PieLegal({ sobreOscuro, conContacto = true, centrado }: { sobreOscuro?: boolean; conContacto?: boolean; centrado?: boolean }) {
   const { colors, type } = useTheme();
   const { abrirOpciones } = useConsentimientoAnuncios();
   const estilo = [type.bodyMuted, styles.enlace, sobreOscuro ? { color: colors.onBackground, fontSize: 13, paddingVertical: 10 } : { color: colors.link }];
 
   return (
-    <View role="navigation" aria-label="Información legal" style={styles.enlaces}>
+    <View role="navigation" aria-label="Información legal" style={[styles.enlaces, centrado && styles.centrado]}>
       <Link href="/acerca" style={estilo}>
         Acerca de
       </Link>
@@ -48,5 +48,6 @@ export function PieLegal({ sobreOscuro, conContacto = true }: { sobreOscuro?: bo
 const styles = StyleSheet.create({
   // flexShrink + maxWidth: dentro del FooterWeb, si no caben en una fila pasan a la siguiente.
   enlaces: { flexDirection: 'row', flexWrap: 'wrap', columnGap: 16, flexShrink: 1, maxWidth: '100%' },
+  centrado: { justifyContent: 'center' },
   enlace: { textDecorationLine: 'underline', paddingVertical: 8, fontFamily: fonts.bodyBold },
 });
