@@ -3,7 +3,7 @@ import { useAuth } from '../lib/AuthContext';
 import { supabase } from '../lib/supabase';
 import { cambiarContrasena, errorContrasena, mensajeDeError, verificarEnlaceRecuperacion } from './auth';
 
-export type FaseRestablecer = 'verificando' | 'formulario' | 'invalido' | 'hecho';
+type FaseRestablecer = 'verificando' | 'formulario' | 'invalido' | 'hecho';
 
 export interface ParamsEnlace {
   code?: string;

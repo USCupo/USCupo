@@ -11,7 +11,7 @@ export interface Almacen {
 
 const PREFIJO = 'uscupo.catalogo.';
 
-export interface OpcionesLectura {
+interface OpcionesLectura {
   /** Avisar a las pantallas si la revalidación trae algo distinto (por defecto, sí). */
   avisar?: boolean;
 }
@@ -88,8 +88,6 @@ export function crearCacheCatalogo(almacen: Almacen) {
     },
   };
 }
-
-export type CacheCatalogo = ReturnType<typeof crearCacheCatalogo>;
 
 /** localStorage del navegador; sin él (render del servidor, almacenamiento bloqueado) no guarda nada. */
 export function almacenLocal(): Almacen {

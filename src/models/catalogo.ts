@@ -87,7 +87,7 @@ export interface Franja {
 
 export const claveFranja = (f: Franja) => `${diasClave(f.dias)}|${f.inicio}|${f.fin}`;
 
-export function franjaDeBloque(b: BloqueHorario): Franja {
+function franjaDeBloque(b: BloqueHorario): Franja {
   return { dias: [...b.dias], inicio: b.hora_inicio.slice(0, 5), fin: b.hora_fin.slice(0, 5) };
 }
 

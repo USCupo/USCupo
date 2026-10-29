@@ -14,14 +14,14 @@ export const MOTIVOS_REPORTE: readonly { clave: ClaveMotivo; etiqueta: string }[
 export const MAX_DETALLE = 500;
 
 /** Lo mínimo de una oferta que hace falta para reportarla. */
-export interface OfertaReportable {
+interface OfertaReportable {
   id: number;
   materia: { nombre: string };
   /** En proceso conmigo como interesado: la RLS me la sigue mostrando tras reportarla. */
   estado?: string;
 }
 
-export interface Bloqueable {
+interface Bloqueable {
   usuarioId: string;
   nombre: string;
 }

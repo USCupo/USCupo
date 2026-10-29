@@ -9,7 +9,7 @@ const domainPattern = new RegExp(`^[^@\\s]+@${USC_EMAIL_DOMAIN.replace('.', '\\.
 
 export const MIN_CONTRASENA = 8;
 
-export function esCorreoInstitucional(correo: string): boolean {
+function esCorreoInstitucional(correo: string): boolean {
   return domainPattern.test(correo.trim());
 }
 
@@ -83,7 +83,7 @@ export function mensajeDeError(e: unknown): string {
   return raw || 'Ocurrió un error inesperado. Intenta de nuevo.';
 }
 
-export interface DatosRegistro {
+interface DatosRegistro {
   nombreCompleto: string;
   correo: string;
   contrasena: string;

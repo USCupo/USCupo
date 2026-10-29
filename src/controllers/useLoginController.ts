@@ -14,12 +14,12 @@ import {
 } from './auth';
 import { ESPERA_REENVIO_S } from './useRecuperarController';
 
-export type ModoLogin = 'registro' | 'ingreso';
+type ModoLogin = 'registro' | 'ingreso';
 
 type Campo = 'nombre' | 'correo' | 'carrera' | 'contrasena' | 'legal';
 type Errores = Partial<Record<Campo, string>>;
 
-export interface EstadoCarreras {
+interface EstadoCarreras {
   lista: Carrera[];
   cargando: boolean;
   origen: OrigenCatalogo | null;

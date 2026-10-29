@@ -2,7 +2,7 @@ import { useWindowDimensions } from 'react-native';
 import { useHidratado } from '../lib/useHidratado';
 
 // compacto: teléfono · medio: tablet / ventana angosta · amplio: computador.
-export type Breakpoint = 'compacto' | 'medio' | 'amplio';
+type Breakpoint = 'compacto' | 'medio' | 'amplio';
 
 export function useBreakpoint(): { breakpoint: Breakpoint; width: number; height: number } {
   const ventana = useWindowDimensions();

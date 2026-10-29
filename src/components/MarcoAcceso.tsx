@@ -16,7 +16,7 @@ import { ThemeToggle } from './ThemeToggle';
 // tarjeta debajo. Quien lo usa pone el contenido de la tarjeta; el estado vive fuera del marco, así
 // que cruzar un breakpoint no borra lo escrito.
 export function MarcoAcceso({ meta, children }: { meta: ReactNode; children: ReactNode }) {
-  const { colors, spacing } = useTheme();
+  const { spacing } = useTheme();
   const { breakpoint, height } = useBreakpoint();
   const insets = useSafeAreaInsets();
 

@@ -1,7 +1,6 @@
 import Ionicons from './Iconos';
 import { useEffect, useRef, type ComponentProps, type ReactNode } from 'react';
 import {
-  ActivityIndicator,
   Animated,
   Modal,
   Pressable,
@@ -177,18 +176,6 @@ export function Chip({ texto, activo, onPress, icono, accessibilityLabel }: Chip
 }
 
 // ── Estados ──────────────────────────────────────────────────────────────────────
-
-export function Cargando({ texto = 'Cargando…', sobreFondo }: { texto?: string; sobreFondo?: boolean }) {
-  const { colors, spacing, type } = useTheme();
-  return (
-    <View style={[styles.centro, { paddingVertical: spacing.xxl }]}>
-      <ActivityIndicator color={sobreFondo ? colors.accent : colors.link} />
-      <Text style={[type.bodyMuted, { color: sobreFondo ? colors.onBackgroundMuted : colors.textMuted, marginTop: spacing.sm }]}>
-        {texto}
-      </Text>
-    </View>
-  );
-}
 
 interface VacioProps {
   icono: IconName;

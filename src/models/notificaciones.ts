@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 
-export type TipoNotificacion = 'interes_recibido' | 'cambio_confirmado' | 'oferta_expirada';
+type TipoNotificacion = 'interes_recibido' | 'cambio_confirmado' | 'oferta_expirada';
 
 export interface Notificacion {
   id: number;

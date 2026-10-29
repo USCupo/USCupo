@@ -78,7 +78,7 @@ export async function listarOfertasConMiInteres(userId: string): Promise<OfertaD
   return conDuenos(data as unknown as FilaOferta[]);
 }
 
-export interface NuevaOferta {
+interface NuevaOferta {
   userId: string;
   materiaId: number;
   grupo: string;

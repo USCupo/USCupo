@@ -5,7 +5,7 @@ import { listarNotificaciones, type Notificacion } from '../models/notificacione
 import { esMatchReciproco, listarMisOfertas, listarOfertasActivas, type OfertaDetalle } from '../models/ofertas';
 import { useCargaEnFoco } from './useCargaEnFoco';
 
-export interface ResumenInicio {
+interface ResumenInicio {
   carrera: string | null;
   hayMaterias: boolean;
   /** Mis ofertas en proceso: alguien quiere mi cupo y falta confirmar. */

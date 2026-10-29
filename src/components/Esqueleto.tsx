@@ -10,7 +10,7 @@ import { Tarjeta } from './ui';
 
 const Pulso = createContext<Animated.Value | null>(null);
 
-export function GrupoEsqueleto({ children, etiqueta = 'Cargando…' }: { children: ReactNode; etiqueta?: string }) {
+function GrupoEsqueleto({ children, etiqueta = 'Cargando…' }: { children: ReactNode; etiqueta?: string }) {
   const reducir = useReducedMotion();
   const pulso = useRef(new Animated.Value(0)).current;
 
@@ -45,7 +45,7 @@ interface HuesoProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export function Hueso({ ancho = '100%', alto = 14, radio = 8, sobreFondo, style }: HuesoProps) {
+function Hueso({ ancho = '100%', alto = 14, radio = 8, sobreFondo, style }: HuesoProps) {
   const { colors } = useTheme();
   const pulso = useContext(Pulso);
   const opacity = pulso ? pulso.interpolate({ inputRange: [0, 1], outputRange: [0.55, 1] }) : 0.8;
@@ -62,7 +62,7 @@ export function Hueso({ ancho = '100%', alto = 14, radio = 8, sobreFondo, style 
 // ── Piezas ───────────────────────────────────────────────────────────────────────
 
 /** Misma silueta que OfertaCard. */
-export function EsqueletoOferta() {
+function EsqueletoOferta() {
   const { spacing } = useTheme();
   return (
     <Tarjeta padding={spacing.md + 4}>
